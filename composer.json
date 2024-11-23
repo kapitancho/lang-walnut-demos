@@ -1,0 +1,18 @@
+{
+    "name": "walnut/lang-demos",
+    "autoload": {
+        "psr-4": {
+            "Walnut\\Lang\\Demo\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Marian Kostadinov",
+            "email": "manchokapitancho@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.3",
+        "walnut/lang": "dev-main"
+    }
+}
