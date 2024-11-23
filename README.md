@@ -10,4 +10,4 @@ Run `composer install` to install the dependencies.
 
 Setup `<project-root>/public` to be run on a server with PHP running and then open in a browser.
 
-Alternatively you can see the demos online [https://demo.walnutphp.com/](here)
+Alternatively you can see the demos online [here](https://demo.walnutphp.com/)
