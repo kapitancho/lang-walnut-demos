@@ -75,6 +75,7 @@ try {
 	ob_start();
 	$logger = $compiler->transitionLogger;
 	$m = $compiler->compile($source);
+	$pr = $m->programRegistry;
 	//$m = $parser->programFromTokens($tokens);
 	//$m = 'TODO';
 	$debug = ob_get_clean();
