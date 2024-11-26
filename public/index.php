@@ -114,6 +114,7 @@ if ($isRun) {
 	try {
 		$ep = new CliEntryPoint($compiler);
 		$content = $ep->call($source, ... $_GET['parameters'] ?? []);
+		$content = htmlspecialchars($content);
 		/*$compilationResult = $compiler->compile($source);
 		$program = $compilationResult->program;
 		$tr = $compilationResult->programRegistry->typeRegistry();
