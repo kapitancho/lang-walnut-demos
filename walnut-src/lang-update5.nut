@@ -2,8 +2,8 @@ module lang-update5:
 
 MyType <: Integer;
 
-==> MyType @ String :: Error('oops');
-/*==> MyType @ String :: MyType(12);*/
+/*==> MyType @ String :: Error('oops');*/
+==> MyType @ String :: MyType(12);
 
 MyNestedType = $[~MyType];
 ==> MyNestedType %% MyType :: MyNestedType[%];
