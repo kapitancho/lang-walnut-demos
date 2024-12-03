@@ -2,8 +2,8 @@ module demo-http %% demo-http-db, generic-http, demo-http-config:
 
 State = $[value: Mutable<Integer>];
 State->value(^Null => Integer) :: {
-    $.value->SET({$.value->value} + 1);
-    $.value->value
+    $value->SET({$value->value} + 1);
+    $value->value
 };
 
 ==> State :: State[Mutable[type{Integer}, 0]];

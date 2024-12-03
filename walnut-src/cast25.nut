@@ -3,7 +3,7 @@ module cast25:
 Point <: [x: Real, y: Real];
 
 Point ==> Boolean :: {
-    {$.x != 0} || {$.y != 0}
+    {$x != 0} || {$y != 0}
 };
 
 FileExists <: Boolean;

@@ -20,13 +20,13 @@ Project <: [
 
 /* there can be casts between any two named types */
 UnknownEffort ==> String :: 'Unknown effort';
-TaskEffort ==> String :: [$.hours->asString, ' hours ', ?whenValueOf($.minutes) is {
-    0: '', ~ : [' and ', $.minutes->asString, ' minutes ']->combineAsString('')}]
+TaskEffort ==> String :: [$hours->asString, ' hours ', ?whenValueOf($minutes) is {
+    0: '', ~ : [' and ', $minutes->asString, ' minutes ']->combineAsString('')}]
     ->combineAsString('');
 
 /* x->asString is the same as x->as(type{String}) */
-Task ==> String :: [$.title, ' - ', $.effort->asString,
-    ?whenValueOf($.done) is { true: '(done)', ~ : '(not done)' }]->combineAsString('');
+Task ==> String :: [$title, ' - ', $effort->asString,
+    ?whenValueOf($done) is { true: '(done)', ~ : '(not done)' }]->combineAsString('');
 
 /* some types may need an explicit casts from and to JsonValue in order to be serializable/hydratable */
 UnknownEffort ==> JsonValue :: null;

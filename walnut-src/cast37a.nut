@@ -85,7 +85,7 @@ MyContent = :[];
 
 MemberByUsernameQuery <: [~MemberForData, ~MemberDataByUsername];
 MemberByUsernameQuery ==> MemberByUsername :: ^[~Username] => Result<Member, UnknownMember|ExternalError> :: {
-    $.memberForData[?noError($.memberDataByUsername[#.username])]
+    $memberForData[?noError($memberDataByUsername[#.username])]
 };
 
 MemberProfileForData = ^[~MemberData] => MemberProfile;
@@ -99,7 +99,7 @@ MyMember ==> Member :: [
         }
     ],
     profile: ^Null => MemberProfile :: {
-        $.memberProfileForData[$.memberData]
+        $memberProfileForData[$memberData]
     },
     feed: ^Null => MemberFeed :: [],
     social: ^Null => MemberSocial :: [],
@@ -107,13 +107,13 @@ MyMember ==> Member :: [
     notifications: ^Null => MemberNotifications :: [],
     unregister: ^Null => Null :: null,
     sendContactMessage: ^[~ContactMessageData] => Null :: null,
-    memberId: ^Null => MemberId :: $.memberData.memberId
+    memberId: ^Null => MemberId :: $memberData.memberId
 ];
 
 MemberForDataFactory <: [~MemberProfileForData];
 MemberForDataFactory ==> MemberForData :: {
     ^[~MemberData] => Member :: {
-        {MyMember[#.memberData, $.memberProfileForData]}->as(type{Member})
+        {MyMember[#.memberData, $memberProfileForData]}->as(type{Member})
     }
 };
 
@@ -124,15 +124,15 @@ MyMemberProfile ==> MemberProfile :: {
     p = ^Null => MemberProfile :: $->as(type{MemberProfile});
     [
         withNewUsername: ^[~Username] => MemberProfile :: {
-            result = $.changeUsername[$.memberData, #.username];
-            $.memberProfileForData[result]
+            result = $changeUsername[$memberData, #.username];
+            $memberProfileForData[result]
         },
         withNewEmailAddress: ^[~EmailAddress] => MemberProfile :: p(),
         withNewPassword: ^[~Password, tokenProtection: String|Null] => MemberProfile :: p(),
         confirmRegistration: ^Null => MemberProfile :: p(),
         passwordRecoveryRequest: ^Null => MemberProfile :: p(),
         withNewProfileDetails: ^[~ProfileDetails] => MemberProfile :: p(),
-        accountSettings: ^Null => AccountSettingsData :: $.memberData,
+        accountSettings: ^Null => AccountSettingsData :: $memberData,
         isAuthorizedWithPassword: ^[~Password] => Boolean :: false
     ]
 };
@@ -140,7 +140,7 @@ MyMemberProfile ==> MemberProfile :: {
 MemberProfileForDataFactory = $[~ChangeUsername];
 MemberProfileForDataFactory ==> MemberProfileForData :: {
     ^[~MemberData] => MemberProfile :: {
-        {MyMemberProfile[#.memberData, $->as(type{MemberProfileForData}), $.changeUsername]}->as(type{MemberProfile})
+        {MyMemberProfile[#.memberData, $->as(type{MemberProfileForData}), $changeUsername]}->as(type{MemberProfile})
     }
 };
 
@@ -169,36 +169,45 @@ ChangeUsernameCommand <: [~EventListener];
 ChangeUsernameCommand ==> ChangeUsername :: {
     ^[~MemberData, ~Username] => MemberData :: {
         m = #.memberData->with[username: #.username];
-        $.eventListener(UsernameChanged[m, #.memberData]);
+        $eventListener(UsernameChanged[m, #.memberData]);
         m
     }
 };
 
+/*
+Members = [
+    member: ^[~MemberId] => Result<Member, UnknownMember|ExternalError>,
+    ~MemberByUsername,
+    memberByEmail: ^[~EmailAddress] => Result<Member, UnknownMember|ExternalError>,
+    register: ^[~EmailAddress, ~Username, ~Password, ~ProfileDetails, activateUser: Boolean] => Result<Member, ExternalError>
+];
+MyMembers <: [~MemberForData, ~MemberDataById, ~MemberByUsername];
+*/
 
 MyApp ==> App :: $;
 MyMembers ==> Members :: [
     member: ^[~MemberId] => Result<Member, UnknownMember|ExternalError> :: {
-        $.memberForData[$.memberDataById[#.memberId]]
+        $memberForData[$memberDataById => invoke[#.memberId]]
     },
-    memberByUsername: $.memberByUsername,
-    memberByEmail: ^[~EmailAddress] => Result<Member, UnknownMember|ExternalError> :: { @ UnknownMember() },
+    memberByUsername: $memberByUsername,
+    memberByEmail: ^[~EmailAddress] => Result<Member, UnknownMember|ExternalError> :: { @UnknownMember[] },
     register: ^[~EmailAddress, ~Username, ~Password, ~ProfileDetails, activateUser: Boolean] => Result<Member, ExternalError> :: {
-        @ UnknownMember()
+        @ExternalError[errorType: 'Error', originalError: 'Error', errorMessage: 'Error']
     }
 ];
+
 MyContent ==> Content :: [
     search: ^String => Array<ContentData> :: []
 ];
 
-myFn = ^Array<String> => Any :: {
-    ctr = Container[getContainerConfig()];
-    app = ctr->instanceOf(App);
+myFn = ^Array<String> => Any %% [~DependencyContainer] :: {
+    app = %dependencyContainer=>valueOf(type{App});
     [
-        {app.members.member['ABC']}.memberId(),
-        {{app.members.member['ABC']}.profile()}.accountSettings(),
-        {app.members.memberByUsername['ABC']}.memberId(),
-        {{app.members.memberByUsername['ABC']}.profile()}.accountSettings(),
-        {{{app.members.memberByUsername['ABC']}.profile()}.withNewUsername['New username']}.accountSettings()
+        {app.members.member => invoke['ABC']}.memberId(),
+        {{app.members.member => invoke['ABC']}.profile()}.accountSettings(),
+        {app.members.memberByUsername => invoke['ABC']}.memberId(),
+        {{app.members.memberByUsername => invoke['ABC']}.profile()}.accountSettings(),
+        {{{app.members.memberByUsername => invoke['ABC']}.profile()}.withNewUsername['New username']}.accountSettings()
     ]
 };
 

@@ -1,9 +1,9 @@
 module sushi-go-mapper %% sushi-go-dto, sushi-go-behavior:
 
 PlayerCardMove ==> PlayerMove @ UnknownCard :: {
-    chopsticksExchange = $.chopsticksExchange;
+    chopsticksExchange = $chopsticksExchange;
     [
-        chosenCard: ?noError($.chosenCard->as(type{SushiGoCard})),
+        chosenCard: ?noError($chosenCard->as(type{SushiGoCard})),
         chopsticksExchange: ?whenTypeOf(chopsticksExchange) is {
             type{NoCard}: NoChopsticksExchange[],
             type{CardName}: ?noError(chopsticksExchange->as(type{SushiGoCard}))
@@ -43,11 +43,11 @@ SushiGoCard ==> CardName :: ?whenValueOf($) is {
 };
 
 PlayroomTable ==> TableData :: {
-    activeGame = $.activeGame->value;
+    activeGame = $activeGame->value;
     [
-        number: $.tableNumber,
-        joinedPlayers: $.players->players->length,
-        playersCount: $.playersCountRange,
+        number: $tableNumber,
+        joinedPlayers: $players->players->length,
+        playersCount: $playersCountRange,
         currentGame: ?whenTypeOf(activeGame) is {
             type{ActiveGame}: {
                 /*activeGame->LOGDEBUG;*/
@@ -75,12 +75,12 @@ PlayroomGame ==> GameData :: {
 };
 
 ActiveGame ==> ActiveGameData @ MapItemNotFound|IndexOutOfRange :: {
-    playerIds = $.players->playerIds;
-    playerNamesByIndex = $.players->playerNames->flip;
+    playerIds = $players->playerIds;
+    playerNamesByIndex = $players->playerNames->flip;
     [
-        id: $.gameId,
-        players: $.players->playerNames,
-        completedRounds: ?noError($.state->value.completedRounds->map(
+        id: $gameId,
+        players: $players->playerNames,
+        completedRounds: ?noError($state->value.completedRounds->map(
             ^PlayersCards => Result<CompletedGameRoundData, MapItemNotFound|IndexOutOfRange> :: {
                 playersCards = #;
                 [cards:
@@ -96,7 +96,7 @@ ActiveGame ==> ActiveGameData @ MapItemNotFound|IndexOutOfRange :: {
                 playerNamesByIndex->map(
                     ^Integer => Result<Array<CardName, ..10>, MapItemNotFound|IndexOutOfRange> ::
                         ?noError(
-                            $.state->value.activeRound->openCards->cards->item(
+                            $state->value.activeRound->openCards->cards->item(
                                 ?noError(
                                     playerIds->item(#)
                                 )
@@ -125,12 +125,12 @@ getPlayerGameDataFor = ^[~ActiveGame, ~PlayerId] => Result<PlayerGameData, MapIt
 };
 
 CompletedGame ==> CompletedGameData @ MapItemNotFound|IndexOutOfRange :: {
-    playerIds = $.players->playerIds;
-    playerNamesByIndex = $.players->playerNames->flip;
+    playerIds = $players->playerIds;
+    playerNamesByIndex = $players->playerNames->flip;
     [
-        id: $.gameId,
-        players: $.players->playerNames,
-        completedRounds: ?noError($.completedGameRounds->cardsByRound->map(
+        id: $gameId,
+        players: $players->playerNames,
+        completedRounds: ?noError($completedGameRounds->cardsByRound->map(
             ^PlayersCards => Result<CompletedGameRoundData, MapItemNotFound|IndexOutOfRange> :: {
                 playersCards = #;
                 [cards:

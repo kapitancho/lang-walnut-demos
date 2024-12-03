@@ -43,10 +43,10 @@ XTree ==> Tree :: {
     };
     [
         push: ^Integer => Tree :: {
-            {XTree[push[$.root, #]]}->as(type{Tree})
+            {XTree[push[$root, #]]}->as(type{Tree})
         },
-        asArray: ^Null => Array<Integer> :: asArray($.root),
-        asReversedArray: ^Null => Array<Integer> :: asReversedArray($.root)
+        asArray: ^Null => Array<Integer> :: asArray($root),
+        asReversedArray: ^Null => Array<Integer> :: asReversedArray($root)
     ]
 };
 */
@@ -55,23 +55,23 @@ T <: [x: Real, y: Real];
 T ==> Any :: {
     [
         d: ^Null => Real :: {
-            {{$.x} * {$.x}} + {{$.y} * {$.y}}
+            {{$x} * {$x}} + {{$y} * {$y}}
         }
     ]
 };
 
 T ==> String :: {
-    {''}->concatList['{', {$.x}->asString, ',', {$.y}->asString, '}']
+    {''}->concatList['{', {$x}->asString, ',', {$y}->asString, '}']
 };
 
 A = [x: Real, y: Real];
 
 A->d(^Null => Real) :: {
-    {{$.x} * {$.x}} + {{$.y} * {$.y}}
+    {{$x} * {$x}} + {{$y} * {$y}}
 };
 
 A ==> String :: {
-    {''}->concatList['{', {$.x}->asString, ',', {$.y}->asString, '}']
+    {''}->concatList['{', {$x}->asString, ',', {$y}->asString, '}']
 };
 
 myFn = ^Array<String> => Any :: {

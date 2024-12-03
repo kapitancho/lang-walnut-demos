@@ -8,11 +8,11 @@ DatabaseQueryResultRow ==> SurveyTemplate @ MapItemNotFound|CastNotAvailable|Hyd
 ];
 
 SurveyTemplate ==> DatabaseQueryBoundParameters :: [
-    id: $.surveyTemplateId,
-    surveyTitle: $.surveyDetails.surveyTitle,
-    link: $.surveyDetails.link,
-    surveyDescription: $.surveyDetails.surveyDescription,
-    repeatableSurvey: ?whenValueOf($.surveyDetails.repeatableSurvey) is {
+    id: $surveyTemplateId,
+    surveyTitle: $surveyDetails.surveyTitle,
+    link: $surveyDetails.link,
+    surveyDescription: $surveyDetails.surveyDescription,
+    repeatableSurvey: ?whenValueOf($surveyDetails.repeatableSurvey) is {
         true: 1,
         false: 0
     }

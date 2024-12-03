@@ -5,8 +5,8 @@ PrivateKey = $[n: Integer, d: Integer];
 
 PrimesTuple = $[p: Integer, q: Integer];
 ==> PrimesTuple :: PrimesTuple[1031, 1061];
-PrimesTuple->getN(^Null => Integer) :: $.p * $.q;
-PrimesTuple->n(^Null => Integer) :: {$.p - 1} * {$.q - 1};
+PrimesTuple->getN(^Null => Integer) :: $p * $q;
+PrimesTuple->n(^Null => Integer) :: {$p - 1} * {$q - 1};
 
 CoPrime <: Integer;
 ==> CoPrime :: CoPrime(65537);
@@ -59,8 +59,8 @@ multiplicativeInverse = ^[value: Integer, modulo: Integer] => Result<Integer, No
     }
 };
 
-PrivateKey->encrypt(^Integer => Integer) :: modularPow[#, $.d, $.n];
-PublicKey->encrypt(^Integer => Integer) :: modularPow[#, $.c, $.n];
+PrivateKey->encrypt(^Integer => Integer) :: modularPow[#, $d, $n];
+PublicKey->encrypt(^Integer => Integer) :: modularPow[#, $c, $n];
 
 ==> PrivateKey @ NotANumber %% [~PrimesTuple, ~CoPrime] :: PrivateKey[%.primesTuple->getN,
     ?noError(multiplicativeInverse[value: %.coPrime, modulo: %.primesTuple->n])

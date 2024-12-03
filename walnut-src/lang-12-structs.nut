@@ -14,18 +14,18 @@ Person <: [
 ];
 
 Person->greet(^Null => String) :: [
-    'Hello, my name is ', $.firstName, ' ', $.lastName->value, ' and i\`m ', $.age->value->asString
+    'Hello, my name is ', $firstName, ' ', $lastName->value, ' and i\`m ', $age->value->asString
 ]->combineAsString('');
 
 Person->hasBirthday(^Null => Null) :: {
-    $.age->SET({$.age->value} + 1);
+    $age->SET({$age->value} + 1);
     null
 };
 
-Person->getMarried(^NonEmptyString => Null) :: ?whenValueOf($.gender) is {
+Person->getMarried(^NonEmptyString => Null) :: ?whenValueOf($gender) is {
     Gender.Male: null,
     Gender.Female: {
-        $.lastName->SET(#);
+        $lastName->SET(#);
         null
     }
 };

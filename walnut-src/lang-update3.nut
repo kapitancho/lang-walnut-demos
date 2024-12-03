@@ -32,10 +32,10 @@ Constructor->St4(^[input: Integer] => Result<[num: Integer], String>) :: [num: #
 St5 = $[num: Integer];
 St5[input: Integer] %% [~Sub1] :: [num: #.input + %.sub1];
 
-St1 ==> Integer :: $.num;
-St2 ==> Integer @ String :: $.num;
-St4 ==> Integer :: $.num;
-St5 ==> Integer :: $.num;
+St1 ==> Integer :: $num;
+St2 ==> Integer @ String :: $num;
+St4 ==> Integer :: $num;
+St5 ==> Integer :: $num;
 
 St7 = $[~St0];
 
@@ -44,14 +44,14 @@ St7 = $[~St0];
 
 Sub2->dep8(^Null => Integer) %% [~St7] :: $;
 
-St3->dep7(^Null => Integer) %% [~St7] :: $.num;
-St3->dep5(^Null => Integer) %% [~St0] :: $.num;
-/*St3->dep1(^Null => Integer) %% [~St1] :: $.num;*/
-St3->dep2(^Null => Integer) %% [~St2] :: $.num;
-St3->dep3(^Null => Integer) %% [~Sub1] :: $.num + %.sub1; /* TODO: 4/6 the error type of ==> Sub1 should not be ignored */
+St3->dep7(^Null => Integer) %% [~St7] :: $num;
+St3->dep5(^Null => Integer) %% [~St0] :: $num;
+/*St3->dep1(^Null => Integer) %% [~St1] :: $num;*/
+St3->dep2(^Null => Integer) %% [~St2] :: $num;
+St3->dep3(^Null => Integer) %% [~Sub1] :: $num + %.sub1; /* TODO: 4/6 the error type of ==> Sub1 should not be ignored */
 /*==> Sub1 @ String :: Error('oops');*/
 ==> Sub1 :: Sub1(3);
-St3->dep4(^Null => Result<Integer, String>) %% [~Sub1] :: $.num + ?noError(%.sub1->asReal)->asInteger;
+St3->dep4(^Null => Result<Integer, String>) %% [~Sub1] :: $num + ?noError(%.sub1->asReal)->asInteger;
 Sub1 ==> Real @ String :: 3.14;
 
 myFn = ^Null => Result<Array<Integer|St1|St2|St3>, String> :: {

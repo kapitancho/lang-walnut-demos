@@ -22,11 +22,11 @@ callRH = ^R => Integer :: #->h(9);
 callQH = ^Q => Real :: #->h(6.4);
 callSH = ^S => Real :: #->h(2);
 
-R->m(^Null => String) :: $.a;
-Q->m(^Null => Boolean) :: $.d;
+R->m(^Null => String) :: $a;
+Q->m(^Null => Boolean) :: $d;
 
-R->h(^Integer => Integer) :: $.c + #;
-Q->h(^Real => Real) :: $.b + #;
+R->h(^Integer => Integer) :: $c + #;
+Q->h(^Real => Real) :: $b + #;
 
 myFn = ^Array<String> => Any :: {
     r = [a: 'hello', b: 10, c: 15];

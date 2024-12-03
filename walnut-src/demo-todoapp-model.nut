@@ -4,9 +4,9 @@ TodoTaskId = String<36>;
 TodoTask = $[id: TodoTaskId, title: String<1..>, isDone: Mutable<Boolean>, dueDate: Date, createdAt: DateAndTime, description: String];
 
 TaskMarkedAsDone = $[~TodoTask];
-TaskMarkedAsDone->todoTask(^Null => TodoTask) :: $.todoTask;
+TaskMarkedAsDone->todoTask(^Null => TodoTask) :: $todoTask;
 TaskUnmarkedAsDone = $[~TodoTask];
-TaskUnmarkedAsDone->todoTask(^Null => TodoTask) :: $.todoTask;
+TaskUnmarkedAsDone->todoTask(^Null => TodoTask) :: $todoTask;
 
 TodoTask[title: String<1..>, dueDate: Date, description: String] %% [~Clock, ~Random] :: [
     id: %.random->uuid,
@@ -16,25 +16,25 @@ TodoTask[title: String<1..>, dueDate: Date, description: String] %% [~Clock, ~Ra
     createdAt: %.clock->now,
     description: #.description
 ];
-TodoTask->id(^Null => TodoTaskId) :: $.id;
-TodoTask->isDone(^Null => Boolean) :: $.isDone->value;
+TodoTask->id(^Null => TodoTaskId) :: $id;
+TodoTask->isDone(^Null => Boolean) :: $isDone->value;
 TodoTask->markAsDone(^Null => *TaskMarkedAsDone) %% [~EventBus] :: {
-    $.isDone->SET(true);
+    $isDone->SET(true);
     %.eventBus => fire(TaskMarkedAsDone[$])
 };
 TodoTask->unmarkAsDone(^Null => *TaskUnmarkedAsDone) %% [~EventBus] :: {
-    $.isDone->SET(false);
+    $isDone->SET(false);
     %.eventBus => fire(TaskUnmarkedAsDone[$])
 };
 TaskUpdatedEventListener = ^TaskMarkedAsDone|TaskUnmarkedAsDone => *Null;
 
 TodoTask ==> JsonValue :: [
-    id: $.id,
-    title: $.title,
-    isDone: $.isDone->value,
-    dueDate: $.dueDate,
-    createdAt: $.createdAt,
-    description: $.description
+    id: $id,
+    title: $title,
+    isDone: $isDone->value,
+    dueDate: $dueDate,
+    createdAt: $createdAt,
+    description: $description
 ];
 
 TodoBoardDataSource = Map<TodoTask>;
@@ -51,4 +51,4 @@ TodoBoard = [
     allTasks: ^Null => *Array<TodoTask>
 ];
 
-TodoBoard ==> JsonValue @ InvalidJsonValue :: $.allTasks()->asJsonValue;
+TodoBoard ==> JsonValue @ InvalidJsonValue :: $allTasks()->asJsonValue;

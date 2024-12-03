@@ -15,10 +15,10 @@ ProductId = Integer<1..>;
 InvalidProductName = $[productName: String];
 ProductName = String<1..>;
 Product <: [~ProductId, ~ProductName];
-Point ==> String :: ''->concatList['{', {$.x}->asString, ',', {$.y}->asString, '}'];
+Point ==> String :: ''->concatList['{', {$x}->asString, ',', {$y}->asString, '}'];
 
 Product ==> Map :: {
-    [productId: $.productId, productName: $.productName]
+    [productId: $productId, productName: $productName]
 };
 
 getData = ^DatabaseConnector => Result<Array<Map<String|Integer|Null>>, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {

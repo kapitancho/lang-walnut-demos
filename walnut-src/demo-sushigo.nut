@@ -59,7 +59,7 @@ SushiGoShuffledDeck = $[cards: Mutable<SushiGoCardArray>];
 SushiGoShuffledDeck(SushiGoCardArray) :: [cards: Mutable[type{SushiGoCardArray}, #]];
 
 SushiGoFullDeck->shuffle(^Null => SushiGoShuffledDeck) :: {
-    SushiGoShuffledDeck($.cards->shuffle)
+    SushiGoShuffledDeck($cards->shuffle)
 };
 
 
@@ -67,8 +67,8 @@ PlayerMove = [chosenCard: SushiGoCard, chopsticksExchange: Null|SushiGoCard];
 
 PlayerName = String<1..20>;
 PlayerList = $[players: Array<PlayerName, 2..8>];
-PlayerList->cardsPerPlayer(^Null => Integer<4..10>) :: 12 - $.players->length;
-PlayerList->players(^Null => Array<PlayerName, 2..8>) :: $.players;
+PlayerList->cardsPerPlayer(^Null => Integer<4..10>) :: 12 - $players->length;
+PlayerList->players(^Null => Array<PlayerName, 2..8>) :: $players;
 
 PlayerCards = Array<SushiGoCard>;
 PlayerCards->countCards(^SushiGoCard => Integer<0..>) :: {
@@ -103,14 +103,14 @@ PlayerCards->puddingsCount(^Null => Integer<0..>) :: $->countCards(SushiGoCard.P
 
 PlayersCards = $[cards: Map<PlayerCards>];
 PlayersCards->scoreByPlayer(^Null => Map<Integer<0..>>) :: {
-    cards = $.cards;
+    cards = $cards;
     cards->map(^PlayerCards => Integer<0..> ::
         [#->tempuraScore, #->sashimiScore, #->dumplingScore, #->makiScore, #->nigiriScore, #->wasabiScore
         ]->sum
     )
 };
 PlayersCards->withRemovedByPlayerMoves(^Map<PlayerMove> => Result<PlayersCards, MapItemNotFound|ItemNotFound>) :: {
-    cards = $.cards;
+    cards = $cards;
     playerMoves = #;
     cards = cards=>mapKeyValue(^[key: String, value: PlayerCards] => Result<PlayerCards, MapItemNotFound|ItemNotFound> :: {
         playerCards = #.value;
@@ -126,7 +126,7 @@ PlayersCards->withRemovedByPlayerMoves(^Map<PlayerMove> => Result<PlayersCards, 
     PlayersCards[cards: cards]
 };
 PlayersCards->withAddedByPlayerMoves(^Map<PlayerMove> => Result<PlayersCards, MapItemNotFound|ItemNotFound>) :: {
-    cards = $.cards;
+    cards = $cards;
     playerMoves = #;
     cards = cards=>mapKeyValue(^[key: String, value: PlayerCards] => Result<PlayerCards, MapItemNotFound|ItemNotFound> :: {
         playerCards = #.value;
@@ -144,7 +144,7 @@ PlayersCards->withAddedByPlayerMoves(^Map<PlayerMove> => Result<PlayersCards, Ma
 };
 PlayersCards->passedToTheNextPlayer(^PlayerList => Result<PlayersCards, IndexOutOfRange|MapItemNotFound>) :: {
     playerList = #->players;
-    cards = $.cards;
+    cards = $cards;
     cards = playerList=>mapIndexValue(^[index: Integer<0..>, value: PlayerName] => Result<PlayerCards, IndexOutOfRange|MapItemNotFound> :: {
         nextIndex = {#.index + 1} % playerList->length;
         cards->item(playerList=>item(nextIndex))
@@ -156,13 +156,13 @@ PlayersCards->passedToTheNextPlayer(^PlayerList => Result<PlayersCards, IndexOut
     cards = playerList->flip=>map(^Integer => Result<Array<SushiGoCard>, IndexOutOfRange> :: cards=>item(#));
     PlayersCards[cards: cards]
 };
-PlayersCards->puddingsCountByPlayer(^Null => Map<Integer<0..>>) :: $.cards->map(^PlayerCards => Integer<0..> :: #->puddingsCount);
+PlayersCards->puddingsCountByPlayer(^Null => Map<Integer<0..>>) :: $cards->map(^PlayerCards => Integer<0..> :: #->puddingsCount);
 
 ActiveRound = $[playerList: PlayerList, openCards: PlayersCards, hiddenCards: PlayersCards];
 ActiveRound->applyPlayerMoves(^Map<PlayerMove> => Result<ActiveRound, MapItemNotFound|ItemNotFound|IndexOutOfRange>) :: {
-    playerList = $.playerList;
-    openCards = $.openCards;
-    hiddenCards = $.hiddenCards;
+    playerList = $playerList;
+    openCards = $openCards;
+    hiddenCards = $hiddenCards;
     playerMoves = #;
     ActiveRound[playerList,
         openCards=>withAddedByPlayerMoves(playerMoves),
@@ -172,8 +172,8 @@ ActiveRound->applyPlayerMoves(^Map<PlayerMove> => Result<ActiveRound, MapItemNot
 
 CompletedGameRounds = $[playerList: PlayerList, cardsByRound: Array<PlayersCards, 3..3>, remainingDeck: SushiGoShuffledDeck];
 CompletedGameRounds->totalScoreByPlayer(^Null => Result<Map<Integer>, MapItemNotFound>) :: {
-    cardsByRound = $.cardsByRound;
-    playerList = $.playerList;
+    cardsByRound = $cardsByRound;
+    playerList = $playerList;
     scoresByRound = cardsByRound->map(^PlayersCards => Map<Integer<0..>> :: #->scoreByPlayer);
     puddingCountsByRound = cardsByRound->map(^PlayersCards => Map<Integer<0..>> :: #->puddingsCountByPlayer);
     puddingCountsByPlayer = playerList->players=>flipMap(^PlayerName => Result<Integer<0..>, MapItemNotFound> ::
@@ -199,7 +199,7 @@ CompletedGameRounds->totalScoreByPlayer(^Null => Result<Map<Integer>, MapItemNot
 
 SushiGoShuffledDeck->dealCards(^PlayerList => Result<PlayersCards, ItemNotFound>) :: {
     players = #->players;
-    deck = $.cards;
+    deck = $cards;
     cardsPerPlayer = #->cardsPerPlayer;
     cardsToDeal = cardsPerPlayer * players->length;
 

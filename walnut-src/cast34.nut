@@ -33,7 +33,7 @@ RemoveBookFromLibrary = ^Book => Result<BookRemoved, UnknownBook>;
 AllLibraryBooks = ^Null => Array<Book>;
 
 Library = $[books: Mutable<Map<Book>>];
-Library->books(^Null => Mutable<Map<Book>>) :: $.books;
+Library->books(^Null => Mutable<Map<Book>>) :: $books;
 
 DependencyContainer ==> BookByIsbn %% Library :: ^Isbn => Result<Book, UnknownBook> :: {
     book = {%->books->value}->item(#->baseValue);

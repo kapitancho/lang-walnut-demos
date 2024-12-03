@@ -10,12 +10,12 @@ DatabaseQueryResultRow ==> TodoTask @ HydrationError|MapItemNotFound :: [
 ] => asJsonValue => hydrateAs(type{TodoTask});
 
 TodoTask ==> DatabaseQueryBoundParameters :: [
-    id: $.id,
-    title: $.title,
-    description: $.description,
-    isDone: ?whenIsTrue { $.isDone: 1, ~: 0 },
-    dueDate: $.dueDate->asString,
-    createdAt: $.createdAt->asString
+    id: $id,
+    title: $title,
+    description: $description,
+    isDone: ?whenIsTrue { $isDone: 1, ~: 0 },
+    dueDate: $dueDate->asString,
+    createdAt: $createdAt->asString
 ];
 
 DbTodoBoard = :[];

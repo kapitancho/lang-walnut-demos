@@ -3,7 +3,7 @@ module cast22:
 Point <: [x: Real, y: Real];
 PositiveInteger = Integer<1..>;
 Point ==> String :: {
-    ''->concatList['{', {$.x}->asString, ',', {$.y}->asString, '}']
+    ''->concatList['{', {$x}->asString, ',', {$y}->asString, '}']
 };
 Suit = :[Spades, Hearts, Diamonds, Clubs];
 pi = 3.1415927;

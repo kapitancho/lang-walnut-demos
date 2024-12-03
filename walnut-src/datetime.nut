@@ -33,9 +33,9 @@ Time <: [hour: Integer<0..23>, minute: Integer<0..59>, second: Integer<0..59>];
 DateAndTime <: [date: Date, time: Time];
 
 Date ==> String :: [
-    $.year->asString,
-    $.month->asString->padLeft[length: 2, padString: '0'],
-    $.day->asString->padLeft[length: 2, padString: '0']
+    $year->asString,
+    $month->asString->padLeft[length: 2, padString: '0'],
+    $day->asString->padLeft[length: 2, padString: '0']
 ]->combineAsString('-');
 
 JsonValue ==> Date @ InvalidDate :: {
@@ -66,9 +66,9 @@ String ==> Date @ InvalidDate :: {
 };
 
 Time ==> String :: [
-    $.hour->asString->padLeft[length: 2, padString: '0'],
-    $.minute->asString->padLeft[length: 2, padString: '0'],
-    $.second->asString->padLeft[length: 2, padString: '0']
+    $hour->asString->padLeft[length: 2, padString: '0'],
+    $minute->asString->padLeft[length: 2, padString: '0'],
+    $second->asString->padLeft[length: 2, padString: '0']
 ]->combineAsString(':');
 
 JsonValue ==> Time @ InvalidTime :: {
@@ -98,13 +98,13 @@ String ==> Time @ InvalidTime :: {
      }
 };
 
-DateAndTime ==> String :: [$.date->asString, $.time->asString]->combineAsString(' ');
+DateAndTime ==> String :: [$date->asString, $time->asString]->combineAsString(' ');
 
 JsonValue ==> DateAndTime @ InvalidDate|InvalidTime|InvalidDateAndTime :: {
     ?whenTypeOf($) is {
         type{String}: $->asDateAndTime,
         type[Integer, Integer<1..12>, Integer<1..31>, Integer<0..23>, Integer<0..59>, Integer<0..59>]:
-            DateAndTime[?noError(Date[$.0, $.1, $.2]), ?noError(Time[$.3, $.4, $.5])],
+            DateAndTime[?noError(Date[$0, $1, $2]), ?noError(Time[$3, $4, $5])],
         type[
             year: Integer,
             month: Integer<1..12>,
@@ -112,11 +112,11 @@ JsonValue ==> DateAndTime @ InvalidDate|InvalidTime|InvalidDateAndTime :: {
             hour: Integer<0..23>,
             minute: Integer<0..59>,
             second: Integer<0..59>
-        ]: DateAndTime[?noError(Date[$.year, $.month, $.day]), ?noError(Time[$.hour, $.minute, $.second])],
+        ]: DateAndTime[?noError(Date[$year, $month, $day]), ?noError(Time[$hour, $minute, $second])],
         type[
             date: [year: Integer, month: Integer<1..12>, day: Integer<1..31>],
             time: [hour: Integer<0..23>, minute: Integer<0..59>, second: Integer<0..59>]
-        ]: DateAndTime[?noError(Date[$.date.year, $.date.month, $.date.day]), ?noError(Time[$.time.hour, $.time.minute, $.time.second])],
+        ]: DateAndTime[?noError(Date[$date.year, $date.month, $date.day]), ?noError(Time[$time.hour, $time.minute, $time.second])],
         ~: @InvalidDateAndTime[]
      }
 

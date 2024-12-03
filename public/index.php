@@ -28,7 +28,10 @@ foreach(glob("$sourceRoot/*.nut") as $sourceFile) {
 }
 
 $compiler = new Compiler(
-	new MultiFolderBasedModuleLookupContext(__DIR__ . '/../walnut-src')
+	new MultiFolderBasedModuleLookupContext(
+		__DIR__ . '/../vendor/walnut/lang/core-nut-lib',
+		__DIR__ . '/../walnut-src'
+	)
 );
 
 if ($_GET['check'] ?? null === 'all') {

@@ -1,10 +1,10 @@
 module cast209:
 
 MyState = $[a: Integer];
-MyState->value(^Null => Integer) :: $.a + 4;
+MyState->value(^Null => Integer) :: $a + 4;
 
 MyIntState = $[a: Integer];
-MyIntState->value(^Null => Integer) :: $.a + 13;
+MyIntState->value(^Null => Integer) :: $a + 13;
 
 MySubtype <: Integer;
 MySubtype->value(^Null => Integer) :: {$->baseValue} + 5;

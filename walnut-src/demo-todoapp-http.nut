@@ -41,9 +41,9 @@ HydrationError ==> HttpResponse :: badRequest({'Invalid request parameters: '}->
 DependencyContainerError ==> HttpResponse :: internalServerError({'Handler error: '}->concatList[
     $->errorMessage, ': ', $->targetType->asString
 ]);
-InvalidJsonValue ==> HttpResponse :: internalServerError({'Invalid handler result: '}->concat($.value->type->asString));
+InvalidJsonValue ==> HttpResponse :: internalServerError({'Invalid handler result: '}->concat($value->type->asString));
 CastNotAvailable ==> HttpResponse :: internalServerError(''->concatList[
-    'Type conversion failure: from type ', $.from->asString, ' to type ', $.to->asString
+    'Type conversion failure: from type ', $from->asString, ' to type ', $to->asString
 ]);
 
-ExternalError ==> HttpResponse :: internalServerError({'External error: '}->concat($.errorMessage));
+ExternalError ==> HttpResponse :: internalServerError({'External error: '}->concat($errorMessage));

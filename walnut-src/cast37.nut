@@ -22,14 +22,14 @@ UnknownMember = :[];
 Content = [search: ^String => Array<ContentData>];*/
 
 Member = $[memberData: Mutable<MemberData>];
-Member->memberId(^Null => MemberId) :: $.memberData->value.memberId;
+Member->memberId(^Null => MemberId) :: $memberData->value.memberId;
 
 MemberForData = ^[~MemberData] => Member;
 MemberDataById = ^[~MemberId] => Result<MemberData, UnknownMember|ExternalError>;
 MemberDataByUsername = ^[~Username] => Result<MemberData, UnknownMember|ExternalError>;
 
-memberForData = ^[~MemberData] => Member :: Member[Mutable[type{MemberData}, #.memberData]];
-memberDataById = ^[~MemberId] => MemberData :: [
+==> MemberForData :: ^[~MemberData] => Member :: Member[Mutable[type{MemberData}, #.memberData]];
+==> MemberDataById :: ^[~MemberId] => MemberData :: [
     memberId: #.memberId,
     emailAddress: 'a@b.com',
     username: 'user',
@@ -37,7 +37,7 @@ memberDataById = ^[~MemberId] => MemberData :: [
     profileDetails: [profilePicture : 'pic', profileDescription: 'desc']
 ];
 
-memberDataByUsername = ^[~Username] => MemberData :: [
+==> MemberDataByUsername :: ^[~Username] => MemberData :: [
     memberId: 'memberId',
     emailAddress: 'a@b.com',
     username: #.username,

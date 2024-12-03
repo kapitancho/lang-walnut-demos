@@ -8,7 +8,7 @@ Product = [~ProductId, ~Title, ~Price];
 
 UnknownProductId = $[~ProductId];
 ProductUpdated = $[~Product];
-ProductUpdated->product(^Null => Product) :: $.product;
+ProductUpdated->product(^Null => Product) :: $product;
 
 IdGenerator = ^Null => String;
 DependencyContainer ==> IdGenerator :: ^Null => String :: 'rand';/* php{'md5(rand())'};*/
@@ -25,10 +25,10 @@ DependencyContainer ==> ProductIdGenerator %% IdGenerator :: ^Null => ProductId 
 
 ProductStorage = $[products: Mutable<Map<Product>>];
 ProductStorage(Map<Product>) :: [products: Mutable[type{Map<Product>}, #]];
-ProductStorage->products(^Null => Map<Product>) :: $.products->value;
+ProductStorage->products(^Null => Map<Product>) :: $products->value;
 ProductStorage->store(^Product => Product) :: {
-    products = $.products->value;
-    $.products->SET(products->withKeyValue[key: #.productId, value: #]);
+    products = $products->value;
+    $products->SET(products->withKeyValue[key: #.productId, value: #]);
     #
 };
 

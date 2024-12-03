@@ -6,18 +6,18 @@ Shape = [
 
 Square <: [sideLength: Real];
 Square ==> Shape :: [
-    area: ^Null => Real :: $.sideLength * $.sideLength
+    area: ^Null => Real :: $sideLength * $sideLength
 ];
 
 Rectangle <: [width: Real, height: Real];
 Rectangle ==> Shape :: [
-    area: ^Null => Real :: $.width * $.height
+    area: ^Null => Real :: $width * $height
 ];
-Square ==> Rectangle :: Rectangle([$.sideLength, $.sideLength]);
+Square ==> Rectangle :: Rectangle([$sideLength, $sideLength]);
 
 Circle <: [radius: Real];
 Circle ==> Shape :: [
-    area: ^Null => Real :: $.radius * $.radius * 3.1415927
+    area: ^Null => Real :: $radius * $radius * 3.1415927
 ];
 
 longestSide = ^Rectangle => Real :: {

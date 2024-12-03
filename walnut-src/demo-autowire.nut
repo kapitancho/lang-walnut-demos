@@ -10,7 +10,7 @@ HydrationError ==> HttpResponse :: badRequest({'Invalid request parameters: '}->
 DependencyContainerError ==> HttpResponse :: internalServerError({'Handler error: '}->concatList[
     $->errorMessage, ': ', $->targetType->asString
 ]);
-InvalidJsonValue ==> HttpResponse :: internalServerError({'Invalid handler result: '}->concat($.value->type->asString));
+InvalidJsonValue ==> HttpResponse :: internalServerError({'Invalid handler result: '}->concat($value->type->asString));
 
 ==> GetOwnersHandler :: ^[cityName: String, buildingId: Integer<1..>] => Array<Owner, 0..> :: [
     [

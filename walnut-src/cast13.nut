@@ -12,7 +12,7 @@ Pineapple <: [
 ];
 Pineapple ==> Apple :: [
     color: ^Integer => String :: {
-        {{{'Hi: '}->concat(#->asString)}->concat(' = ')}->concat({$.size}->asString)
+        {{{'Hi: '}->concat(#->asString)}->concat(' = ')}->concat({$size}->asString)
     }
 ];
 

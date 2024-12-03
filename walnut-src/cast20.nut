@@ -38,7 +38,7 @@ ProductRepository = [
 KeyValueStorageProductRepository <: [~KeyValueStorage];
 
 Product ==> Map :: {
-    [productId: $.productId, productName: $.productName]
+    [productId: $productId, productName: $productName]
 };
 
 Any ==> ProductId @ InvalidProductId :: {
@@ -65,7 +65,7 @@ Map ==> Product @ MapItemNotFound :: {
 
 KeyValueStorageProductRepository ==> ProductRepository :: [
     byId: ^[~ProductId] => Result<Product, ProductNotFound> :: {
-        data = $.keyValueStorage.getByKey[#.productId->asString];
+        data = $keyValueStorage.getByKey[#.productId->asString];
         data = ?whenTypeOf(data) is {
             type{Map}: data->as(type{Product}),
             ~: data
@@ -77,8 +77,8 @@ KeyValueStorageProductRepository ==> ProductRepository :: [
     },
     store: ^[~Product] => ProductAdded|ProductReplaced :: {
         key = #.product.productId->asString;
-        exists = $.keyValueStorage.hasWithKey[key];
-        $.keyValueStorage.storeByKey[key, #.product->as(type{Map})];
+        exists = $keyValueStorage.hasWithKey[key];
+        $keyValueStorage.storeByKey[key, #.product->as(type{Map})];
         ?whenIsTrue { exists: ProductReplaced[], ~: ProductAdded[] }
     },
     remove: ^[~ProductId] => Result<ProductRemoved, ProductNotFound> :: ProductRemoved[],
@@ -88,10 +88,10 @@ KeyValueStorageProductRepository ==> ProductRepository :: [
 
 InMemoryKeyValueStorage ==> KeyValueStorage :: [
     hasWithKey: ^[key: String] => Boolean :: {
-        {$.storage->value}->keyExists(#.key)
+        {$storage->value}->keyExists(#.key)
     },
     getByKey: ^[key: String] => Result<Map, KeyNotFound> :: {
-        item = $.storage->value->item(#.key);
+        item = $storage->value->item(#.key);
         ?whenTypeOf(item) is {
             type{Map}: item,
             type{Result<Nothing, MapItemNotFound>}: => Error(KeyNotFound[#.key]),
@@ -99,15 +99,15 @@ InMemoryKeyValueStorage ==> KeyValueStorage :: [
         }
     },
     storeByKey: ^[key: String, value: Map] => ValueAdded|ValueReplaced :: {
-        keyExists = {$.storage->value}->keyExists(#.key);
-        $.storage->SET({$.storage->value}->withKeyValue[key: #.key, value: #.value]);
+        keyExists = {$storage->value}->keyExists(#.key);
+        $storage->SET({$storage->value}->withKeyValue[key: #.key, value: #.value]);
         ?whenIsTrue { keyExists: ValueReplaced[], ~: ValueAdded[] }
     },
     removeByKey: ^[key: String] => Result<ValueRemoved, KeyNotFound> :: {
-        m = $.storage->value->valuesWithoutKey(#.key);
+        m = $storage->value->valuesWithoutKey(#.key);
         ?whenTypeOf(m) is {
             type{Result<Nothing, MapItemNotFound>}: => Error(KeyNotFound[#.key]),
-            type{Map}: { $.storage->SET(m); ValueRemoved[] }
+            type{Map}: { $storage->SET(m); ValueRemoved[] }
         }
     }
 ]->as(type{KeyValueStorage});

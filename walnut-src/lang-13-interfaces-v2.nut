@@ -7,8 +7,8 @@ Circle <: [x: Real, y: Real, radius: PositiveReal];
 
 Rectangle <: [width: PositiveReal, height: PositiveReal];
 
-Circle->area(^Null => PositiveReal) :: 3.1416 * $.radius * $.radius;
-Rectangle->area(^Null => PositiveReal) :: $.width * $.height;
+Circle->area(^Null => PositiveReal) :: 3.1416 * $radius * $radius;
+Rectangle->area(^Null => PositiveReal) :: $width * $height;
 
 getArea = ^Circle|Rectangle => PositiveReal :: #->area;
 

@@ -2,7 +2,7 @@ module cast201:
 
 Reverser = ^String => String;
 
-myReverse = ^String => String :: #->reverse;
+==> Reverser :: ^String => String :: #->reverse;
 
 Suit = :[Spade, Heart, Diamond, Club];
 SuitColor = :[Red, Black];

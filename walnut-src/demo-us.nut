@@ -15,7 +15,7 @@ ShortenedUrlList->getByShortenedUrl(^[shortUrl: String<1..>] => ShortenedUrl) ::
 ShortenedUrlList->getById(^[id: String<36>] => ShortenedUrl) :: 1;
 
 ShortenedUrl->remove(^Null => Null) :: 1;
-ShortenedUrl->data(^Null => ShortenedUrlData) :: $.data;
+ShortenedUrl->data(^Null => ShortenedUrlData) :: $data;
 
 UrlShortener = :[];
 UrlShortener->run(^Any => Any) :: [

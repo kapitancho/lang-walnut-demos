@@ -36,7 +36,7 @@ SushiGoCard->numberOfCards(^Null => Integer<1..14>) :: {
     }
 };
 
-SushiGoCardNotInHand->card(^Null => SushiGoCard) :: $.sushiGoCard;
+SushiGoCardNotInHand->card(^Null => SushiGoCard) :: $sushiGoCard;
 
 SushiGoCard->takeAllCards(^Null => Array<SushiGoCard, 1..14>) :: []->padLeft[length: $->numberOfCards, value: $];
 
@@ -47,24 +47,24 @@ SushiGoFullDeck(Null) :: {
     [cards: result]
 };
 SushiGoFullDeck->shuffle(^Null => SushiGoShuffledDeck) :: {
-    SushiGoShuffledDeck($.cards->shuffle)
+    SushiGoShuffledDeck($cards->shuffle)
 };
 
 SushiGoShuffledDeck(SushiGoCardArray) :: [cards: Mutable[type{SushiGoCardArray}, #]];
 
 GamePlayerList(Array<Player, 2..5>) :: [players: #];
-GamePlayerList->cardsPerPlayer(^Null => Integer<7..10>) :: 12 - $.players->length;
+GamePlayerList->cardsPerPlayer(^Null => Integer<7..10>) :: 12 - $players->length;
 GamePlayerList->playerWithId(^[~PlayerId] => Result<Player, UnknownPlayer>) :: {
     playerId = #.playerId;
-    player = $.players->findFirst(^Player => Boolean :: #.playerId == playerId);
+    player = $players->findFirst(^Player => Boolean :: #.playerId == playerId);
     ?whenTypeOf(player) is {
         type{Player}: player,
         type{Result<Nothing, ItemNotFound>}: Error(UnknownPlayer(#))
     }
 };
-GamePlayerList->players(^Null => Array<Player, 2..5>) :: $.players;
-GamePlayerList->playerIds(^Null => Array<PlayerId, 2..5>) :: $.players->map(^Player => PlayerId :: #.playerId);
-GamePlayerList->playerNames(^Null => Array<PlayerName, 2..5>) :: $.players->map(^Player => PlayerName :: #.name);
+GamePlayerList->players(^Null => Array<Player, 2..5>) :: $players;
+GamePlayerList->playerIds(^Null => Array<PlayerId, 2..5>) :: $players->map(^Player => PlayerId :: #.playerId);
+GamePlayerList->playerNames(^Null => Array<PlayerName, 2..5>) :: $players->map(^Player => PlayerName :: #.name);
 
 PlayerCards->countCards(^SushiGoCard => Integer<0..>) :: {
     card = #;
@@ -97,15 +97,15 @@ PlayerCards->wasabiScore(^Null => Integer<0..>) :: 0;
 PlayerCards->puddingsCount(^Null => Integer<0..>) :: $->countCards(SushiGoCard.Pudding);
 
 PlayersCards(Map<PlayerCards>) :: [cards: #];
-PlayersCards->cards(^Null => Map<PlayerCards>) :: $.cards;
+PlayersCards->cards(^Null => Map<PlayerCards>) :: $cards;
 PlayersCards->scoreByPlayer(^Null => Map<Integer<0..>>) :: {
-    cards = $.cards;
+    cards = $cards;
     cards->map(^PlayerCards => Integer<0..> ::
         [#->tempuraScore, #->sashimiScore, #->dumplingScore, #->makiScore, #->nigiriScore, #->wasabiScore]->sum
     )
 };
 PlayersCards->withRemovedByPlayerMoves(^Map<PlayerMove> => Result<PlayersCards, MapItemNotFound|ItemNotFound>) :: {
-    cards = $.cards;
+    cards = $cards;
     playerMoves = #;
     cards = ?noError(cards->mapKeyValue(^[key: String, value: PlayerCards] => Result<PlayerCards, MapItemNotFound|ItemNotFound> :: {
         playerCards = #.value;
@@ -121,7 +121,7 @@ PlayersCards->withRemovedByPlayerMoves(^Map<PlayerMove> => Result<PlayersCards, 
     PlayersCards(cards)
 };
 PlayersCards->withAddedByPlayerMoves(^Map<PlayerMove> => Result<PlayersCards, MapItemNotFound|ItemNotFound>) :: {
-    cards = $.cards;
+    cards = $cards;
     playerMoves = #;
     cards = ?noError(cards->mapKeyValue(^[key: String, value: PlayerCards] => Result<PlayerCards, MapItemNotFound|ItemNotFound> :: {
         playerCards = #.value;
@@ -144,7 +144,7 @@ PlayersCards->withAddedByPlayerMoves(^Map<PlayerMove> => Result<PlayersCards, Ma
 };
 PlayersCards->passedToTheNextPlayer(^GamePlayerList => Result<PlayersCards, IndexOutOfRange|MapItemNotFound>) :: {
     playerList = #->playerIds;
-    cards = $.cards;
+    cards = $cards;
     cards = ?noError(playerList->mapIndexValue(^[index: Integer<0..>, value: PlayerId] => Result<PlayerCards, IndexOutOfRange|MapItemNotFound> :: {
         nextIndex = {#.index + 1} % playerList->length;
         cards->item(?noError(playerList->item(nextIndex)))
@@ -152,14 +152,14 @@ PlayersCards->passedToTheNextPlayer(^GamePlayerList => Result<PlayersCards, Inde
     cards = ?noError(playerList->flip->map(^Integer => Result<Array<SushiGoCard, ..10>, IndexOutOfRange> :: ?noError(cards->item(#))));
     PlayersCards(cards)
 };
-PlayersCards->puddingsCountByPlayer(^Null => Map<Integer<0..>>) :: $.cards->map(^PlayerCards => Integer<0..> :: #->puddingsCount);
+PlayersCards->puddingsCountByPlayer(^Null => Map<Integer<0..>>) :: $cards->map(^PlayerCards => Integer<0..> :: #->puddingsCount);
 
-ActiveRound->hiddenCards(^Null => PlayersCards) :: $.hiddenCards;
-ActiveRound->openCards(^Null => PlayersCards) :: $.openCards;
+ActiveRound->hiddenCards(^Null => PlayersCards) :: $hiddenCards;
+ActiveRound->openCards(^Null => PlayersCards) :: $openCards;
 ActiveRound->applyPlayerMoves(^Map<PlayerMove> => Result<ActiveRound, MapItemNotFound|ItemNotFound|IndexOutOfRange>) :: {
-    playerList = $.playerList;
-    openCards = $.openCards;
-    hiddenCards = $.hiddenCards;
+    playerList = $playerList;
+    openCards = $openCards;
+    hiddenCards = $hiddenCards;
     playerMoves = #;
     ActiveRound[playerList,
         ?noError(openCards->withAddedByPlayerMoves(playerMoves)),
@@ -170,10 +170,10 @@ ActiveRound->applyPlayerMoves(^Map<PlayerMove> => Result<ActiveRound, MapItemNot
     ]
 };
 
-CompletedGameRounds->cardsByRound(^Null => Array<PlayersCards, 3..3>) :: $.cardsByRound;
+CompletedGameRounds->cardsByRound(^Null => Array<PlayersCards, 3..3>) :: $cardsByRound;
 CompletedGameRounds->totalScoreByPlayer(^Null => Result<Map<Integer>, MapItemNotFound>) :: {
-    cardsByRound = $.cardsByRound;
-    playerList = $.playerList;
+    cardsByRound = $cardsByRound;
+    playerList = $playerList;
     scoresByRound = cardsByRound->map(^PlayersCards => Map<Integer<0..>> :: #->scoreByPlayer);
     puddingCountsByRound = cardsByRound->map(^PlayersCards => Map<Integer<0..>> :: #->puddingsCountByPlayer);
     puddingCountsByPlayer = ?noError(playerList->playerIds->flipMap(^PlayerId => Result<Integer<0..>, MapItemNotFound> ::
@@ -199,7 +199,7 @@ CompletedGameRounds->totalScoreByPlayer(^Null => Result<Map<Integer>, MapItemNot
 
 SushiGoShuffledDeck->dealCards(^GamePlayerList => Result<PlayersCards, ItemNotFound>) :: {
     players = #->playerIds;
-    deck = $.cards;
+    deck = $cards;
     cardsPerPlayer = #->cardsPerPlayer;
     cardsToDeal = cardsPerPlayer * players->length;
 
@@ -343,43 +343,43 @@ ActiveGame[~GameId, ~TableNumber, players: GamePlayerList] %% [~SushiGoFullDeck]
     ]
 };
 
-ActiveGame->gameId(^Null => GameId) :: $.gameId;
-ActiveGame->players(^Null => Array<Player, 2..5>) :: $.players->players;
-ActiveGame->activeRound(^Null => ActiveRound) :: $.state->value.activeRound;
+ActiveGame->gameId(^Null => GameId) :: $gameId;
+ActiveGame->players(^Null => Array<Player, 2..5>) :: $players->players;
+ActiveGame->activeRound(^Null => ActiveRound) :: $state->value.activeRound;
 ActiveGame->playMove(^[~PlayerId, ~PlayerMove] => Result<ActiveGame|CompletedGame, UnknownPlayer|SushiGoCardNotInHand|PlayerAlreadyMoved>) :: {
     playerId = #.playerId;
     playerMove = #.playerMove;
 
-    player = ?noError($.players->playerWithId[playerId: #.playerId]);
-    existingMove = $.state->value.gameTurn->item(#.playerId);
+    player = ?noError($players->playerWithId[playerId: #.playerId]);
+    existingMove = $state->value.gameTurn->item(#.playerId);
 
     checkEndOfRound = ^Null => ActiveGame|CompletedGame :: {
-        remainingCards = $.state->value.activeRound->hiddenCards->cards->map(^Array => Integer :: #->length)->values->sum;
+        remainingCards = $state->value.activeRound->hiddenCards->cards->map(^Array => Integer :: #->length)->values->sum;
         ?whenValueOf(remainingCards) is {
             0: {
-                completedRounds = $.state->value.completedRounds->insertLast($.state->value.activeRound->openCards);
+                completedRounds = $state->value.completedRounds->insertLast($state->value.activeRound->openCards);
                 /*'end of round'->DUMPNL; completedRounds->length->DUMPNL;*/
                 ?whenTypeOf(completedRounds) is {
                     type{Array<PlayersCards, 3..3>}: {
                         completedGame = CompletedGame[
-                            gameId: $.gameId,
-                            tableNumber: $.tableNumber,
-                            players: $.players,
+                            gameId: $gameId,
+                            tableNumber: $tableNumber,
+                            players: $players,
                             completedGameRounds: CompletedGameRounds[
-                                playerList: $.players,
+                                playerList: $players,
                                 cardsByRound: completedRounds,
-                                remainingDeck: $.remainingDeck
+                                remainingDeck: $remainingDeck
                             ]
                         ]
                         /*;'end of game'->DUMPNL; completedGame->DUMPNL*/
                     },
                     type{Array<PlayersCards, ..2>}: {
-                        cards = $.remainingDeck->dealCards($.players);
+                        cards = $remainingDeck->dealCards($players);
                         ?whenTypeOf(cards) is {
                             type{PlayersCards}: {
-                                activeRound = ActiveRound[playerList: $.players, openCards: PlayersCards($.players
+                                activeRound = ActiveRound[playerList: $players, openCards: PlayersCards($players
                                     ->playerIds->flipMap(^PlayerId => Array<Nothing, 0..0> :: [])), hiddenCards: cards];
-                                $.state->SET[
+                                $state->SET[
                                     completedRounds: completedRounds,
                                     activeRound: activeRound,
                                     gameTurn: [:]
@@ -396,17 +396,17 @@ ActiveGame->playMove(^[~PlayerId, ~PlayerMove] => Result<ActiveGame|CompletedGam
         }
     };
     checkEndOfTurn = ^Null => ActiveGame|CompletedGame :: {
-        turnsCount = $.state->value.gameTurn->length;
-        playersCount = $.players->players->length;
+        turnsCount = $state->value.gameTurn->length;
+        playersCount = $players->players->length;
         checkEndOfRound(null); /* TEMP */
         ?whenIsTrue {
             turnsCount == playersCount: {
-                activeRound = $.state->value.activeRound->applyPlayerMoves($.state->value.gameTurn);
+                activeRound = $state->value.activeRound->applyPlayerMoves($state->value.gameTurn);
                 /*'end of turn'->DUMPNL; activeRound->DUMPNL;*/
                 ?whenTypeOf(activeRound) is {
                     type{ActiveRound}: {
-                        $.state->SET[
-                            completedRounds: $.state->value.completedRounds,
+                        $state->SET[
+                            completedRounds: $state->value.completedRounds,
                             activeRound: activeRound,
                             gameTurn: [:]
                         ];
@@ -419,10 +419,10 @@ ActiveGame->playMove(^[~PlayerId, ~PlayerMove] => Result<ActiveGame|CompletedGam
         }
     };
     doMove = ^Null => ActiveGame|CompletedGame :: {
-        $.state->SET[
-            completedRounds: $.state->value.completedRounds,
-            activeRound: $.state->value.activeRound,
-            gameTurn: $.state->value.gameTurn->withKeyValue[key: playerId, value: playerMove]
+        $state->SET[
+            completedRounds: $state->value.completedRounds,
+            activeRound: $state->value.activeRound,
+            gameTurn: $state->value.gameTurn->withKeyValue[key: playerId, value: playerMove]
         ];
         checkEndOfTurn(null)
     };
@@ -430,7 +430,7 @@ ActiveGame->playMove(^[~PlayerId, ~PlayerMove] => Result<ActiveGame|CompletedGam
     t = ?whenTypeOf(existingMove) is {
         type{PlayerMove}: Error(PlayerAlreadyMoved[]),
         ~: {
-            playerCards = $.state->value.activeRound->hiddenCards->cards->item(#.playerId);
+            playerCards = $state->value.activeRound->hiddenCards->cards->item(#.playerId);
             ?whenTypeOf(playerCards) is {
                 type{PlayerCards}: {
                     chosenCard = #.playerMove.chosenCard;
@@ -443,7 +443,7 @@ ActiveGame->playMove(^[~PlayerId, ~PlayerMove] => Result<ActiveGame|CompletedGam
                                     withoutChopsticksExchangeCard = withoutChosenCard->without(chopsticksExchange);
                                     ?whenTypeOf(withoutChopsticksExchangeCard) is {
                                         type{PlayerCards}: {
-                                            playerOpenCards = $.state->value.activeRound->openCards->cards->item(#.playerId);
+                                            playerOpenCards = $state->value.activeRound->openCards->cards->item(#.playerId);
                                             ?whenTypeOf(playerOpenCards) is {
                                                 type{PlayerCards}: {
                                                     playerOpenCardsWithoutChopsticks = playerOpenCards->without(SushiGoCard.Chopsticks);
@@ -470,21 +470,21 @@ ActiveGame->playMove(^[~PlayerId, ~PlayerMove] => Result<ActiveGame|CompletedGam
     }
 };
 
-CompletedGame->gameId(^Null => GameId) :: $.gameId;
-CompletedGame->tableNumber(^Null => TableNumber) :: $.tableNumber;
+CompletedGame->gameId(^Null => GameId) :: $gameId;
+CompletedGame->tableNumber(^Null => TableNumber) :: $tableNumber;
 
 TablePlayerList(Map<Player, ..5>) :: [players: Mutable[type{Map<Player, ..5>}, #]];
-TablePlayerList->players(^Null => Map<Player, ..5>) :: $.players->value;
-TablePlayerList->playerIds(^Null => Array<PlayerId, ..5>) :: $.players->value->map(^Player => PlayerId :: #.playerId)->values;
-TablePlayerList->playerNames(^Null => Array<PlayerId, ..5>) :: $.players->value->map(^Player => PlayerName :: #.name)->values;
+TablePlayerList->players(^Null => Map<Player, ..5>) :: $players->value;
+TablePlayerList->playerIds(^Null => Array<PlayerId, ..5>) :: $players->value->map(^Player => PlayerId :: #.playerId)->values;
+TablePlayerList->playerNames(^Null => Array<PlayerId, ..5>) :: $players->value->map(^Player => PlayerName :: #.name)->values;
 TablePlayerList->playerJoin(^[~PlayerName] => Result<PlayerId, TooManyPlayers|PlayerAlreadyOnTable>) %% [~Random] :: {
-    players = $.players->value;
+    players = $players->value;
     ?whenTypeOf(players) is {
         type{Map<Player, ..4>}: ?whenIsTrue {
             $->playerNames->contains(#.playerName): Error(PlayerAlreadyOnTable[]),
             ~: {
                 playerId = %.random->uuid;
-                $.players->SET(players->withKeyValue[key: playerId, value: [playerId: playerId, name: #.playerName]]);
+                $players->SET(players->withKeyValue[key: playerId, value: [playerId: playerId, name: #.playerName]]);
                 playerId
             }
         },
@@ -492,11 +492,11 @@ TablePlayerList->playerJoin(^[~PlayerName] => Result<PlayerId, TooManyPlayers|Pl
     }
 };
 TablePlayerList->playerLeave(^[~PlayerId] => Result<Null, UnknownPlayer>) :: {
-    players = $.players->value;
+    players = $players->value;
     withoutPlayer = players->withoutByKey(#.playerId);
     ?whenTypeOf(withoutPlayer) is {
         type{[element: Player, map: Map<Player, ..4>]}: {
-            $.players->SET(withoutPlayer.map);
+            $players->SET(withoutPlayer.map);
             null
         },
         ~: Error(UnknownPlayer(#))
@@ -530,22 +530,22 @@ PlayroomTable[~TableNumber, ~PlayersCountRange] :: {
         activeGame: Mutable[type{NoActiveGame|ActiveGame}, game]
     ]
 };
-PlayroomTable->number(^Null => TableNumber) :: $.tableNumber;
+PlayroomTable->number(^Null => TableNumber) :: $tableNumber;
 PlayroomTable->startGame(^Null => Result<ActiveGame, NotEnoughPlayers|GameAlreadyInProgress>) %% [~Random] :: {
-    activeGame = $.activeGame->value;
+    activeGame = $activeGame->value;
     ?whenTypeOf(activeGame) is {
         type{ActiveGame}: Error(GameAlreadyInProgress[]),
         type{NoActiveGame}: {
-            players = $.players->players;
+            players = $players->players;
             ?whenTypeOf(players) is {
                 type{Map<Player, 2..5>}: {
                     playersCount = players->length;
                     ?whenIsTrue {
-                        playersCount < $.playersCountRange.minPlayers: Error(NotEnoughPlayers[]),
+                        playersCount < $playersCountRange.minPlayers: Error(NotEnoughPlayers[]),
                         ~: {
                             gameId = %.random->uuid;
-                            game = ActiveGame[gameId: gameId, tableNumber: $.tableNumber, players: GamePlayerList(players->values)];
-                            $.activeGame->SET(game);
+                            game = ActiveGame[gameId: gameId, tableNumber: $tableNumber, players: GamePlayerList(players->values)];
+                            $activeGame->SET(game);
                             game
                         }
                     }
@@ -555,26 +555,26 @@ PlayroomTable->startGame(^Null => Result<ActiveGame, NotEnoughPlayers|GameAlread
         }
     }
 };
-PlayroomTable->activeGame(^Null => NoActiveGame|ActiveGame) :: $.activeGame->value;
+PlayroomTable->activeGame(^Null => NoActiveGame|ActiveGame) :: $activeGame->value;
 PlayroomTable->markActiveGameAsCompleted(^Null => Null) :: {
-    $.activeGame->SET(NoActiveGame[]);
+    $activeGame->SET(NoActiveGame[]);
     null
 };
 
 PlayroomTable->playerJoin(^[~PlayerName] => Result<PlayerId, TooManyPlayers|PlayerAlreadyOnTable|GameAlreadyInProgress>) :: {
-    players = $.players->players;
+    players = $players->players;
     ?whenIsTrue {
-        {players->length} == $.playersCountRange.maxPlayers: Error(TooManyPlayers[]),
-        $.activeGame->value->isOfType(type{ActiveGame}): Error(GameAlreadyInProgress[]),
-        ~: ?noError($.players->playerJoin(#))
+        {players->length} == $playersCountRange.maxPlayers: Error(TooManyPlayers[]),
+        $activeGame->value->isOfType(type{ActiveGame}): Error(GameAlreadyInProgress[]),
+        ~: ?noError($players->playerJoin(#))
     }
 };
 
 PlayroomTable->playerLeave(^[~PlayerId] => Result<Null, UnknownPlayer|GameAlreadyInProgress>) :: {
-    game = $.activeGame->value;
+    game = $activeGame->value;
     ?whenTypeOf(game) is {
         type{ActiveGame}: Error(GameAlreadyInProgress[]),
-        ~: ?noError($.players->playerLeave(#))
+        ~: ?noError($players->playerLeave(#))
     }
 };
 
@@ -612,26 +612,26 @@ PlayroomTables(Null) :: {
          ~: [tables: Mutable[type{Map<PlayroomTable>}, [:]]]
     }
 };
-PlayroomTables->all(^Null => Array<PlayroomTable>) :: $.tables->value->values;
+PlayroomTables->all(^Null => Array<PlayroomTable>) :: $tables->value->values;
 PlayroomTables->new(^[playersCount: PlayersCountRange] => PlayroomTable) %% [~Random] :: {
     random = %.random;
     takeFreeTableNumber = ^Null => TableNumber :: {
         tableNumber = random->integer[min: 1, max: 999];
         ?whenIsTrue {
-            $.tables->value->keyExists(tableNumber->asString): takeFreeTableNumber(null),
+            $tables->value->keyExists(tableNumber->asString): takeFreeTableNumber(null),
             ~: tableNumber
         }
     };
     tableNumber = takeFreeTableNumber(null);
-    existingTable = $.tables->value->item(tableNumber->asString);
+    existingTable = $tables->value->item(tableNumber->asString);
     newTable = PlayroomTable[tableNumber: tableNumber, playersCountRange: #.playersCount];
-    $.tables->SET(
-        $.tables->value->withKeyValue[key: tableNumber->asString, value: newTable]
+    $tables->SET(
+        $tables->value->withKeyValue[key: tableNumber->asString, value: newTable]
     );
     newTable
 };
 PlayroomTables->withNumber(^[~TableNumber] => Result<PlayroomTable, UnknownTable>) :: {
-    table = $.tables->value->item(#.tableNumber->asString);
+    table = $tables->value->item(#.tableNumber->asString);
     ?whenTypeOf(table) is {
         type{PlayroomTable}: table,
         ~: Error(UnknownTable(#))
@@ -655,23 +655,23 @@ PlayroomGames(Null) %% [~SushiGoFullDeck] :: {
     [games: Mutable[type{Map<PlayroomGame>}, games]]
 };
 
-PlayroomGames->all(^Null => Array<PlayroomGame>) :: $.games->value->values;
+PlayroomGames->all(^Null => Array<PlayroomGame>) :: $games->value->values;
 PlayroomGames->withId(^[~GameId] => Result<PlayroomGame, UnknownGame>) :: {
-    game = $.games->value->item(#.gameId);
+    game = $games->value->item(#.gameId);
     ?whenTypeOf(game) is {
         type{PlayroomGame}: game,
         ~: Error(UnknownGame(#))
     }
 };
 PlayroomGames->add(^[~ActiveGame] => ActiveGame) :: {
-    $.games->SET(
-        $.games->value->withKeyValue[key: #.activeGame->gameId, value: #.activeGame]
+    $games->SET(
+        $games->value->withKeyValue[key: #.activeGame->gameId, value: #.activeGame]
     );
     #.activeGame
 };
 PlayroomGames->markAsCompleted(^[~CompletedGame] => CompletedGame) :: {
-    $.games->SET(
-        $.games->value->withKeyValue[key: #.completedGame->gameId, value: #.completedGame]
+    $games->SET(
+        $games->value->withKeyValue[key: #.completedGame->gameId, value: #.completedGame]
     );
     #.completedGame
 };
@@ -679,16 +679,16 @@ PlayroomGames->markAsCompleted(^[~CompletedGame] => CompletedGame) :: {
 
 
 Playroom(Null) :: [tables: PlayroomTables(null), games: PlayroomGames(null)];
-Playroom->tables(^Null => PlayroomTables) :: $.tables;
-Playroom->games(^Null => PlayroomGames) :: $.games;
+Playroom->tables(^Null => PlayroomTables) :: $tables;
+Playroom->games(^Null => PlayroomGames) :: $games;
 Playroom->startGame(^[~TableNumber] => Result<ActiveGame, UnknownTable|NotEnoughPlayers|GameAlreadyInProgress>) :: {
-    game = ?noError(?noError($.tables->withNumber(#))->startGame);
-    $.games->add[activeGame: game];
+    game = ?noError(?noError($tables->withNumber(#))->startGame);
+    $games->add[activeGame: game];
     game
 };
 Playroom->markGameAsCompleted(^[~CompletedGame] => CompletedGame) :: {
-    $.games->markAsCompleted(#);
-    table = $.tables->withNumber[tableNumber: #.completedGame->tableNumber];
+    $games->markAsCompleted(#);
+    table = $tables->withNumber[tableNumber: #.completedGame->tableNumber];
     ?whenTypeOf(table) is {
         type{PlayroomTable}: table->markActiveGameAsCompleted, /* TODO - error handling */
         ~: null

@@ -7,7 +7,7 @@ ProductName = String<1..50>;
 ProductPrice = Real<0..>;
 ProductData = [name: ProductName, price: ProductPrice];
 Product = $[id: ProductId, data: Mutable<ProductData>];
-Product->data(^Null => ProductData) :: $.data->value;
+Product->data(^Null => ProductData) :: $data->value;
 
 UnknownProduct = $[~ProductId];
 ProductById = ^[~ProductId] => *Result<Product, UnknownProduct>;

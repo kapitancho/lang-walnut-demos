@@ -10,11 +10,11 @@ Circle <: [x: Real, y: Real, radius: PositiveReal];
 Rectangle <: [width: PositiveReal, height: PositiveReal];
 
 Circle ==> Shape :: [
-    area: ^Null => PositiveReal :: 3.1416 * $.radius * $.radius
+    area: ^Null => PositiveReal :: 3.1416 * $radius * $radius
 ];
 
 Rectangle ==> Shape :: [
-    area: ^Null => PositiveReal :: $.width * $.height
+    area: ^Null => PositiveReal :: $width * $height
 ];
 
 getArea = ^Shape => PositiveReal :: #.area(null);

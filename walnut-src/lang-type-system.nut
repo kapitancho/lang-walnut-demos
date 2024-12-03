@@ -23,14 +23,14 @@ accessPointB = ^PointB => Real :: #.x;
 /* accessPointC = ^PointC => Real :: #.x; */
 
 /* adding behavior */
-PointA->moveHorizontally(^Real => PointA) :: [x: $.x + #, y: $.y];
-PointB->moveHorizontally(^Real => PointB) :: PointB[x: $.x + #, y: $.y];
-PointC->moveHorizontally(^Real => PointC) :: PointC[x: $.x + #, y: $.y];
+PointA->moveHorizontally(^Real => PointA) :: [x: $x + #, y: $y];
+PointB->moveHorizontally(^Real => PointB) :: PointB[x: $x + #, y: $y];
+PointC->moveHorizontally(^Real => PointC) :: PointC[x: $x + #, y: $y];
 
 /* cast to another type, $ is similar to 'this' in other languages */
-PointB ==> String :: ['(', $.x->asString, ', ', $.y->asString, ')']->combineAsString('');
-PointA ==> String :: ['(', $.x->asString, ', ', $.y->asString, ')']->combineAsString('');
-PointC ==> String :: ['(', $.x->asString, ', ', $.y->asString, ')']->combineAsString('');
+PointB ==> String :: ['(', $x->asString, ', ', $y->asString, ')']->combineAsString('');
+PointA ==> String :: ['(', $x->asString, ', ', $y->asString, ')']->combineAsString('');
+PointC ==> String :: ['(', $x->asString, ', ', $y->asString, ')']->combineAsString('');
 
 /* subtype specialty 1 - subtyping basic types like Integer, Real, Boolean, String, etc. */
 UuidString <: String<36..36>;
