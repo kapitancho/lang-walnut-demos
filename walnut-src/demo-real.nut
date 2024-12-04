@@ -8,19 +8,19 @@ binaryMinus            = ^[Real<4..12>, Real<-5..7>]       => Real<-3..17>      
 binaryMultiply         = ^[Real<4..12>, Real<-5..7>]       => Real                     :: #.0 * #.1;
 binaryDivide           = ^[Real<4..12>, Real<-5..7>]       => Result<Real, NotANumber> :: #.0 / #.1;
 binaryModulo           = ^[Real<4..12>, Real<-5..7>]       => Result<Real, NotANumber> :: #.0 % #.1;
-binaryPower            = ^[Real<4..12>, Real<-5..7>]       => Real                     :: #.0->binaryPower(#.1); /*#.0 ** #.1;*/
+binaryPower            = ^[Real<4..12>, Real<-5..7>]       => Real                     :: {#.0} ** {#.1};
 roundAsInteger         = ^Real<1.6..15.4>                  => Integer<2..15>           :: #->roundAsInteger;
 roundAsDecimal         = ^[Real<1.6..15.4>, Integer<0..5>] => Real<1..16>              :: #.0->roundAsDecimal(#.1);
 floor                  = ^Real<1.6..15.4>                  => Integer<1..15>           :: #->floor;
 ceil                   = ^Real<1.6..15.4>                  => Integer<2..16>           :: #->ceil;
 abs                    = ^Real<-120..70>                   => Real<0..120>             :: #->abs;
-unaryPlus              = ^Real<-3..8>                      => Real<-3..8>              :: #->unaryPlus;
-unaryMinus             = ^Real<-3..8>                      => Real<-8..3>              :: #->unaryMinus;
+unaryPlus              = ^Real<-3..8>                      => Real<-3..8>              :: +#;
+unaryMinus             = ^Real<-3..8>                      => Real<-8..3>              :: -#;
 
 binaryGreaterThan      = ^[Real<4..12>, Real<-5..9>]       => Boolean                  :: #.0 > #.1;
-binaryGreaterThanEqual = ^[Real<4..12>, Real<-5..9>]       => Boolean                  :: #.0->binaryGreaterThanEqual(#.1); /*#.0 >= #.1;*/
+binaryGreaterThanEqual = ^[Real<4..12>, Real<-5..9>]       => Boolean                  :: #.0 >= #.1;
 binaryLessThan         = ^[Real<4..12>, Real<-5..9>]       => Boolean                  :: #.0 < #.1;
-binaryLessThanEqual    = ^[Real<4..12>, Real<-5..9>]       => Boolean                  :: #.0->binaryLessThanEqual(#.1); /* #.0 <= #.1;*/
+binaryLessThanEqual    = ^[Real<4..12>, Real<-5..9>]       => Boolean                  :: #.0 <= #.1;
 /* common Any->... */
 binaryEqual            = ^[Real<2..15>, Real<..10>]        => Boolean                  :: #.0 == #.1;
 binaryNotEqual         = ^[Real<2..15>, Real<..10>]        => Boolean                  :: #.0 != #.1;

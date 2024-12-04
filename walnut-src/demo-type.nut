@@ -1,6 +1,6 @@
 module demo-type:
 
-negate = ^Integer => Real :: #->unaryMinus;
+negate = ^Integer => Real :: -#;
 LengthType = ^String => Integer;
 
 ProductId <: Integer<1..>;

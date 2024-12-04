@@ -3,10 +3,10 @@ module demo-integer:
 MyBoolean <: Boolean;
 
 /* string specific Integer->... */
-unaryNot            = ^Boolean            => Boolean        :: #->unaryNot;
-binaryAnd           = ^[Boolean, Boolean] => Boolean        :: #.0->binaryAnd(#.1);
-binaryOr            = ^[Boolean, Boolean] => Boolean        :: #.0->binaryOr(#.1);
-binaryXor           = ^[Boolean, Boolean] => Boolean        :: #.0->binaryXor(#.1);
+unaryNot            = ^Boolean            => Boolean        :: !#;
+binaryAnd           = ^[Boolean, Boolean] => Boolean        :: #.0 && #.1;
+binaryOr            = ^[Boolean, Boolean] => Boolean        :: #.0 || #.1;
+binaryXor           = ^[Boolean, Boolean] => Boolean        :: #.0 ^^ #.1;
 
 /* common Any->... */
 binaryEqual         = ^[Boolean, Boolean] => Boolean        :: #.0 == #.1;

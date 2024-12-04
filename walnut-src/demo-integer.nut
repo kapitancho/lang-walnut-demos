@@ -6,24 +6,24 @@ MyInteger <: Integer<4..12>;
 binaryPlus          = ^[Integer<4..12>, Integer<-5..7>]     => Integer<-1..19>              :: #.0 + #.1;
 binaryMinus         = ^[Integer<4..12>, Integer<-5..7>]     => Integer<-3..17>              :: #.0 - #.1;
 binaryMultiply      = ^[Integer<4..12>, Integer<-5..7>]     => Integer                      :: #.0 * #.1;
-binaryIntegerDivide = ^[Integer<4..12>, Integer<-5..7>]     => Result<Real, NotANumber>     :: #.0->binaryIntegerDivide(#.1);
+binaryIntegerDivide = ^[Integer<4..12>, Integer<-5..7>]     => Result<Real, NotANumber>     :: #.0 // #.1;
 binaryDivide        = ^[Integer<4..12>, Integer<-5..7>]     => Result<Real, NotANumber>     :: #.0 / #.1;
 binaryModulo        = ^[Integer<4..12>, Integer<-5..7>]     => Result<Integer, NotANumber>  :: #.0 % #.1;
-binaryPower         = ^[Integer<4..12>, Integer<-5..7>]     => Integer                      :: #.0->binaryPower(#.1); /*#.0 ** #.1;*/
-unaryPlus           = ^Integer<-3..8>                       => Integer<-3..8>               :: #->unaryPlus;
-unaryMinus          = ^Integer<-3..8>                       => Integer<-8..3>               :: #->unaryMinus;
+binaryPower         = ^[Integer<4..12>, Integer<-5..7>]     => Integer                      :: {#.0} ** {#.1};
+unaryPlus           = ^Integer<-3..8>                       => Integer<-3..8>               :: +#;
+unaryMinus          = ^Integer<-3..8>                       => Integer<-8..3>               :: -#;
 upTo                = ^[Integer<2..5>, Integer<7..15>]      => Array<Integer<2..15>, 3..14> :: #.0->upTo(#.1);
 downTo              = ^[Integer<7..15>, Integer<2..5>]      => Array<Integer<2..15>, 3..14> :: #.0->downTo(#.1);
-unaryBitwiseNot     = ^Integer<0..8>                        => Integer<0..>                 :: #->unaryBitwiseNot;
-binaryBitwiseAnd    = ^[Integer<0..20>, Integer<7..22>]    => Integer<0..20>                :: #.0->binaryBitwiseAnd(#.1);
-binaryBitwiseOr     = ^[Integer<0..20>, Integer<7..22>]    => Integer<7..44>                :: #.0->binaryBitwiseOr(#.1);
-binaryBitwiseXor    = ^[Integer<0..20>, Integer<7..22>]    => Integer<0..44>                :: #.0->binaryBitwiseXor(#.1);
+unaryBitwiseNot     = ^Integer<0..8>                        => Integer<0..>                 :: ~#;
+binaryBitwiseAnd    = ^[Integer<0..20>, Integer<7..22>]    => Integer<0..20>                :: #.0 & #.1;
+binaryBitwiseOr     = ^[Integer<0..20>, Integer<7..22>]    => Integer<7..44>                :: #.0 | #.1;
+binaryBitwiseXor    = ^[Integer<0..20>, Integer<7..22>]    => Integer<0..44>                :: {#.0} ^ {#.1};
 abs                 = ^Integer<-120..70>                    => Integer<0..120>              :: #->abs;
 
 binaryGreaterThan   = ^[Integer<4..12>, Integer<-5..7>]      => Boolean                      :: #.0 > #.1;
-binaryGreaterThanEqual = ^[Integer<4..12>, Integer<-5..7>]      => Boolean                      :: #.0->binaryGreaterThanEqual(#.1); /*#.0 >= #.1;*/
+binaryGreaterThanEqual = ^[Integer<4..12>, Integer<-5..7>]      => Boolean                   :: #.0 >= #.1;
 binaryLessThan      = ^[Integer<4..12>, Integer<-5..7>]      => Boolean                      :: #.0 < #.1;
-binaryLessThanEqual = ^[Integer<4..12>, Integer<-5..7>]      => Boolean                      :: #.0->binaryLessThanEqual(#.1); /* #.0 <= #.1;*/
+binaryLessThanEqual = ^[Integer<4..12>, Integer<-5..7>]      => Boolean                      :: #.0 <= #.1;
 /* common Any->... */
 binaryEqual         = ^[Integer<2..15>, Integer<..10>]      => Boolean                      :: #.0 == #.1;
 binaryNotEqual      = ^[Integer<2..15>, Integer<..10>]      => Boolean                      :: #.0 != #.1;
