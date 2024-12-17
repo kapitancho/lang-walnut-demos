@@ -9,7 +9,7 @@ Task ==> TaskStorageData @ HydrationError :: [
     dueDate: $dueDate->asString,
     createdAt: $createdAt->asString,
     description: $description
-]->asJsonValue->hydrateAs(type{TaskStorageData});
+]->hydrateAs(type{TaskStorageData});
 
 ==> TaskSource %% [~TaskRetrieveAll] :: ^Null => *Array<Task> :: %taskRetrieveAll
         => invoke

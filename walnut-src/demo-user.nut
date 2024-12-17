@@ -69,7 +69,7 @@ UserJsonValue ==> UserStorageModel :: [
     profile_picture: $profileDetails.picture,
     profile_description: $profileDetails.description
 ];
-UserJsonValue ==> User @ HydrationError :: $->asJsonValue->hydrateAs(type{User});
+UserJsonValue ==> User @ HydrationError :: $->hydrateAs(type{User});
 User ==> UserJsonValue @ HydrationError|InvalidJsonValue :: $=>asJsonValue->hydrateAs(type{UserJsonValue});
 
 

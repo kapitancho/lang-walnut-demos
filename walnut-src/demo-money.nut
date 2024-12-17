@@ -89,8 +89,8 @@ main = ^Array<String> => String :: {
     myDollar = Money[Currency.Dollar, 70];
     myTotal = myEuro + myDollar;
     myDiff = myEuro - myDollar;
-    myImportedMoney = [currency: 'EUR', amount: 3.14]->asJsonValue->hydrateAs(type{Money});
-    myInvalidCurrency = 'XYZ'->asJsonValue->hydrateAs(type{Currency});
+    myImportedMoney = [currency: 'EUR', amount: 3.14]->hydrateAs(type{Money});
+    myInvalidCurrency = 'XYZ'->hydrateAs(type{Currency});
     [
         euro: myEuro,
         euroDoubled: myEuroDoubled -> asJsonValue,

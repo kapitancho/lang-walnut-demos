@@ -18,7 +18,7 @@ ProductFetcher = ^[~ProductId] => Result<ProductRawData|Null, DatabaseError>;
 ProductRawData ==> Product @ HydrationError :: [
     id: $ => item('id'),
     data: [name: $ => item('name'), price: $ => item('price')]
-]->asJsonValue->hydrateAs(type{Product});
+]->hydrateAs(type{Product});
 
 ==> ProductById :: ^[~ProductId] => *Result<Product, UnknownProduct> %% [~ProductFetcher] :: {
     rawData = {%productFetcher[#productId]} *> ('Database Error');

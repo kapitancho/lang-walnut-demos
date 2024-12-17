@@ -15,7 +15,7 @@ myFn = ^Array<String> => Any :: {
     [
         c('hello'),
         T[]->d('hello'),
-        [x: 15]->asJsonValue->hydrateAs(type{K})
+        [x: 15]->hydrateAs(type{K})
     ]
 };
 

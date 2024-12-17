@@ -67,7 +67,7 @@ getAll = ^Null => Result<Array<Product>, ExternalError> %% [~DatabaseConnector] 
             ?whenTypeOf(data) is {
                 type{DatabaseQueryResult}: {
                     products = data->map(
-                        ^DatabaseQueryResultRow => Result<Product, HydrationError> :: #->asJsonValue->hydrateAs(type{Product})
+                        ^DatabaseQueryResultRow => Result<Product, HydrationError> :: #->hydrateAs(type{Product})
                     );
                     ?whenTypeOf(products) is {
                         type{Array<Product>}: products,
@@ -121,7 +121,7 @@ getOne = ^ProductId => Result<Product, ProductNotFound|ExternalError> %% [~Datab
             ?whenTypeOf(data) is {
                 type{DatabaseQueryResult}: {
                     products = data->map(
-                        ^DatabaseQueryResultRow => Result<Product, HydrationError> :: #->asJsonValue->hydrateAs(type{Product})
+                        ^DatabaseQueryResultRow => Result<Product, HydrationError> :: #->hydrateAs(type{Product})
                     );
                     ?whenTypeOf(products) is {
                         type{Array<Product, 1..>}: products.0,

@@ -20,7 +20,7 @@ getAll = ^Null => *Array<Product> %% [~DatabaseConnector] :: {
     {%databaseConnector
         -> query[query: query, boundParameters: []]}
         *> ('Failed to get products from the database')
-        -> map(^DatabaseQueryResultRow => Result<Product, HydrationError> :: #->asJsonValue->hydrateAs(type{Product}))
+        -> map(^DatabaseQueryResultRow => Result<Product, HydrationError> :: #->hydrateAs(type{Product}))
         *> ('Failed to hydrate products')
 };
 
@@ -32,7 +32,7 @@ getOne = ^ProductId => *Result<Product, ProductNotFound> %% [~DatabaseConnector]
     products = {%databaseConnector
           -> query[query: query, boundParameters: [id: #]]
         } *> ('Failed to get product from the database')
-          ->map(^DatabaseQueryResultRow => Result<Product, HydrationError> :: #->asJsonValue->hydrateAs(type{Product}))
+          ->map(^DatabaseQueryResultRow => Result<Product, HydrationError> :: #->hydrateAs(type{Product}))
           *> ('Failed to hydrate products');
     ?whenTypeOf(products) is {
         type{Array<Product, 1..>}: products.0,

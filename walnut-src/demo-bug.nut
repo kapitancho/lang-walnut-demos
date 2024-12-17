@@ -39,20 +39,20 @@ JsonValue ==> Point3d @ InvalidPoint3d :: ?whenTypeOf($) is {
 };
 
 main = ^Array<String> => String :: {
-    myImportedMoney = [currency: 'EUR', amount: 3.14]->asJsonValue->hydrateAs(type{Money});
-    myInvalidMoney = [currency: 'XXX', amount: 3.14]->asJsonValue->hydrateAs(type{Money});
-    myInvalidCurrency = 'XYZ'->asJsonValue->hydrateAs(type{Currency});
-    myWestCurrency = 'EUR'->asJsonValue->hydrateAs(type{WestCurrency});
-    myNonWestCurrency = 'JPY'->asJsonValue->hydrateAs(type{WestCurrency});
-    myInvalidWestCurrency = 'XYZ'->asJsonValue->hydrateAs(type{WestCurrency});
-    myPoint = [x: 3.14, y: 2.71]->asJsonValue->hydrateAs(type{Point});
-    myZeroPoint = [x: 0, y: 0]->asJsonValue->hydrateAs(type{Point});
-    myInvalidPoint = [x: 3.14, z: 2.71]->asJsonValue->hydrateAs(type{Point});
-    myPoint3d = [x: 3.14, y: 2.71, z: 1.41]->asJsonValue->hydrateAs(type{Point3d});
-    myZeroPoint3d = [x: 0, y: 0, z: 0]->asJsonValue->hydrateAs(type{Point3d});
-    myInvalidPoint3d = [x: 3.14, y: 2.71]->asJsonValue->hydrateAs(type{Point3d});
-    myAtom = null->asJsonValue->hydrateAs(type{MyAtom});
-    myInvalidAtom = 'hello'->asJsonValue->hydrateAs(type{MyAtom});
+    myImportedMoney = [currency: 'EUR', amount: 3.14]->hydrateAs(type{Money});
+    myInvalidMoney = [currency: 'XXX', amount: 3.14]->hydrateAs(type{Money});
+    myInvalidCurrency = 'XYZ'->hydrateAs(type{Currency});
+    myWestCurrency = 'EUR'->hydrateAs(type{WestCurrency});
+    myNonWestCurrency = 'JPY'->hydrateAs(type{WestCurrency});
+    myInvalidWestCurrency = 'XYZ'->hydrateAs(type{WestCurrency});
+    myPoint = [x: 3.14, y: 2.71]->hydrateAs(type{Point});
+    myZeroPoint = [x: 0, y: 0]->hydrateAs(type{Point});
+    myInvalidPoint = [x: 3.14, z: 2.71]->hydrateAs(type{Point});
+    myPoint3d = [x: 3.14, y: 2.71, z: 1.41]->hydrateAs(type{Point3d});
+    myZeroPoint3d = [x: 0, y: 0, z: 0]->hydrateAs(type{Point3d});
+    myInvalidPoint3d = [x: 3.14, y: 2.71]->hydrateAs(type{Point3d});
+    myAtom = null->hydrateAs(type{MyAtom});
+    myInvalidAtom = 'hello'->hydrateAs(type{MyAtom});
     [
         importedMoney: myImportedMoney,
         invalidCurrency: myInvalidCurrency,

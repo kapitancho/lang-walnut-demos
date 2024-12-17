@@ -14,9 +14,9 @@ Rec1 = [a: Integer, b: Any, c: String];
 Rec2 = [a: Integer, b: OptionalKey, c: OptionalKey<String>];
 Rec3 = [a: Integer, ... String|Boolean];
 
-hydrate1 = ^Map<JsonValue> => Result<Rec1, HydrationError> :: #->asJsonValue->hydrateAs(type{Rec1});
-hydrate2 = ^Map<JsonValue> => Result<Rec2, HydrationError> :: #->asJsonValue->hydrateAs(type{Rec2});
-hydrate3 = ^Map<JsonValue> => Result<Rec3, HydrationError> :: #->asJsonValue->hydrateAs(type{Rec3});
+hydrate1 = ^Map<JsonValue> => Result<Rec1, HydrationError> :: #->hydrateAs(type{Rec1});
+hydrate2 = ^Map<JsonValue> => Result<Rec2, HydrationError> :: #->hydrateAs(type{Rec2});
+hydrate3 = ^Map<JsonValue> => Result<Rec3, HydrationError> :: #->hydrateAs(type{Rec3});
 
 recordAsMap1 = ^[a: Integer, b: String] => Map<Integer|String, 2..2> :: #;
 recordAsMap2 = ^[a: Integer, b: String, ... Boolean] => Map<Integer|String|Boolean, 2..> :: #;

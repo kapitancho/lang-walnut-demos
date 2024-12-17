@@ -14,10 +14,10 @@ StateTest->run(^Any => Any) :: [
        previously persisted in a DB/file/elsewhere? */
 
     /* Option 1: a value is created by preparing the 'constructor' arguments */
-    [b: 1, c: 2]->asJsonValue->hydrateAs(type{T}),
+    [b: 1, c: 2]->hydrateAs(type{T}),
 
     /* Option 2: a value is created by preparing the type internal value */
-    [a: 5]->asJsonValue->hydrateAs(type{T})
+    [a: 5]->hydrateAs(type{T})
 ];
 
 main = ^Any => String :: StateTest[]->run->printed;

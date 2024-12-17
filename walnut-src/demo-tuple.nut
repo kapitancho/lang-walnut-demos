@@ -15,8 +15,8 @@ testOpenTuple6 = ^[Integer, String, ... Real] => Result<Real, Any> :: #.0 + #=>i
 Tup1 = [Integer, Any, String];
 Tup2 = [Integer, ... String|Boolean];
 
-hydrate1 = ^Array<JsonValue> => Result<Tup1, HydrationError> :: #->asJsonValue->hydrateAs(type{Tup1});
-hydrate2 = ^Array<JsonValue> => Result<Tup2, HydrationError> :: #->asJsonValue->hydrateAs(type{Tup2});
+hydrate1 = ^Array<JsonValue> => Result<Tup1, HydrationError> :: #->hydrateAs(type{Tup1});
+hydrate2 = ^Array<JsonValue> => Result<Tup2, HydrationError> :: #->hydrateAs(type{Tup2});
 
 tupleAsArray1 = ^[Integer, String] => Array<Integer|String, 2..2> :: #;
 tupleAsArray2 = ^[Integer, String, ... Boolean] => Array<Integer|String|Boolean, 2..> :: #;
