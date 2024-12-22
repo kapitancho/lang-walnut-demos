@@ -7,6 +7,8 @@ myFn = ^Array<String> => Any :: {
     a = mutable{Integer, 25};
     b = Mutable[type{Array<Integer>}, [1, 3, 5]];
     c = mutable{Array<Integer>, [1, 3, a->value]};
+    d = mutable{Mutable<Integer>, a};
+    e = mutable{Integer, 40};
     [
         valueBeforeSet: a->value,
         SET: a->SET(10),
@@ -19,6 +21,11 @@ myFn = ^Array<String> => Any :: {
         SHIFT: shift(c),
         valueAfterShift: c->value,
         emptyShift: { c->SET([]); shift(c) },
+        nestedSet: d->value->SET(30),
+        valueAfterSet: a->value,
+        nestedMutableSet: d->SET(e),
+        nestedSetNext: d->value->SET(50),
+        nextAfterSet: e->value,
         end: 'end'
     ]
 };

@@ -1,17 +1,17 @@
-module demo-integer:
+module demo-boolean:
 
 MyBoolean <: Boolean;
 
-/* string specific Integer->... */
-unaryNot            = ^Boolean            => Boolean        :: !#;
-binaryAnd           = ^[Boolean, Boolean] => Boolean        :: #.0 && #.1;
-binaryOr            = ^[Boolean, Boolean] => Boolean        :: #.0 || #.1;
-binaryXor           = ^[Boolean, Boolean] => Boolean        :: #.0 ^^ #.1;
+/* specific Boolean->... */
+unaryNot            = ^Boolean            => Boolean                 :: !#;
+binaryAnd           = ^[Boolean, Boolean] => Boolean                 :: #.0 && #.1;
+binaryOr            = ^[Boolean, Boolean] => Boolean                 :: #.0 || #.1;
+binaryXor           = ^[Boolean, Boolean] => Boolean                 :: #.0 ^^ #.1;
 
 /* common Any->... */
-binaryEqual         = ^[Boolean, Boolean] => Boolean        :: #.0 == #.1;
-binaryNotEqual      = ^[Boolean, Boolean] => Boolean        :: #.0 != #.1;
-asString            = ^Boolean            => String<4..5>   :: #->asString;
+binaryEqual         = ^[Boolean, Boolean] => Boolean                 :: #.0 == #.1;
+binaryNotEqual      = ^[Boolean, Boolean] => Boolean                 :: #.0 != #.1;
+asString            = ^Boolean            => String['true', 'false'] :: #->asString;
 asInteger           = ^Boolean            => Integer<0..1>  :: #->asInteger;
 asReal              = ^Boolean            => Real[0.0, 1.0] :: #->asReal;
 valueType           = ^Boolean            => Type<Boolean>  :: #->type;
