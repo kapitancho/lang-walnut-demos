@@ -6,6 +6,8 @@ use Walnut\Lang\Blueprint\Value\Value;
 use Walnut\Lang\Implementation\Compilation\Compiler;
 use Walnut\Lang\Implementation\Compilation\MultiFolderBasedModuleLookupContext;
 use Walnut\Lang\Implementation\Compilation\Parser\ParserException;
+use Walnut\Lang\Implementation\Compilation\TemplatePrecompiler;
+use Walnut\Lang\Implementation\Compilation\TemplatePrecompilerModuleLookupDecorator;
 use Walnut\Lang\Implementation\Compilation\WalexLexerAdapter;
 use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPoint;
 use Walnut\Lib\Walex\SpecialRuleTag;
@@ -20,16 +22,28 @@ $input = $argv ?? [
 array_shift($input);
 $source = array_shift($input);
 $sources = [];
+$htmlSources = [];
 
 $sourceRoot = __DIR__ . '/../walnut-src';
 
 foreach(glob("$sourceRoot/*.nut") as $sourceFile) {
 	$sources[] = str_replace('.nut', '', basename($sourceFile));
 }
+foreach(glob("$sourceRoot/*.nut.html") as $sourceFile) {
+	$sp = str_replace('.nut.html', '', basename($sourceFile));
+	$sources[] = $sp;
+	$htmlSources[] = $sp;
+}
+
+$tcx = new TemplatePrecompiler();
 
 $compiler = new Compiler(
-	new MultiFolderBasedModuleLookupContext(
-		__DIR__ . '/../vendor/walnut/lang/core-nut-lib',
+	new TemplatePrecompilerModuleLookupDecorator(
+		$tcx,
+		new MultiFolderBasedModuleLookupContext(
+			__DIR__ . '/../vendor/walnut/lang/core-nut-lib',
+			__DIR__ . '/../walnut-src'
+		),
 		__DIR__ . '/../walnut-src'
 	)
 );
@@ -63,7 +77,11 @@ $qs = [
 $generate = ($input[0] ?? null) === '-g' && array_shift($input);
 $cached = ($input[0] ?? null) === '-c' && array_shift($input);
 
-$sourceCode = file_get_contents("$sourceRoot/$source.nut");
+$isHtml = in_array($source, $htmlSources, true);
+$originalSourceCode = $isHtml ?
+	file_get_contents("$sourceRoot/$source.nut.html") :
+	file_get_contents("$sourceRoot/$source.nut");
+$sourceCode = $isHtml ? $tcx->precompileSourceCode($source, $originalSourceCode) : $originalSourceCode;
 
 $lexer = new WalexLexerAdapter();
 $tokens = $lexer->tokensFromSource($sourceCode);

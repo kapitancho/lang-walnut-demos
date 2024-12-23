@@ -69,6 +69,41 @@
 		</header>
 		<main>
 			<div id="source">
+<?php if ($isHtml ?? false) { ?>
+<?php
+	$originalSourceCode ??= '';
+	$originalSourceCode = htmlspecialchars($originalSourceCode);
+	$originalSourceCode = preg_replace(
+		'/&lt;!-- (.*?) %% (.*?) --&gt;/s',
+		'&lt;!~~ <strong title="module_identifier">$1</strong> %% <strong title="string_value">$2</strong> ~~&gt;',
+		$originalSourceCode
+	);
+	$originalSourceCode = preg_replace(
+		'/&lt;!--\[(.*?)]--&gt;/s',
+		'&lt;!~~[<strong title="integer_number">$1</strong>]~~&gt;',
+		$originalSourceCode
+	);
+	$originalSourceCode = preg_replace(
+		'/&lt;!--\{(.*?)}--&gt;/s',
+		'&lt;!~~{<strong title="special_var">$1</strong>}~~&gt;',
+		$originalSourceCode
+	);
+	$originalSourceCode = preg_replace(
+		'/&lt;!--% (.*?) %--&gt;/s',
+		'&lt;!~~% <strong title="type_proxy_keyword">$1</strong> %~~&gt;',
+		$originalSourceCode
+	);
+	$originalSourceCode = preg_replace(
+		'/&lt;!--(.*?)--&gt;/s',
+		'&lt;!--<strong title="type_keyword">$1</strong>--&gt;',
+		$originalSourceCode
+	);
+	echo str_replace('~~', '--', $originalSourceCode);
+?>
+<br/>
+<u>Source after compilation:</u>
+
+<?php } ?>
 <?= $sourceCode ?>
 <?php if ($debug) { ?><hr/><?= $debug ?><?php } ?>
 			</div>
