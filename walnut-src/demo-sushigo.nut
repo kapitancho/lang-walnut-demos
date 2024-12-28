@@ -56,7 +56,7 @@ SushiGoFullDeck(Null) :: {
 };
 
 SushiGoShuffledDeck = $[cards: Mutable<SushiGoCardArray>];
-SushiGoShuffledDeck(SushiGoCardArray) :: [cards: Mutable[type{SushiGoCardArray}, #]];
+SushiGoShuffledDeck(SushiGoCardArray) :: [cards: mutable{SushiGoCardArray, #}];
 
 SushiGoFullDeck->shuffle(^Null => SushiGoShuffledDeck) :: {
     SushiGoShuffledDeck($cards->shuffle)
@@ -177,9 +177,11 @@ CompletedGameRounds->totalScoreByPlayer(^Null => Result<Map<Integer>, MapItemNot
     scoresByRound = cardsByRound->map(^PlayersCards => Map<Integer<0..>> :: #->scoreByPlayer);
     puddingCountsByRound = cardsByRound->map(^PlayersCards => Map<Integer<0..>> :: #->puddingsCountByPlayer);
     puddingCountsByPlayer = playerList->players=>flipMap(^PlayerName => Result<Integer<0..>, MapItemNotFound> ::
-        {puddingCountsByRound->item(0)=>item(#) +
-        puddingCountsByRound->item(1)=>item(#)} +
-        puddingCountsByRound->item(2)=>item(#)
+        {
+        {puddingCountsByRound->item(0)=>item(#)} +
+        {puddingCountsByRound->item(1)=>item(#)}
+        } +
+        {puddingCountsByRound->item(2)=>item(#)}
     );
     minPuddings = puddingCountsByPlayer->values->min;
     maxPuddings = puddingCountsByPlayer->values->max;
@@ -189,9 +191,9 @@ CompletedGameRounds->totalScoreByPlayer(^Null => Result<Map<Integer>, MapItemNot
     pointsForMaxPuddings = {-6 / playersWithMaxPuddings->length}->asInteger;
 
     playerList->players->flipMap(^PlayerName => Result<Integer, MapItemNotFound> ::
-        {{scoresByRound->item(0)=>item(#) +
-        scoresByRound->item(1)=>item(#)} +
-        scoresByRound->item(2)=>item(#)} +
+        {{{scoresByRound->item(0)=>item(#)} +
+        {scoresByRound->item(1)=>item(#)}} +
+        {scoresByRound->item(2)=>item(#)}} +
         {?whenIsTrue { playersWithMinPuddings->contains(#) : pointsForMinPuddings, ~: 0 } +
         ?whenIsTrue { playersWithMaxPuddings->contains(#) : pointsForMaxPuddings, ~: 0 }}
     )

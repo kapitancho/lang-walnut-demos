@@ -74,10 +74,10 @@ DependencyContainer ==> AllLibraryBooks %% Library :: ^Null => Array<Book> :: {
 
 /*getContainerConfig = ^Null => ContainerConfiguration :: {
     [
-        [Library, [books: Mutable[Map<Book>, [:]]]]
+        [Library, [books: mutable{Map<Book>, [:]}]]
     ]
 };*/
-DependencyContainer ==> Library :: Library[books: Mutable[type{Map<Book>}, [:]]];
+DependencyContainer ==> Library :: Library[books: mutable{Map<Book>, [:]}];
 
 RenameBook = ^BookTitle => Book;
 

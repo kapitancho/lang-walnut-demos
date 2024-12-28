@@ -5,12 +5,13 @@ shift = ^Mutable<Array<Integer>> => Result<Integer, ItemNotFound> :: #->SHIFT;
 
 myFn = ^Array<String> => Any :: {
     a = mutable{Integer, 25};
-    b = Mutable[type{Array<Integer>}, [1, 3, 5]];
+    b = mutable{Array<Integer>, [1, 3, 5]};
     c = mutable{Array<Integer>, [1, 3, a->value]};
     d = mutable{Mutable<Integer>, a};
     e = mutable{Integer, 40};
     s = mutable{String, 'Hello'};
     t = mutable{Array<Integer>, [1, 3, 5]};
+    w = [1, 0, -42]=>asMutableOfType(type{Array<Integer>});
     [
         valueBeforeSet: a->value,
         SET: a->SET(10),
@@ -35,6 +36,8 @@ myFn = ^Array<String> => Any :: {
         arrayAfterPush: t->PUSH(7)->value,
         arrayAfterUnshift: t->UNSHIFT(9)->value,
         arrayMutable: t,
+        unknownMutable: w,
+        unknownMutableValue: w->value,
         end: 'end'
     ]
 };

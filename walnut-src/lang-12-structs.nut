@@ -33,17 +33,17 @@ Person->getMarried(^NonEmptyString => Null) :: ?whenValueOf($gender) is {
 main = ^Any => String :: {
     person1 = Person[
         firstName: 'Samantha',
-        lastName: Mutable[type{NonEmptyString}, 'Rico'],
+        lastName: mutable{NonEmptyString, 'Rico'},
         city: 'NYC',
         gender: Gender.Female,
-        age: Mutable[type{Age}, 23]
+        age: mutable{Age, 23}
     ];
     person2 = Person[
         firstName: 'Bob',
-        lastName: Mutable[type{NonEmptyString}, 'Johnson'],
+        lastName: mutable{NonEmptyString, 'Johnson'},
         city: 'LA',
         gender: Gender.Male,
-        age: Mutable[type{Age}, 42]
+        age: mutable{Age, 42}
     ];
 
     person1->DUMPNL;

@@ -11,7 +11,7 @@ TaskUnmarkedAsDone->todoTask(^Null => TodoTask) :: $todoTask;
 TodoTask[title: String<1..>, dueDate: Date, description: String] %% [~Clock, ~Random] :: [
     id: %.random->uuid,
     title: #.title,
-    isDone: Mutable[type{Boolean}, false],
+    isDone: mutable{Boolean, false},
     dueDate: #.dueDate,
     createdAt: %.clock->now,
     description: #.description

@@ -6,7 +6,7 @@ State->value(^Null => Integer) :: {
     $value->value
 };
 
-==> State :: State[Mutable[type{Integer}, 0]];
+==> State :: State[mutable{Integer, 0}];
 
 WebHandler = :[];
 WebHandler->doHandle(^HttpRequest => HttpResponse) %% [r: CreateHttpResponse, s: State] :: {

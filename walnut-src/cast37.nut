@@ -28,7 +28,7 @@ MemberForData = ^[~MemberData] => Member;
 MemberDataById = ^[~MemberId] => Result<MemberData, UnknownMember|ExternalError>;
 MemberDataByUsername = ^[~Username] => Result<MemberData, UnknownMember|ExternalError>;
 
-==> MemberForData :: ^[~MemberData] => Member :: Member[Mutable[type{MemberData}, #.memberData]];
+==> MemberForData :: ^[~MemberData] => Member :: Member[mutable{MemberData, #memberData}];
 ==> MemberDataById :: ^[~MemberId] => MemberData :: [
     memberId: #.memberId,
     emailAddress: 'a@b.com',

@@ -114,7 +114,7 @@ InMemoryKeyValueStorage ==> KeyValueStorage :: [
 
 myFn = ^Array<String> => Any :: {
     p = Point[4, 7];
-    storage = {InMemoryKeyValueStorage[Mutable[type{Map}, [:]]]}->as(type{KeyValueStorage});
+    storage = {InMemoryKeyValueStorage[mutable{Map, [:]}]}->as(type{KeyValueStorage});
     step1 = storage.getByKey[key: 'x'];
     step2 = storage.storeByKey[key: 'x', value: [k: 1]];
     step3 = storage.getByKey[key: 'x'];

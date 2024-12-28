@@ -24,7 +24,7 @@ DependencyContainer ==> ProductIdGenerator %% IdGenerator :: ^Null => ProductId 
 };
 
 ProductStorage = $[products: Mutable<Map<Product>>];
-ProductStorage(Map<Product>) :: [products: Mutable[type{Map<Product>}, #]];
+ProductStorage(Map<Product>) :: [products: mutable{Map<Product>, #}];
 ProductStorage->products(^Null => Map<Product>) :: $products->value;
 ProductStorage->store(^Product => Product) :: {
     products = $products->value;

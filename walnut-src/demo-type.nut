@@ -20,7 +20,7 @@ reflectFunction = ^Type<^Nothing => Any> => [Type, Type] :: [#->parameterType, #
 /* the following types:
    Function, Tuple, Record, Union, Intersection,
    Subtype, State, Atom, Enumeration,
-   EnumerationSubset, IntegerSubset, RealSubset, StringSubset,
+   EnumerationSubset, IntegerSubset, MutableType, RealSubset, StringSubset,
    are only available within Type<T> */
 reflectFunction2 = ^Type<Function> => [Type, Type] :: [#->parameterType, #->returnType];
 reflectTuple = ^Type<Tuple> => [Array<Type>, Type] :: [#->itemTypes, #->restType];
@@ -31,6 +31,7 @@ reflectAtom = ^Type<Atom> => String :: #->typeName;
 reflectEnumeration = ^Type<Enumeration> => [String, Array] :: [#->typeName, #->values];
 reflectEnumerationSubset = ^Type<EnumerationSubset> => [Any, Array] :: [#->enumerationType, #->values];
 reflectIntegerSubset = ^Type<IntegerSubset> => Array<Integer> :: #->values;
+reflectMutableType = ^Type<MutableType> => Type :: #->valueType;
 reflectRealSubset = ^Type<RealSubset> => Array<Real> :: #->values;
 reflectStringSubset = ^Type<StringSubset> => Array<String> :: #->values;
 reflectAlias = ^Type<Alias> => [String, Type] :: [#->typeName, #->aliasedType];
@@ -110,6 +111,7 @@ myFn = ^Array<String> => Any :: {
         reflectAlias(type{LengthType}),
         reflectSubtype(type{ProductId}),
         reflectSealed(type{ProductState}),
+        reflectMutableType(type{Mutable<String>}),
 
         reflectNamed(type{ProductId}),
 

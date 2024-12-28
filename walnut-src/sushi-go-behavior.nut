@@ -50,7 +50,7 @@ SushiGoFullDeck->shuffle(^Null => SushiGoShuffledDeck) :: {
     SushiGoShuffledDeck($cards->shuffle)
 };
 
-SushiGoShuffledDeck(SushiGoCardArray) :: [cards: Mutable[type{SushiGoCardArray}, #]];
+SushiGoShuffledDeck(SushiGoCardArray) :: [cards: mutable{SushiGoCardArray, #}];
 
 GamePlayerList(Array<Player, 2..5>) :: [players: #];
 GamePlayerList->cardsPerPlayer(^Null => Integer<7..10>) :: 12 - $players->length;
@@ -329,11 +329,11 @@ ActiveGame[~GameId, ~TableNumber, players: GamePlayerList] %% [~SushiGoFullDeck]
 
     /* End TEMP */
 
-    state = Mutable[type{ActiveGameState}, [
+    state = mutable{ActiveGameState, [
         activeRound: activeRound,
         completedRounds: completedRounds,
         gameTurn: gameTurn
-    ]];
+    ]};
     [
         gameId: #.gameId,
         tableNumber: #.tableNumber,
@@ -473,7 +473,7 @@ ActiveGame->playMove(^[~PlayerId, ~PlayerMove] => Result<ActiveGame|CompletedGam
 CompletedGame->gameId(^Null => GameId) :: $gameId;
 CompletedGame->tableNumber(^Null => TableNumber) :: $tableNumber;
 
-TablePlayerList(Map<Player, ..5>) :: [players: Mutable[type{Map<Player, ..5>}, #]];
+TablePlayerList(Map<Player, ..5>) :: [players: mutable{Map<Player, ..5>, #}];
 TablePlayerList->players(^Null => Map<Player, ..5>) :: $players->value;
 TablePlayerList->playerIds(^Null => Array<PlayerId, ..5>) :: $players->value->map(^Player => PlayerId :: #.playerId)->values;
 TablePlayerList->playerNames(^Null => Array<PlayerId, ..5>) :: $players->value->map(^Player => PlayerName :: #.name)->values;
@@ -527,7 +527,7 @@ PlayroomTable[~TableNumber, ~PlayersCountRange] :: {
         tableNumber: #.tableNumber,
         playersCountRange: #.playersCountRange,
         players: TablePlayerList(players),
-        activeGame: Mutable[type{NoActiveGame|ActiveGame}, game]
+        activeGame: mutable{NoActiveGame|ActiveGame, game}
     ]
 };
 PlayroomTable->number(^Null => TableNumber) :: $tableNumber;
@@ -594,22 +594,21 @@ PlayroomTables(Null) :: {
                     table98 = PlayroomTable[tableNumber: 98, playersCountRange: range4];
                     table99 = PlayroomTable[tableNumber: 99, playersCountRange: range];
                     [
-                        tables: Mutable[type{Map<PlayroomTable>},
-                            {{{{{{[:]
-                            ->withKeyValue[key: '14', value: table14]}
-                            ->withKeyValue[key: '20', value: table20]}
-                            ->withKeyValue[key: '21', value: table21]}
-                            ->withKeyValue[key: '22', value: table22]}
-                            ->withKeyValue[key: '23', value: table23]}
-                            ->withKeyValue[key: '98', value: table98]}
-                            ->withKeyValue[key: '99', value: table99]
-                        ]
+                        tables: mutable{Map<PlayroomTable>, [
+                            '14': table14,
+                            '20': table20,
+                            '21': table21,
+                            '22': table22,
+                            '23': table23,
+                            '98': table98,
+                            '99': table99
+                        ]}
                     ]
                 },
-                ~: [tables: Mutable[type{Map<PlayroomTable>}, [:]]]
+                ~: [tables: mutable{Map<PlayroomTable>, [:]}]
             }
         },
-         ~: [tables: Mutable[type{Map<PlayroomTable>}, [:]]]
+         ~: [tables: mutable{Map<PlayroomTable>, [:]}]
     }
 };
 PlayroomTables->all(^Null => Array<PlayroomTable>) :: $tables->value->values;
@@ -652,7 +651,7 @@ PlayroomGames(Null) %% [~SushiGoFullDeck] :: {
         ->withKeyValue[key: 'G-3', value: CompletedGame[gameId: 'G-3', tableNumber: 3, players: p, completedGameRounds: CompletedGameRounds[
             playerList: p, cardsByRound: [PlayersCards(c), PlayersCards(c), PlayersCards(c)], remainingDeck: deck
         ]]];
-    [games: Mutable[type{Map<PlayroomGame>}, games]]
+    [games: mutable{Map<PlayroomGame>, games}]
 };
 
 PlayroomGames->all(^Null => Array<PlayroomGame>) :: $games->value->values;

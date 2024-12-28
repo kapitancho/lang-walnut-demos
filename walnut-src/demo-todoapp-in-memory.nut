@@ -1,7 +1,7 @@
 module demo-todoapp-in-memory %% demo-todoapp-model:
 
 InMemoryTodoBoard = $[tasks: Mutable<Map<TodoTask>>];
-InMemoryTodoBoard(Null) %% TodoBoardDataSource :: [tasks: Mutable[type{Map<TodoTask>}, %]];
+InMemoryTodoBoard(Null) %% TodoBoardDataSource :: [tasks: mutable{Map<TodoTask>, %}];
 InMemoryTodoBoard->addTask(^TodoTask => Result<TaskAdded, TaskAlreadyExists>) :: ?whenIsTrue {
     $tasks->value->keyExists(#->id): Error(TaskAlreadyExists[#->id]),
     ~: {

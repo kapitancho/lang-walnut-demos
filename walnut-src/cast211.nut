@@ -30,7 +30,7 @@ getBuzzer = ^[number: PositiveInteger, word: String] => BuzzerConverter :: {
 
 fizzBuzzV2 = ^PositiveInteger => String :: {
     buzzers = [getBuzzer[3, 'fizz'], getBuzzer[5, 'buzz'], getBuzzer[7, 'zap']];
-    v = Mutable[type{BuzzerState}, [input: #, output: #]];
+    v = mutable{BuzzerState, [input: #, output: #]};
     buzzers->map(^BuzzerConverter => Any :: v->SET(#(v->value)));
     v->value.output->asString
 };
