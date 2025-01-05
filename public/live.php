@@ -2,8 +2,8 @@
 
 use Walnut\Lang\Implementation\Compilation\Compiler;
 use Walnut\Lang\Implementation\Compilation\MultiFolderBasedModuleLookupContext;
-use Walnut\Lang\Implementation\Compilation\Parser\ParserException;
-use Walnut\Lang\Implementation\Compilation\WalexLexerAdapter;
+use Walnut\Lang\Blueprint\AST\Parser\ParserException;
+use Walnut\Lang\Implementation\AST\Parser\WalexLexerAdapter;
 use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPoint;
 use Walnut\Lib\Walex\SpecialRuleTag;
 

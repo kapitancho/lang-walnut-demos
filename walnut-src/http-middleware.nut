@@ -6,8 +6,8 @@ CompositeHandler ==> HttpRequestHandler :: {
     ^[request: HttpRequest] => Result<HttpResponse, Any> :: {
         ?whenTypeOf($middlewares) is {
             type{Array<HttpMiddleware, 1..>}: {
-                m = $middlewares=>withoutFirst;
-                m.element[#.request, {CompositeHandler[$defaultHandler, m.array]}=>as(type{HttpRequestHandler})]
+                m = $middlewares => withoutFirst;
+                {m.element} [#.request, {CompositeHandler[$defaultHandler, m.array]}=>as(type{HttpRequestHandler})]
             },
             ~: $defaultHandler[#.request]
         }

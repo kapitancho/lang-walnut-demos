@@ -1,15 +1,20 @@
 <?php
 
+use Walnut\Lang\Blueprint\AST\Compiler\AstCompilationException;
+use Walnut\Lang\Blueprint\AST\Compiler\AstModuleCompilationException;
+use Walnut\Lang\Blueprint\AST\Compiler\AstProgramCompilationException;
+use Walnut\Lang\Blueprint\AST\Parser\ParserException;
 use Walnut\Lang\Blueprint\Code\Analyser\AnalyserException;
+use Walnut\Lang\Blueprint\Compilation\ModuleDependencyException;
 use Walnut\Lang\Blueprint\Type\Type;
 use Walnut\Lang\Blueprint\Value\Value;
+use Walnut\Lang\Implementation\AST\Parser\WalexLexerAdapter;
 use Walnut\Lang\Implementation\Compilation\Compiler;
 use Walnut\Lang\Implementation\Compilation\MultiFolderBasedModuleLookupContext;
-use Walnut\Lang\Implementation\Compilation\Parser\ParserException;
 use Walnut\Lang\Implementation\Compilation\TemplatePrecompiler;
 use Walnut\Lang\Implementation\Compilation\TemplatePrecompilerModuleLookupDecorator;
-use Walnut\Lang\Implementation\Compilation\WalexLexerAdapter;
 use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPoint;
+use Walnut\Lib\Walex\SourcePosition;
 use Walnut\Lib\Walex\SpecialRuleTag;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -36,12 +41,11 @@ foreach(glob("$sourceRoot/*.nut.html") as $sourceFile) {
 }
 
 $tcx = new TemplatePrecompiler();
-
 $compiler = new Compiler(
 	new TemplatePrecompilerModuleLookupDecorator(
 		$tcx,
 		new MultiFolderBasedModuleLookupContext(
-			__DIR__ . '/../vendor/walnut/lang/core-nut-lib',
+			__DIR__ . '/../core-nut-lib',
 			__DIR__ . '/../walnut-src'
 		),
 		__DIR__ . '/../walnut-src'
@@ -55,6 +59,8 @@ if ($_GET['check'] ?? null === 'all') {
 			echo "Compiling source: $source ...\n";
 			$compilationResult = $compiler->compile($source);
 			echo "OK: $source\n";
+		} catch (AstProgramCompilationException|ModuleDependencyException $e) {
+			echo nl2br(htmlspecialchars("Compilation error in $source: {$e->getMessage()}\n"));
 		} catch (AnalyserException $e) {
 			echo nl2br(htmlspecialchars("Analyse error in $source: {$e->getMessage()}\n"));
 		} catch (ParserException $e) {
@@ -92,31 +98,29 @@ $isRun = $_GET['run'] ?? null;
 //$logger = new TransitionLogger();
 //$moduleImporter = new Walnut\Lang\Implementation\Compilation\ModuleImporter($sourceRoot, $pb, $logger);
 //$parser = new Walnut\Lang\Implementation\Compilation\Parser($pb, $logger, $moduleImporter);
-try {
-	ob_start();
-	$logger = $compiler->transitionLogger;
-	$m = $compiler->compile($source);
-	$pr = $m->programRegistry;
-	//$m = $parser->programFromTokens($tokens);
-	//$m = 'TODO';
-	$debug = ob_get_clean();
 
-	foreach(array_slice(array_reverse($tokens), 1) as $token) {
-		$sourceCode = substr_replace($sourceCode, '<strong title="' . $token->rule->tag . '">' .
-			htmlspecialchars($token->patternMatch->text) . '</strong>', $token->sourcePosition->offset, strlen($token->patternMatch->text));
-	}
-	if (!$isRun) { include __DIR__ . '/code.tpl.php'; }
+ob_start();
+$logger = $compiler->transitionLogger;
+$m = $compiler->safeCompile($source);
+$pr = $m->ast;
+//$m = $parser->programFromTokens($tokens);
+//$m = 'TODO';
+$debug = ob_get_clean();
 
-} catch (AnalyserException|ParserException $e) {
-	$debug = ob_get_clean();
-	echo nl2br(htmlspecialchars("Error: {$e->getMessage()}\n"));
+if ($m->ast instanceof ParserException) {
+	echo nl2br(htmlspecialchars("Error: {$m->ast->getMessage()}\n"));
 
-	$m = $e instanceof ParserException ? array_slice($tokens, 0, $e->state->i) : $tokens;
-	foreach(array_reverse($m) as $token) {
-		$sourceCode = substr_replace($sourceCode, '<strong title="' .
-			($token->rule->tag instanceof SpecialRuleTag ? $token->rule->tag->name : $token->rule->tag) .
+	foreach(array_reverse(array_slice($tokens, 0, $m->ast->state->i)) as $idx => $token) {
+		$sourceCode = substr_replace($sourceCode,
+			'<strong title="' .
+				($token->rule->tag instanceof SpecialRuleTag ? $token->rule->tag->name : $token->rule->tag) .
 			'">' .
-			htmlspecialchars($token->patternMatch->text) . '</strong>', $token->sourcePosition->offset, strlen($token->patternMatch->text));
+				htmlspecialchars($token->patternMatch->text) .
+			'</strong>' .
+			($idx === 0 ? '<span class="ERROR">&#x2190;</span>' : ''),
+			$token->sourcePosition->offset,
+			strlen($token->patternMatch->text)
+		);
 	}
 	if (!$isRun) {
 		ob_start();
@@ -125,10 +129,38 @@ try {
 		$debug = ob_get_clean();
 		include __DIR__ . '/code.tpl.php';
 
-		echo '<pre>', $e->getTraceAsString();
+		//echo '<pre>', $m->ast->getTraceAsString();
 		die;
 	}
+} elseif ($m->ast instanceof ModuleDependencyException) {
+	echo nl2br(htmlspecialchars("Error: {$m->ast->getMessage()}\n"));
+} elseif ($m->program instanceof AstProgramCompilationException) {
+	echo nl2br(htmlspecialchars("Error: {$m->program->getMessage()}\n"));
+	$errorPositions = array_merge(...
+		array_map(static fn(AstModuleCompilationException $mcx): array =>
+			$mcx->moduleName === $source ?
+				array_map(static fn(AstCompilationException $cx): SourcePosition =>
+					$cx->node->sourceLocation->startPosition, $mcx->compilationExceptions
+				) : [],
+			$m->program->moduleExceptions
+		)
+	);
+} elseif ($m->program instanceof AnalyserException) {
+	echo nl2br(htmlspecialchars("Error: {$m->program->getMessage()}\n"));
 }
+$errorPositions ??= [];
+
+foreach(array_slice(array_reverse($tokens), 1) as $token) {
+	$sourceCode = substr_replace($sourceCode,
+		'<strong title="' . $token->rule->tag . '">' .
+			htmlspecialchars($token->patternMatch->text) .
+		'</strong>' .
+		(in_array($token->sourcePosition, $errorPositions) ? '<span class="ERROR">&#x2190;</span>' : ''),
+		$token->sourcePosition->offset,
+		strlen($token->patternMatch->text)
+	);
+}
+if (!$isRun) { include __DIR__ . '/code.tpl.php'; }
 
 //echo '<pre>', $debug;
 if ($isRun) {
@@ -136,51 +168,13 @@ if ($isRun) {
 		$ep = new CliEntryPoint($compiler);
 		$content = $ep->call($source, ... $_GET['parameters'] ?? []);
 		$content = htmlspecialchars($content);
-		/*$compilationResult = $compiler->compile($source);
-		$program = $compilationResult->program;
-		$tr = $compilationResult->programRegistry->typeRegistry();
-		$vr = $compilationResult->programRegistry->valueRegistry();
-		$ep = $program->getEntryPoint(
-			new VariableNameIdentifier('main'),
-			$tr->array($tr->string()),
-			$tr->string()
-		);
-		$content = $ep->call($vr->tuple(
-			array_map(fn(string $arg) => $vr->string($arg), $_GET['parameters'] ?? [])
-		))->literalValue();
-		$pb = $compilationResult->programRegistry;*/
-		/*$pf = new ProgramFactory();
-		$lexer = new WalexLexerAdapter();
-		$lookupContext = new FolderBasedModuleLookupContext(__DIR__ . '/../walnut-src');
-		$transitionLogger = new TransitionLogger();
-		$parser = new Parser($transitionLogger);
-		$codeBuilder = $pf->codeBuilder();
-		$moduleImporter = new ModuleImporter(
-			$lexer,
-			$lookupContext,
-			$parser,
-			$codeBuilder
-		);
-		$moduleImporter->importModule($source);
-		$program = $pf->builder()->analyseAndBuildProgram();*/
-
-		/*
-		$cliAdapter = new CliAdapter(
-			$pb,
-            new NativeCodeContext(
-			    $pbf->typeRegistry,
-			    $pbf->valueRegistry
-            )
-		);
-		$content = $cliAdapter->execute(... $_GET['parameters'] ?? []);
-		*/
 	} catch (Exception $e) {
 		if (0) foreach($e->getTrace() as $t) {
 			echo implode('<br>', array_map(fn($arg) =>
 				$arg instanceof Type || $arg instanceof Value ? (string)$arg : (is_object($arg) ? $arg::class : json_encode($arg)), $t['args']));
 			echo '<hr/>';
 		}
-		$content = '<pre>' . htmlspecialchars($e::class . ' | ' . PHP_EOL . $e . ' | ' . PHP_EOL . $e->getMessage()) . '</pre>';
+		$content = '<pre>' . htmlspecialchars($e::class . ' | ' . PHP_EOL . ' | ' . PHP_EOL . $e->getMessage()) . '</pre>';
 		//echo $e->getTraceAsString();
 	}
 	$program = $sourceCode;

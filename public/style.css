@@ -128,6 +128,13 @@ header a {
 #source {
 	white-space: pre;
 }
+.ERROR {
+	opacity: 0.5;
+	color: red;
+	position: absolute;
+	font-size: 2em;
+	margin: 0 3px;
+}
 strong { background: #EEE; }
 strong[title="module_identifier"] { background: yellow; }
 strong[title="code_comment"] { color: #777; }

@@ -36,8 +36,8 @@
 					</div>
 				</details>
                 <?php if (isset($pr)) { ?>
-                    <details>
-                        <summary>AST</summary>
+                    <details open>
+                        <summary><?= $pr instanceof Throwable ? 'Error AST' : 'Program AST' ?></summary>
                         <div id="value">
                             <div id="source">
     <?= htmlspecialchars(json_encode($pr, JSON_PRETTY_PRINT)) ?>
