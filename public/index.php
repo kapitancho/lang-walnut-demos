@@ -1,18 +1,20 @@
 <?php
 
-use Walnut\Lang\Blueprint\AST\Compiler\AstCompilationException;
-use Walnut\Lang\Blueprint\AST\Compiler\AstModuleCompilationException;
-use Walnut\Lang\Blueprint\AST\Compiler\AstProgramCompilationException;
 use Walnut\Lang\Blueprint\AST\Parser\ParserException;
 use Walnut\Lang\Blueprint\Code\Analyser\AnalyserException;
-use Walnut\Lang\Blueprint\Compilation\ModuleDependencyException;
+use Walnut\Lang\Blueprint\Code\Execution\ExecutionException;
+use Walnut\Lang\Blueprint\Compilation\AST\AstCompilationException;
+use Walnut\Lang\Blueprint\Compilation\AST\AstModuleCompilationException;
+use Walnut\Lang\Blueprint\Compilation\AST\AstProgramCompilationException;
+use Walnut\Lang\Blueprint\Compilation\Module\ModuleDependencyException;
+use Walnut\Lang\Blueprint\Program\InvalidEntryPoint;
 use Walnut\Lang\Blueprint\Type\Type;
 use Walnut\Lang\Blueprint\Value\Value;
 use Walnut\Lang\Implementation\AST\Parser\WalexLexerAdapter;
 use Walnut\Lang\Implementation\Compilation\Compiler;
-use Walnut\Lang\Implementation\Compilation\MultiFolderBasedModuleLookupContext;
-use Walnut\Lang\Implementation\Compilation\TemplatePrecompiler;
-use Walnut\Lang\Implementation\Compilation\TemplatePrecompilerModuleLookupDecorator;
+use Walnut\Lang\Implementation\Compilation\Module\MultiFolderBasedModuleLookupContext;
+use Walnut\Lang\Implementation\Compilation\Module\TemplatePrecompiler;
+use Walnut\Lang\Implementation\Compilation\Module\TemplatePrecompilerModuleLookupDecorator;
 use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPoint;
 use Walnut\Lib\Walex\SourcePosition;
 use Walnut\Lib\Walex\SpecialRuleTag;
@@ -41,25 +43,34 @@ foreach(glob("$sourceRoot/*.nut.html") as $sourceFile) {
 }
 
 $tcx = new TemplatePrecompiler();
-$compiler = new Compiler(
-	new TemplatePrecompilerModuleLookupDecorator(
-		$tcx,
-		new MultiFolderBasedModuleLookupContext(
-			__DIR__ . '/../core-nut-lib',
-			__DIR__ . '/../walnut-src'
-		),
+$moduleLookupContext = new TemplatePrecompilerModuleLookupDecorator(
+	$tcx,
+	new MultiFolderBasedModuleLookupContext(
+		__DIR__ . '/../core-nut-lib',
 		__DIR__ . '/../walnut-src'
-	)
+	),
+	__DIR__ . '/../walnut-src'
 );
+
+$compiler = new Compiler($moduleLookupContext);
 
 if ($_GET['check'] ?? null === 'all') {
 	echo '<pre>';
 	foreach($sources as $source) {
+		$compiler = new Compiler($moduleLookupContext);
 		try {
 			echo "Compiling source: $source ...\n";
 			$compilationResult = $compiler->compile($source);
-			echo "OK: $source\n";
-		} catch (AstProgramCompilationException|ModuleDependencyException $e) {
+
+			try {
+				$ep = new CliEntryPoint($compiler);
+				$content = $ep->call($source, ... $_GET['parameters'] ?? []);
+				echo "OK: $source\n";
+			} catch (InvalidEntryPoint $mex) {
+			} catch (ExecutionException $mex) {
+				echo nl2br(htmlspecialchars("Execution error in $source: {$mex->getMessage()}\n"));
+			}
+		} catch (AstProgramCompilationException|AstCompilationException|ModuleDependencyException $e) {
 			echo nl2br(htmlspecialchars("Compilation error in $source: {$e->getMessage()}\n"));
 		} catch (AnalyserException $e) {
 			echo nl2br(htmlspecialchars("Analyse error in $source: {$e->getMessage()}\n"));
@@ -145,6 +156,9 @@ if ($m->ast instanceof ParserException) {
 			$m->program->moduleExceptions
 		)
 	);
+} elseif ($m->program instanceof AstCompilationException) {
+	echo nl2br(htmlspecialchars("Error: {$m->program->getMessage()}\n"));
+	$errorPositions = [$m->program->node->sourceLocation->startPosition];
 } elseif ($m->program instanceof AnalyserException) {
 	echo nl2br(htmlspecialchars("Error: {$m->program->getMessage()}\n"));
 }

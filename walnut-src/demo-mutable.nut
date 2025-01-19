@@ -11,6 +11,7 @@ myFn = ^Array<String> => Any :: {
     e = mutable{Integer, 40};
     s = mutable{String, 'Hello'};
     t = mutable{Array<Integer>, [1, 3, 5]};
+    z = mutable{Set<Integer>, [2; 5]};
     w = [1, 0, -42]=>asMutableOfType(type{Array<Integer>});
     [
         valueBeforeSet: a->value,
@@ -36,6 +37,13 @@ myFn = ^Array<String> => Any :: {
         arrayAfterPush: t->PUSH(7)->value,
         arrayAfterUnshift: t->UNSHIFT(9)->value,
         arrayMutable: t,
+        setBeforeAdd: z->value,
+        setAfterAdd: z->ADD(7)->value,
+        setAfterAddDuplicate: z->ADD(7)->value,
+        successfulRemove: z->REMOVE(7),
+        unsuccessfulRemove: z->REMOVE(7),
+        setAfterRemove: z->value,
+        setAfterClear: z->CLEAR->value,
         unknownMutable: w,
         unknownMutableValue: w->value,
         end: 'end'

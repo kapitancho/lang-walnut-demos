@@ -1,6 +1,9 @@
 module core:
 
 /* constructor support */
+Global = :[];
+
+/* constructor support */
 Constructor = :[];
 
 /* number and range related atoms */
@@ -20,12 +23,14 @@ LengthRange <: [minLength: Integer<0..>, maxLength: Integer<0..>|PlusInfinity] @
 
 /* dependency container */
 DependencyContainer = :[];
-DependencyContainerError = $[targetType: Type, errorOnType: Type, errorMessage: String];
+DependencyContainerErrorType = :[CircularDependency, Ambiguous, NotFound, UnsupportedType, ErrorWhileCreatingValue];
+DependencyContainerError = $[targetType: Type, errorOnType: Type, errorMessage: String, errorType: DependencyContainerErrorType];
 DependencyContainerError->errorMessage(=> String) :: $errorMessage;
 DependencyContainerError->targetType(=> Type) :: $targetType;
+DependencyContainerError->errorType(=> DependencyContainerErrorType) :: $errorType;
 
 /* json value */
-JsonValue = Null|Boolean|Integer|Real|String|Array<`JsonValue>|Map<`JsonValue>/*|Result<Nothing, `JsonValue>*/|Mutable<`JsonValue>;
+JsonValue = Null|Boolean|Integer|Real|String|Array<`JsonValue>|Map<`JsonValue>|Set<`JsonValue>/*|Result<Nothing, `JsonValue>*/|Mutable<`JsonValue>;
 InvalidJsonString = $[value: String];
 InvalidJsonString->value(=> String) :: $value;
 InvalidJsonValue = $[value: Any];

@@ -1,5 +1,8 @@
 module demo-intersection:
 
+Suit = :[Hearts, Diamonds, Clubs, Spades];
+mySuitFn = ^Suit[Hearts, Diamonds]&Suit[Clubs, Diamonds] => Suit[Diamonds] :: #;
+
 User = [name: String<1..>, age: Integer<1..>, ...];
 Employee = [name: String<1..>, position: String<1..>, salary: Integer<0..>, ...];
 
@@ -15,7 +18,8 @@ myFn = ^Array<String> => Any :: {
     [
         getName(john),
         getData(john),
-        getTricky[a: 18, b: 3, c: 10, d: 3]
+        getTricky[a: 18, b: 3, c: 10, d: 3],
+        mySuitFn(Suit.Diamonds)
     ]
 };
 

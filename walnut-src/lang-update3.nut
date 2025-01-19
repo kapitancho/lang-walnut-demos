@@ -52,7 +52,7 @@ St3->dep3(^Null => Integer) %% [~Sub1] :: $num + %.sub1; /* TODO: 4/6 the error 
 /*==> Sub1 @ String :: Error('oops');*/
 ==> Sub1 :: Sub1(3);
 St3->dep4(^Null => Result<Integer, String>) %% [~Sub1] :: $num + ?noError(%.sub1->asReal)->asInteger;
-Sub1 ==> Real @ String :: 3.14;
+Sub1 ==> Real /*@ String*/ :: 3.14;
 
 myFn = ^Null => Result<Array<Integer|St1|St2|St3>, String> :: {
     [

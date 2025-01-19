@@ -20,7 +20,7 @@ reflectFunction = ^Type<^Nothing => Any> => [Type, Type] :: [#->parameterType, #
 /* the following types:
    Function, Tuple, Record, Union, Intersection,
    Subtype, State, Atom, Enumeration,
-   EnumerationSubset, IntegerSubset, MutableType, RealSubset, StringSubset,
+   EnumerationSubset, IntegerSubset, RealSubset, StringSubset,
    are only available within Type<T> */
 reflectFunction2 = ^Type<Function> => [Type, Type] :: [#->parameterType, #->returnType];
 reflectTuple = ^Type<Tuple> => [Array<Type>, Type] :: [#->itemTypes, #->restType];
@@ -30,8 +30,9 @@ reflectIntersection = ^Type<Intersection> => Array<Type> :: #->itemTypes;
 reflectAtom = ^Type<Atom> => String :: #->typeName;
 reflectEnumeration = ^Type<Enumeration> => [String, Array] :: [#->typeName, #->values];
 reflectEnumerationSubset = ^Type<EnumerationSubset> => [Any, Array] :: [#->enumerationType, #->values];
+reflectEnumerationValue = ^Type<EnumerationValue> => [Any, Array] :: [#->enumerationType, #->values];
 reflectIntegerSubset = ^Type<IntegerSubset> => Array<Integer> :: #->values;
-reflectMutableType = ^Type<MutableType> => Type :: #->valueType;
+reflectMutableValue = ^Type<MutableValue> => Type :: #->valueType;
 reflectRealSubset = ^Type<RealSubset> => Array<Real> :: #->values;
 reflectStringSubset = ^Type<StringSubset> => Array<String> :: #->values;
 reflectAlias = ^Type<Alias> => [String, Type] :: [#->typeName, #->aliasedType];
@@ -104,6 +105,7 @@ myFn = ^Array<String> => Any :: {
         reflectAtom(type{Null}),
         reflectEnumeration(type{Boolean}),
         reflectEnumerationSubset(type{True}),
+        reflectEnumerationValue(type{True}),
         reflectIntegerSubset(type{Integer[1, -7, 42]}),
         reflectRealSubset(type{Real[3.14, -7.29, 42]}),
         reflectStringSubset(type{String['hello', 'world']}),
@@ -111,7 +113,7 @@ myFn = ^Array<String> => Any :: {
         reflectAlias(type{LengthType}),
         reflectSubtype(type{ProductId}),
         reflectSealed(type{ProductState}),
-        reflectMutableType(type{Mutable<String>}),
+        reflectMutableValue(type{Mutable<String>}),
 
         reflectNamed(type{ProductId}),
 

@@ -31,9 +31,9 @@ q = ^[i: IntegerRange, r: RealRange, l: LengthRange, t: Type<Boolean>,
     Type<Tuple>,
     Type<Record>,
     Type<Type<Boolean>>,
-    Type<MutableType>,
-    Result<MutableType, CastNotAvailable>,
-    Result<MutableType, CastNotAvailable>,
+    Type<MutableValue>,
+    Result<MutableValue, CastNotAvailable>,
+    Result<MutableValue, CastNotAvailable>,
     Mutable<Integer>
 ] :: [
     type{Integer}->withRange(#i),

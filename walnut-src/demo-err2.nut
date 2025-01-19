@@ -1,6 +1,6 @@
 module demo-err2:
 
 /* Test for analyser exception */
-x = ^Integer => String :: #;
+xyz = ^Integer => String :: #;
 
-main = ^Any => String :: x(1);
+main = ^Any => String :: xyz(1);
