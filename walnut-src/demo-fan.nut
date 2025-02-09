@@ -26,22 +26,22 @@ FanIsNotOn = :[];
 
 Fan = $[speed: Mutable<FanSpeed>];
 Fan(Null) :: [speed: mutable{FanSpeed, FanSpeed.Stopped}];
-Fan->isOn(^Null => Boolean) :: {$speed->value} != FanSpeed.Stopped;
-Fan->turnOn(^Null => *Result<FanStarted, FanIsAlreadyOn>) %% [~EventBus] :: ?whenIsTrue {
+Fan->isOn(=> Boolean) :: {$speed->value} != FanSpeed.Stopped;
+Fan->turnOn(=> *Result<FanStarted, FanIsAlreadyOn>) %% [~EventBus] :: ?whenIsTrue {
     {$speed->value} == FanSpeed.Stopped : {
         $speed->SET(FanSpeed.Slow);
         %eventBus |> fire(FanStarted[])
     },
     ~: @FanIsAlreadyOn[]
 };
-Fan->turnOff(^Null => *Result<FanStopped, FanIsAlreadyOff>) %% [~EventBus] :: ?whenIsTrue {
+Fan->turnOff(=> *Result<FanStopped, FanIsAlreadyOff>) %% [~EventBus] :: ?whenIsTrue {
     {$speed->value} != FanSpeed.Stopped : {
         $speed->SET(FanSpeed.Stopped);
         %eventBus |> fire(FanStopped[])
     },
     ~: @FanIsAlreadyOff[]
 };
-Fan->changeSpeed(^Null => *Result<SpeedChanged, FanIsNotOn>) %% [~EventBus] :: {
+Fan->changeSpeed(=> *Result<SpeedChanged, FanIsNotOn>) %% [~EventBus] :: {
     newSpeed = ?whenValueOf($speed->value) is {
         FanSpeed.Stopped : => @FanIsNotOn[],
         FanSpeed.Slow : FanSpeed.Medium,

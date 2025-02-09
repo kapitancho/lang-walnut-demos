@@ -11,10 +11,8 @@ MyClock = ^Null => Result<DateAndTime, ExternalError>;
 
 ==> MyClock ::
     ^Null => Result<DateAndTime, ExternalError> :: {
-        val = '2024-04-04 12:34:56'->asDateAndTime;
-        ?whenTypeOf(val) is {
-            type{DateAndTime}: val,
-            type{Error}: @ExternalError[errorType: 'generic', originalError: val, errorMessage: 'Something went wrong']
+        ?whenIsError(val = '2024-04-04 12:34:56'->asDateAndTime) {
+            @ExternalError[errorType: 'generic', originalError: val, errorMessage: 'Something went wrong']
         }
     };
 

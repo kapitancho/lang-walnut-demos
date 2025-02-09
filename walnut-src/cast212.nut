@@ -16,17 +16,16 @@ dividedByThree = ^Integer => Result<Integer, NotAnInteger> :: ?whenIsTrue {
 
 PartialMonad = ^Integer => Result<Integer, NotAnInteger>;
 BrokenMonad = ^Result<Integer, NotAnInteger> => Result<Integer, NotAnInteger>;
-monadFixer = ^PartialMonad => BrokenMonad :: {
-    monad = #;
-    ^Result<Integer, NotAnInteger> => Result<Integer, NotAnInteger> :: ?whenTypeOf(#) is {
-        type{Integer}: ?noError(monad(#)),
-        type{Result<Nothing, NotAnInteger>}: #
+monadFixer = ^monad: PartialMonad => BrokenMonad :: {
+    ^r: Result<Integer, NotAnInteger> => Result<Integer, NotAnInteger> :: ?whenTypeOf(r) is {
+        type{Integer}: ?noError(monad(r)),
+        type{Result<Nothing, NotAnInteger>}: r
     }
 };
 
-brokenComposed = ^Integer => Result<Integer, NotAnInteger> :: [
+brokenComposed = ^i: Integer => Result<Integer, NotAnInteger> :: [
     timesTwo, plusOne, dividedByThree, squared
-]->map(monadFixer)->chainInvoke(#);
+]->map(monadFixer)->chainInvoke(i);
 
 myFn = ^Array<String> => Any :: [
     composed(3), composed(4), composed(5),
@@ -36,7 +35,7 @@ myFn = ^Array<String> => Any :: [
     brokenComposed(9), brokenComposed(10)
 ];
 
-main = ^Array<String> => String :: {
-    x = myFn(#);
+main = ^args: Array<String> => String :: {
+    x = myFn(args);
     x->printed
 };

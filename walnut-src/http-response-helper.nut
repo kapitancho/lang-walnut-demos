@@ -1,56 +1,58 @@
 module http-response-helper %% http-core:
 
-notFound = ^HttpRequest|String => HttpResponse :: {
-    ?whenTypeOf(#) is {
+HttpResponseHelper = :[];
+
+HttpResponseHelper->notFound(^req: HttpRequest|String => HttpResponse) :: {
+    ?whenTypeOf(req) is {
         type{String}: [
             statusCode: 404,
             protocolVersion: HttpProtocolVersion.HTTP11,
             headers: [:]->withKeyValue[key: 'Content-Type', value: ['application/json']],
-            body: [error: #]->jsonStringify
+            body: [error: req]->jsonStringify
         ],
         type{HttpRequest}: [
             statusCode: 404,
             protocolVersion: HttpProtocolVersion.HTTP11,
             headers: [:]->withKeyValue[key: 'Content-Type', value: ['application/json']],
             body: [error: ''->concatList[
-                'No route match found for ', #.method->asString, ' ', #.requestTarget
+                'No route match found for ', req.method->asString, ' ', req.requestTarget
             ]]->jsonStringify
         ]
     }
 };
 
-badRequest = ^String => HttpResponse :: {
+HttpResponseHelper->badRequest(^err: String => HttpResponse) :: {
     [
         statusCode: 400,
         protocolVersion: HttpProtocolVersion.HTTP11,
         headers: [:]->withKeyValue[key: 'Content-Type', value: ['application/json']],
-        body: [error: #]->jsonStringify
+        body: [error: err]->jsonStringify
     ]
 };
 
-conflict = ^String => HttpResponse :: {
+HttpResponseHelper->conflict(^err: String => HttpResponse) :: {
     [
         statusCode: 409,
         protocolVersion: HttpProtocolVersion.HTTP11,
         headers: [:]->withKeyValue[key: 'Content-Type', value: ['application/json']],
-        body: [error: #]->jsonStringify
+        body: [error: err]->jsonStringify
     ]
 };
 
-forbidden = ^String => HttpResponse :: {
+HttpResponseHelper->forbidden(^err: String => HttpResponse) :: {
     [
         statusCode: 403,
         protocolVersion: HttpProtocolVersion.HTTP11,
         headers: [:]->withKeyValue[key: 'Content-Type', value: ['application/json']],
-        body: [error: #]->jsonStringify
+        body: [error: err]->jsonStringify
     ]
 };
 
-internalServerError = ^String => HttpResponse :: {
+HttpResponseHelper->internalServerError(^err: String => HttpResponse) :: {
     [
         statusCode: 500,
         protocolVersion: HttpProtocolVersion.HTTP11,
         headers: [:]->withKeyValue[key: 'Content-Type', value: ['application/json']],
-        body: [error: #]->jsonStringify
+        body: [error: err]->jsonStringify
     ]
 };

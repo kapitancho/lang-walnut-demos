@@ -48,28 +48,25 @@ Z3 = Map<String<1..10>, 5..100>;
 Z4 = Integer<10..30>;
 Z5 = Real<3.14..5.13>;
 
-qT = ^Array => Any :: {
-    v = #;
-    t = #->type;
+qT = ^v: Array => Any :: {
+    t = v->type;
     ?whenTypeOf(t) is {
-        type{Type<Tuple>}: t->itemTypes->mapIndexValue(^[index: Integer, value: Type] => Any :: v->item(#.index)),
+        type{Type<Tuple>}: t->itemTypes->mapIndexValue(^[index: Integer, value: Type] => Any :: v->item(#index)),
         ~: null
     }
 };
 
-qR = ^Map => Any :: {
-    v = #;
-    t = #->type;
+qR = ^v: Map => Any :: {
+    t = v->type;
     ?whenTypeOf(t) is {
-        type{Type<Record>}: t->itemTypes->mapKeyValue(^[key: String, value: Type] => Any :: v->item(#.key)),
+        type{Type<Record>}: t->itemTypes->mapKeyValue(^[key: String, value: Type] => Any :: v->item(#key)),
         ~: null
     }
 };
 
 Func = ^Nothing => Any;
-qF = ^Func => Any :: {
-    v = #;
-    t = #->type;
+qF = ^v: Func => Any :: {
+    t = v->type;
     ?whenTypeOf(t) is {
         type{Type<Function>}: [t->parameterType, t->returnType],
         ~: null

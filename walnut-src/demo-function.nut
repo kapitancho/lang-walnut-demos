@@ -13,9 +13,8 @@ callMe = ^[str: String, myFunc: MyFunc] => Integer :: {
 };
 
 myFunc = ^String => Integer :: #->length;
-myFuncRetFunc = ^Integer => MyFunc :: {
-    v = #;
-    ^String => Integer :: {#->length} + v
+myFuncRetFunc = ^v: Integer => MyFunc :: {
+    ^s: String => Integer :: {s->length} + v
 };
 
 reflect = ^Type<Function> => [parameterType: Type, returnType: Type] :: {

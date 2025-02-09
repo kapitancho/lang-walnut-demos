@@ -2,14 +2,8 @@ module lang-update3:
 
 CannotGetSeven = :[];
 
-getSeven = ^Array<Integer> => Result<Integer, CannotGetSeven> :: {
-    x = #->item(7);
-    ?whenTypeOf(x) is {
-        /*error{IndexOutOfRange}: Error(CannotGetSeven[]),*/
-        type{Error<IndexOutOfRange>}: Error(CannotGetSeven[]),
-        type{Integer}: x
-    }
-};
+getSeven = ^Array<Integer> => Result<Integer, CannotGetSeven> ::
+    ?whenIsError(#->item(7)) { Error(CannotGetSeven[]) };
 
 rf1 = ^Integer => Integer :: #;
 rf2 = ^Integer => Result<Integer, String> :: #;

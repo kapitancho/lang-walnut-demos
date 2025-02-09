@@ -14,28 +14,27 @@ Mz = [
     default: ^V => W
 ];
 
-ha1 = ^V => Y :: ?whenIsTrue {
-    #.b: [d: #.b, e: #.a + 1],
-    ~: Error([f: #.c])
+ha1 = ^ ~V => Y :: ?whenIsTrue {
+    v.b: [d: v.b, e: v.a + 1],
+    ~: Error([f: v.c])
 };
-ha2 = ^V => Y :: ?whenIsTrue {
-    {#.a > 0}: [d: #.b, e: #.a + 3],
-    ~: Error([f: #.c])
+ha2 = ^ ~V => Y :: ?whenIsTrue {
+    {v.a > 0}: [d: v.b, e: v.a + 3],
+    ~: Error([f: v.c])
 };
-ka1 = ^V => T :: ?whenIsTrue {
-    #.b: [a: #.a, b: #.b, c: #.c->concat('!')],
-    ~: Error([f: #.c])
+ka1 = ^ ~V => T :: ?whenIsTrue {
+    v.b: [a: v.a, b: v.b, c: v.c->concat('!')],
+    ~: Error([f: v.c])
 };
-ka2 = ^V => T :: ?whenIsTrue {
-    {#.a > 0}: [a: #.a, b: #.b, c: #.c->concat('!')],
-    ~: Error([f: #.c])
+ka2 = ^ ~V => T :: ?whenIsTrue {
+    {v.a > 0}: [a: v.a, b: v.b, c: v.c->concat('!')],
+    ~: Error([f: v.c])
 };
 
-monadFixer = ^U => R :: {
-    monad = #;
-    ^T => T :: ?whenTypeOf(#) is {
-        type{V}: ?noError(monad(#)),
-        type{Result<Nothing, X>}: #
+monadFixer = ^monad: U => R :: {
+    ^r: T => T :: ?whenTypeOf(r) is {
+        type{V}: ?noError(monad(r)),
+        type{Result<Nothing, X>}: r
     }
 };
 
@@ -49,30 +48,29 @@ ha3 = ^V => Y :: {
 
 ==> Mz :: [
     handlers: [ha3, ha1, ha2],
-    default: ^V => W :: [d: #.b, e: #.a]
+    default: ^ ~V => W :: [d: v.b, e: v.a]
 ];
 
 P = :[];
-P->m(^V => W) %% Mz :: {
+P->m(^ ~V => W) %% Mz :: {
     h = %.handlers;
     d = %.default;
     rec = ^[p: V, h: Array<^V => Y>, d: ^V => W] => W :: {
-        h = #.h;
-        ?whenTypeOf(h) is {
+        ?whenTypeOf(#h) is {
             type{Array<^V => Y, 1..>}: {
-                hh = h->withoutFirst;
+                hh = #h->withoutFirst;
                 el = hh.element;
                 arr = hh.array;
-                res = el(#.p);
+                res = el(#p);
                 ?whenTypeOf(res) is {
                     type{W}: res,
-                    ~: rec[#.p, arr, #.d]
+                    ~: rec[#p, arr, #d]
                 }
             },
-            ~: #.d(#.p)
+            ~: #d(#p)
         }
     };
-    rec[#, h, d]
+    rec[v, h, d]
 };
 
 myFn = ^Array<String> => Any :: {
@@ -88,7 +86,7 @@ myFn = ^Array<String> => Any :: {
     ]
 };
 
-main = ^Array<String> => String :: {
-    x = myFn(#);
+main = ^args: Array<String> => String :: {
+    x = myFn(args);
     x->printed
 };

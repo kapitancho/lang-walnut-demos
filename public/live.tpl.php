@@ -62,9 +62,9 @@
 module live:
 MyInt = Integer<0..100>;
 myVar = 'Hello';
-myFn = ^String => Integer :: #->length;
+myFn = ^s: String => Integer :: s->length;
 
-main = ^Array<String> => String :: {
+main = ^args: Array<String> => String :: {
     v = myFn(myVar);
     r = ?whenTypeOf(v) is {
         type{MyInt}: v->asString,

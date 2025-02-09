@@ -1,10 +1,11 @@
 <?php
 
 use Walnut\Lang\Implementation\Compilation\Compiler;
-use Walnut\Lang\Implementation\Compilation\MultiFolderBasedModuleLookupContext;
 use Walnut\Lang\Blueprint\AST\Parser\ParserException;
 use Walnut\Lang\Implementation\AST\Parser\WalexLexerAdapter;
+use Walnut\Lang\Implementation\Compilation\Module\MultiFolderBasedModuleLookupContext;
 use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPoint;
+use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPointBuilder;
 use Walnut\Lib\Walex\SpecialRuleTag;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -26,7 +27,7 @@ $compiler = new Compiler(
 );
 
 file_put_contents(__DIR__ . '/live.nut', $code);
-$ep = new CliEntryPoint($compiler);
+$ep = new CliEntryPoint(new CliEntryPointBuilder($compiler));
 try {
 	$content = $ep->call('live', ... $_GET['parameters'] ?? []);
 	$content = htmlspecialchars($content);

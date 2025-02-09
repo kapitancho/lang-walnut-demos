@@ -1,0 +1,31 @@
+<!-- TypeTable %% demo-ty-model -->
+<header>
+    <h1>Type Test</h1>
+</header>
+<main>
+    <table border="1">
+        <tr>
+            <td>
+                v \ t
+            </td>
+            <!-- $types->map(^t: Type => Any :: { -->
+                <td>
+                    <!--{t->printed->substring[start: 4, length: 1000]}-->
+                </td>
+            <!-- }); -->
+        </tr>
+        <!-- $values->map(^v: Any => Any :: { -->
+        <tr>
+            <td>
+                <!--{v->printed}-->
+            </td>
+            <!-- $types->map(^t: Type => Any :: { -->
+                <td style="background: <!--{?when(v->isOfType(t)) {'green'} ~ {'red '} }-->">
+                    &nbsp;
+                </td>
+            <!-- }); -->
+        </tr>
+        <!-- }); -->
+    </table>
+
+</main>

@@ -16,6 +16,7 @@ use Walnut\Lang\Implementation\Compilation\Module\MultiFolderBasedModuleLookupCo
 use Walnut\Lang\Implementation\Compilation\Module\TemplatePrecompiler;
 use Walnut\Lang\Implementation\Compilation\Module\TemplatePrecompilerModuleLookupDecorator;
 use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPoint;
+use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPointBuilder;
 use Walnut\Lib\Walex\SourcePosition;
 use Walnut\Lib\Walex\SpecialRuleTag;
 
@@ -52,6 +53,10 @@ $moduleLookupContext = new TemplatePrecompilerModuleLookupDecorator(
 	__DIR__ . '/../walnut-src'
 );
 
+//$db = new PDO('sqlite:' . __DIR__ . '/db.sqlite');
+//$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+//$db->exec("CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY, name TEXT, price REAL, description TEXT)");
+
 $compiler = new Compiler($moduleLookupContext);
 
 if ($_GET['check'] ?? null === 'all') {
@@ -63,7 +68,7 @@ if ($_GET['check'] ?? null === 'all') {
 			$compilationResult = $compiler->compile($source);
 
 			try {
-				$ep = new CliEntryPoint($compiler);
+				$ep = new CliEntryPoint(new CliEntryPointBuilder($compiler));
 				$content = $ep->call($source, ... $_GET['parameters'] ?? []);
 				echo "OK: $source\n";
 			} catch (InvalidEntryPoint $mex) {
@@ -179,7 +184,7 @@ if (!$isRun) { include __DIR__ . '/code.tpl.php'; }
 //echo '<pre>', $debug;
 if ($isRun) {
 	try {
-		$ep = new CliEntryPoint($compiler);
+		$ep = new CliEntryPoint(new CliEntryPointBuilder($compiler));
 		$content = $ep->call($source, ... $_GET['parameters'] ?? []);
 		$content = htmlspecialchars($content);
 	} catch (Exception $e) {

@@ -29,8 +29,7 @@ InvalidJsonValue ==> HttpResponse :: internalServerError({'Invalid handler resul
     'hi!'
 };
 
-handleRequest = ^HttpRequest => HttpResponse :: {
-    request = #;
+handleRequest = ^request: HttpRequest => HttpResponse :: {
     /*#->DUMPNL;*/
     myRoute = HttpRoute[
         method: HttpRequestMethod.POST,
