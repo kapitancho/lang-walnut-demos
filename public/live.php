@@ -21,7 +21,7 @@ $tokens = $lexer->tokensFromSource($sourceCode);
 $compiler = new CompilerFactory()->compiler(
 	__DIR__,
 	[
-		'core' => __DIR__ . '/../core-nut-lib'
+		'core' => __DIR__ . '/../vendor/walnut/lang/core-nut-lib'
 	]
 );
 
