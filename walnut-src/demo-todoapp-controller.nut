@@ -8,7 +8,7 @@ module demo-todoapp-controller %% demo-todoapp-dto:
     result = %.todoBoard.addTask(TodoTask(#.newTodoTaskData));
     ?whenTypeOf(result) is {
         type{TaskAdded}: result,
-        ~: Error(TaskNotAdded[])
+        ~: @TaskNotAdded()
     }
 };
 ==> MarkTaskAsDone %% [~TodoBoard] :: ^[~TodoTaskId] => *Result<TaskMarkedAsDone, UnknownTask> ::

@@ -1,4 +1,4 @@
-module cast206 %% db:
+module cast206 %% $db/core:
 
 /* approach 1 */
 ProductId = String;
@@ -76,15 +76,15 @@ ProductController = :[];
 ProductController->updateTitle(^UpdateProductTitleCommand => Any) %% UpdateProductTitleCommandHandler :: %(#);
 
 myFn = ^Array<String> => Any :: {
-    s = DependencyContainer[]=>valueOf(type{ProductStorage});
+    s = DependencyContainer()=>valueOf(type{ProductStorage});
     before = s->products->item('productId');
-    x = ProductController[]->updateTitle([productId: 'productId', title: 'myNewTitle']);
+    x = ProductController()->updateTitle([productId: 'productId', title: 'myNewTitle']);
     after = s->products->item('productId');
     [
         before,
         x,
         after,
-        ?noError(DependencyContainer[]->valueOf(type{ProductIdGenerator}))()
+        ?noError(DependencyContainer()->valueOf(type{ProductIdGenerator}))()
     ]
 };
 

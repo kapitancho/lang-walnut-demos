@@ -1,24 +1,27 @@
 module cast14:
+/* Figure examples with an "interface" and three implementations. */
 
-Shape = [
+Figure = [
     area: ^Null => Real
 ];
 
-Square <: [sideLength: Real];
-Square ==> Shape :: [
+Square = #[sideLength: Real];
+Square ==> Figure :: [
     area: ^Null => Real :: $sideLength * $sideLength
 ];
 
-Rectangle <: [width: Real, height: Real];
-Rectangle ==> Shape :: [
+Rectangle = #[width: Real, height: Real];
+Rectangle ==> Figure :: [
     area: ^Null => Real :: $width * $height
 ];
 Square ==> Rectangle :: Rectangle([$sideLength, $sideLength]);
 
-Circle <: [radius: Real];
-Circle ==> Shape :: [
+Circle = #[radius: Real];
+Circle ==> Figure :: [
     area: ^Null => Real :: $radius * $radius * 3.1415927
 ];
+
+calculateArea = ^figure: Shape<Figure> => [String, Real] :: [figure->type->asString, figure->shape(`Figure).area()];
 
 longestSide = ^Rectangle => Real :: {
     {[#.width, #.height]}->max
@@ -28,14 +31,17 @@ myFn = ^Array<String> => Any :: {
     sq = Square[12];
     ci = Circle[6];
     re = Rectangle[8, 18];
-    s = type{Shape};
+    s = type{Figure};
     [
-        sq->as(type{Shape}).area(),
+        sq->as(type{Figure}).area(),
         ci->as(s).area(),
         re->as(s).area(),
         longestSide(re),
         longestSide(sq->as(type{Rectangle})),
-        sq->as(re->type)
+        sq->as(re->type),
+        calculateArea(sq),
+        calculateArea(ci),
+        calculateArea(re)
     ]
 };
 

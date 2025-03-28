@@ -2,20 +2,20 @@ module cast10:
 /* this is a test module */
 PositiveInteger = Integer<1..>;
 
-callMe = ^[a: Integer, b: Real] => Real :: #.a + #.b;
+callMe = ^[a: Integer, b: Real] => Real :: #a + #b;
 
-myFn = ^Array<String> => Any :: {
-    ?whenTypeOf(#) is {
+myFn = ^args: Array<String> => Any :: {
+    ?whenTypeOf(args) is {
         type{Array<String, 2..>}: {
-            x = ?noError({#->item(0)}->as(type{Integer}));
-            y = ?noError({#->item(1)}->as(type{Real}));
+            x = args.0=>as(`Integer);
+            y = args.1=>as(`Real);
             callMe[x, y]
         },
         ~: 0
     }
 };
 
-main = ^Array<String> => String :: {
-    x = myFn(#);
+main = ^args: Array<String> => String :: {
+    x = myFn(args);
     x->printed
 };

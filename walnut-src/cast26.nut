@@ -50,15 +50,9 @@ XTree ==> Tree :: {
     ]
 };
 */
-T <: [x: Real, y: Real];
+T = #[x: Real, y: Real];
 
-T ==> Any :: {
-    [
-        d: ^Null => Real :: {
-            {{$x} * {$x}} + {{$y} * {$y}}
-        }
-    ]
-};
+T->d(=> Real) :: $x * $x + $y * $y;
 
 T ==> String :: {
     {''}->concatList['{', {$x}->asString, ',', {$y}->asString, '}']
@@ -67,7 +61,7 @@ T ==> String :: {
 A = [x: Real, y: Real];
 
 A->d(^Null => Real) :: {
-    {{$x} * {$x}} + {{$y} * {$y}}
+    $x * $x + $y * $y
 };
 
 A ==> String :: {

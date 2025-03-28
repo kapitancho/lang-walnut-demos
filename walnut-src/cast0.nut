@@ -11,11 +11,20 @@ MyAtom = :[];
 /* Enumerations */
 MyEnum = :[Value1, Value2, Value3];
 
+/* Open types */
+/*MyAtom41   = #[];*/
+MyOpen42   = #[a: Integer, b: Integer] @ MyAtom :: null;
+MyOpen43   = #[Integer, Integer] @ MyAtom :: null;
+MyScalar44 = #Integer @ MyAtom :: null;
+
+/* Sealed types */
+/*MySealed91 = $[];*/
+MySealed92 = $[a: Integer, b: Integer] @ MyAtom :: null;
+MySealed93 = $[Integer, Integer] @ MyAtom :: null;
+MySealed94 = $Integer @ MyAtom :: null;
+
 /* Sealed types */
 MySealed = $[a: Integer, b: Integer] @ MyAtom :: null;
-
-/* Subtypes */
-MySubtype <: String @ MyAtom :: null;
 
 /* Methods */
 MyAtom->myMethod(^String => Integer) %% MyAtom :: #->length;
@@ -37,7 +46,6 @@ fm = ^MutableValue => Any :: #->value;
 ft = ^Tuple => Array :: #->itemValues;
 fr = ^Record => Map :: #->itemValues;
 fs = ^Sealed => Any :: #->type->typeName;
-fu = ^Subtype => Any :: #->baseValue;
 
 ge = ^Type<Enumeration> => Any :: [values: #->values, valueWithName: #->valueWithName('Value1'),
     withValues: #->withValues[MyEnum.Value1, MyEnum.Value2], typeName: #->typeName];
@@ -46,7 +54,7 @@ gv = ^Type<EnumerationValue> => Any :: [enumeration: #->enumerationType];
 
 fn = ^Any => Any :: [
     a, b, b(2), c, main->type,
-    fa(MyAtom[]),
+    fa(MyAtom()),
     fe(getEnumValue1()),
     fe(getEnumValue2()),
     fe(MyEnum.Value3),
@@ -54,15 +62,14 @@ fn = ^Any => Any :: [
     ft[1, 5],
     fr[a: 1, b: 2],
     fs(?noError(MySealed[3.14, -2])),
-    fu(?noError(MySubtype('Hello'))),
     ge(type{MyEnum}),
     gs(type{MyEnum}),
     gs(type{MyEnum[Value1, Value2]}),
     gv(type{MyEnum}),
     gv(type{MyEnum[Value1, Value2]}),
 
-    MyAtom[], MyAtom[]->myMethod('hi!'), MyEnum.Value1,
-    MySealed[3.14, -2], MySubtype('Hello')
+    MyAtom(), MyAtom()->myMethod('hi!'), MyEnum.Value1,
+    MySealed[3.14, -2]
 ];
 
 main = ^Array<String> => String :: fn()->printed;

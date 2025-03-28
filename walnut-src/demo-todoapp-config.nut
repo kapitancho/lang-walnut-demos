@@ -1,4 +1,4 @@
-module demo-todoapp-config %% event, demo-todoapp-model, demo-todoapp-json-file, demo-todoapp-http, http-middleware:
+module demo-todoapp-config %% $event, demo-todoapp-model, demo-todoapp-json-file, demo-todoapp-http, $http/middleware:
 
 ==> LookupRouterMapping :: [
     [path: '/v1', type: type{TodoTaskHttpHandler}]

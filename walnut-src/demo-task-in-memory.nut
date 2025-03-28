@@ -8,20 +8,20 @@ InMemoryTaskList = Mutable<Map<TaskStorageData>>;
     result = %inMemoryTaskList->value->item(#);
     ?whenTypeOf(result) is {
         type{TaskStorageData}: result,
-        ~: @UnknownTask[]
+        ~: @UnknownTask()
     }
 };
 ==> TaskPersist      %% [~InMemoryTaskList] :: ^TaskStorageData => TaskStorageSuccessful :: {
     %inMemoryTaskList->SET(%inMemoryTaskList->value->withKeyValue[key: #id, value: #]);
-    TaskStorageSuccessful[]
+    TaskStorageSuccessful()
 };
 ==> TaskRemoveById   %% [~InMemoryTaskList] :: ^String<36> => Result<TaskStorageSuccessful, UnknownTask> :: {
     result = %inMemoryTaskList->value->withoutByKey(#);
     ?whenTypeOf(result) is {
         type[element: TaskStorageData, map: Map<TaskStorageData>]: {
             %inMemoryTaskList->SET(result.map);
-            TaskStorageSuccessful[]
+            TaskStorageSuccessful()
         },
-        ~: @UnknownTask[]
+        ~: @UnknownTask()
     }
 };

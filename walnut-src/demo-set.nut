@@ -7,6 +7,8 @@ a = type{Set<Integer>};
 
 getUnique = ^Array<Integer> => Set<Integer> :: #->uniqueSet;
 
+demoSetType = ^ => Set<Real, 6..6> :: [1; -1.11; 3.14; 4; -42; 4];
+
 main = ^Array<String> => String :: [
     /*a, getUnique[1, 5, 5, 7], [], [;], [:], [7; 3; 3], [7, 3, 3, 8, 10], [5], [9;],*/
     arrayUniqueSet: [1, 5, 5, 7]->uniqueSet,                    /* from array */
@@ -34,5 +36,6 @@ main = ^Array<String> => String :: [
     setIsDisjointWithNo: {[1; 2; 3]}->isDisjointWith[2; 4],
     setIsDisjointWithYes: {[1; 2; 3]}->isDisjointWith[4; 5],
     setMap: [1; 8; 9]->map(^Integer => Integer :: {5 - #}->abs),
-    setFilter: [1; 8; 9]->filter(^Integer => Boolean :: # > 6)
+    setFilter: [1; 8; 9]->filter(^Integer => Boolean :: # > 6),
+    setCall: demoSetType()
 ]->printed;

@@ -4,7 +4,7 @@ X = :[];
 X->temp(^ProductId => Result<Product, UnknownProduct>) %% ProductById :: %(#);
 
 myFn = ^Array<String> => Any :: {
-    X[]->temp(14)
+    X()->temp(14)
 };
 
 main = ^Array<String> => String :: {

@@ -10,32 +10,32 @@ JsonValue ==> Currency @ InvalidCurrency :: ?whenValueOf($) is {
     'EUR': Currency.Euro,
     'USD': Currency.Dollar,
     'JPY': Currency.Yen,
-    ~: @InvalidCurrency[]
+    ~: @InvalidCurrency()
 };
 
 /* Money is a record with two fields: currency and amount */
-Money <: [~Currency, ~Amount];
+Money = #[~Currency, ~Amount];
 Money ==> String :: {$currency->asString} + $amount->asString;
 
 MyAtom = :[];
 InvalidAtom = :[];
 JsonValue ==> MyAtom @ InvalidAtom :: ?whenTypeOf($) is {
-    type{Null}: MyAtom[],
-    ~ : @InvalidAtom[]
+    type{Null}: MyAtom(),
+    ~ : @InvalidAtom()
 };
 
 InvalidPoint = :[];
-Point <: [x: Real, y: Real] @ InvalidPoint :: ?whenValueOf([#x, #y]) is { [0, 0]: => @InvalidPoint[] };
+Point = #[x: Real, y: Real] @ InvalidPoint :: ?whenValueOf([#x, #y]) is { [0, 0]: => @InvalidPoint() };
 JsonValue ==> Point @ InvalidPoint :: ?whenTypeOf($) is {
     type[x: Real, y: Real]: Point[$.x, $.y],
-    ~ : @InvalidPoint[]
+    ~ : @InvalidPoint()
 };
 
 InvalidPoint3d = :[];
-Point3d = $[x: Real, y: Real, z: Real] @ InvalidPoint3d :: ?whenValueOf([#x, #y, #z]) is { [0, 0, 0]: => @InvalidPoint3d[] };
+Point3d = $[x: Real, y: Real, z: Real] @ InvalidPoint3d :: ?whenValueOf([#x, #y, #z]) is { [0, 0, 0]: => @InvalidPoint3d() };
 JsonValue ==> Point3d @ InvalidPoint3d :: ?whenTypeOf($) is {
     type[x: Real, y: Real, z: Real]: Point3d[$.x, $.y, $.z],
-    ~ : @InvalidPoint3d[]
+    ~ : @InvalidPoint3d()
 };
 
 main = ^Array<String> => String :: {

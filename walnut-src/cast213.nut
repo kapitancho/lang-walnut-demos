@@ -74,7 +74,7 @@ P->m(^ ~V => W) %% Mz :: {
 };
 
 myFn = ^Array<String> => Any :: {
-    p = P[];
+    p = P();
     v1 = [a: 1, b: true, c: 'hello'];
     v2 = [a: -42, b: false, c: 'world'];
     v3 = [a: 15, b: false, c: 'world'];

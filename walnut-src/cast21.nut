@@ -1,15 +1,15 @@
 module cast21:
 
-Point <: [x: Real, y: Real];
+Point = #[x: Real, y: Real];
 
-InvalidRange = $[from: Integer, to: Integer];
-IntegerRange <: [from: Integer, to: Integer] @ InvalidRange :: {
-    ?whenIsTrue { #.from > #.to : Error(InvalidRange[#.from, #.to]), ~: # }
+InvalidIntegerRange = $[from: Integer, to: Integer];
+MyIntegerRange = #[from: Integer, to: Integer] @ InvalidIntegerRange :: {
+    ?whenIsTrue { #.from > #.to : Error(InvalidIntegerRange(#)), ~: # }
 };
 
-fn = ^Any => Result<Integer, CastNotAvailable> :: #->as(type{Integer});
+fn = ^Any => Result<Integer, Any> :: #->as(`Integer);
 
-bimbo = ^IntegerRange => Result<IntegerRange, InvalidRange> :: #->with[to: 5];
+bimbo = ^MyIntegerRange => Result<MyIntegerRange, InvalidIntegerRange> :: #->with[to: 5];
 
 upToFn = ^[from: Integer<5..10>, to: Integer<12..20>] => Array<Integer<5..20>, 3..16> :: #.from->upTo(#.to);
 
@@ -20,8 +20,8 @@ myFn = ^Array<String> => Any :: {
     b = a->with[y: 9];
     p = Point[4, 7];
     q = p->with[y: 9];
-    t = IntegerRange[14, 7];
-    u = ?noError(IntegerRange[4, 7]);
+    t = MyIntegerRange[14, 7];
+    u = ?noError(MyIntegerRange[4, 7]);
     v = ?noError(u->with[to: 9]);
     w = v->with[from: 15];
     f = fn(15);
@@ -30,7 +30,7 @@ myFn = ^Array<String> => Any :: {
     d = 12->upTo(5);
     m = 5->downTo(12);
     n = 12->downTo(5);
-    x = InvalidRange[5, -12];
+    x = InvalidIntegerRange[5, -12];
     y = fn(x);
     z = bimbo(u);
     [a, b, p, q, t, u, v, w, f, g, c, d, m, n, x, y, z]

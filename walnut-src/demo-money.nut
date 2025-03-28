@@ -21,11 +21,11 @@ JsonValue ==> Currency @ InvalidCurrency :: ?whenValueOf($) is {
     'EUR': Currency.Euro,
     'USD': Currency.Dollar,
     'JPY': Currency.Yen,
-    ~: @InvalidCurrency[]
+    ~: @InvalidCurrency()
 };
 
 /* Money is a record with two fields: currency and amount */
-Money <: [~Currency, ~Amount];
+Money = #[~Currency, ~Amount];
 Money ==> String :: {$currency->asString} + $amount->asString;
 
 /*
@@ -100,6 +100,6 @@ main = ^Array<String> => String :: {
         diff: myDiff,
         importedMoney: myImportedMoney,
         invalidCurrency: myInvalidCurrency,
-        amountType: amountAnalyser(myEuro)
+        amountType: amountAnalyser(myEuro->value)
     ]->printed
 };

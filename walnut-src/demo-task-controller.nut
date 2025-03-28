@@ -8,7 +8,7 @@ module demo-task-controller %% demo-task-api:
     result = %taskBoard->addTask[Task(#newTaskData)];
     ?whenTypeOf(result) is {
         type{TaskAdded}: result,
-        ~: Error(TaskNotAdded[])
+        ~: Error(TaskNotAdded())
     }
 };
 ==> MarkTaskAsDone %% [~TaskBoard] :: ^[~TaskId] => *Result<TaskMarkedAsDone, UnknownTaskId> ::

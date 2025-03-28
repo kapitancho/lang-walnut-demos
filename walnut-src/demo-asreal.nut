@@ -1,8 +1,9 @@
 module demo-asreal:
 
-Percentage <: Real<0..100>;
+Message = #[text: String];
 Greeting = $[text: String];
 
+Message ==> Real :: $text->length;
 Greeting ==> Real :: $text->length;
 
 fromBoolean         = ^Boolean                 => Real[0, 1]                     :: #->asReal;
@@ -20,8 +21,8 @@ fromStringRange     = ^String<2..5>            => Result<Real, NotANumber>      
 fromString          = ^String                  => Result<Real, NotANumber>       :: #->asReal;
 fromMutableInteger  = ^Mutable<Integer<5..20>> => Real<5..20>                    :: #->asReal;
 fromMutableReal     = ^Mutable<Real<5..20>>    => Real<5..20>                    :: #->asReal;
-fromSubtype         = ^Percentage              => Real<0..100>                   :: #->asReal;
 
+fromOpen            = ^Message                 => Real                           :: #->asReal;
 fromSealed          = ^Greeting                => Real                           :: #->asReal;
 
 test = ^Null => Map :: [
@@ -40,7 +41,7 @@ test = ^Null => Map :: [
     fromString: fromString('world'),
     fromMutableInteger: fromMutableInteger(mutable{Integer<5..20>, 7}),
     fromMutableReal: fromMutableReal(mutable{Real<5..20>, 7.29}),
-    fromSubtype: fromSubtype(Percentage(35)),
+    fromOpen: fromOpen(Message[text: 'hello']),
     fromSealed: fromSealed(Greeting[text: 'hello']),
     end: 'end'
 ];

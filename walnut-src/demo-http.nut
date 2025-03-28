@@ -1,7 +1,7 @@
 module demo-http %% demo-http-db, generic-http, demo-http-config:
 
 handleRequest = ^HttpRequest => HttpResponse :: {
-    response = HttpServer[]->handleRequest(#);
+    response = HttpServer()->handleRequest(#);
     ?whenTypeOf(response) is {
         type{HttpResponse}: response,
         ~: [
@@ -23,6 +23,6 @@ main = ^Array<String> => String :: {
         requestTarget: '/templates/10',
         method: HttpRequestMethod.GET
     ]->as(type{HttpRequest});
-    httpResponse = HttpServer[]->handleRequest(httpRequest);
+    httpResponse = HttpServer()->handleRequest(httpRequest);
     httpRequest->printed->concatList['\n', httpResponse->printed]
 };

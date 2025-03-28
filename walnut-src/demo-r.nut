@@ -6,7 +6,7 @@ B1 = [a: String, b: ?String];
 B2 = [a: String, b: OptionalKey<String>];
 
 NotAnOddInteger = :[];
-OddInteger <: Integer @ NotAnOddInteger :: ?whenValueOf(# % 2) is { 0: Error(NotAnOddInteger[]) };
+OddInteger = #Integer @ NotAnOddInteger :: ?whenValueOf(# % 2) is { 0: Error(NotAnOddInteger()) };
 
 T = [a: Integer, b: ?Boolean, ... String];
 S = [Integer, Boolean, ... String];
@@ -23,7 +23,7 @@ test = ^Any => Any :: [
     type{B1}->isSubtypeOf(type{B2}),
     type{B2}->isSubtypeOf(type{B1}),
     x = ?noError(OddInteger(5)),
-    x + 1,
+    x->value + 1,
     t1[a: 1, b: true, c: 'x'],
     t2[a: 1, b: true, c: 'x'],
     t3[a: 1, b: true, c: 'x'],

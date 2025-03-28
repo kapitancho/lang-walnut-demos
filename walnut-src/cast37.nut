@@ -56,7 +56,7 @@ Content = :[];
 App = [~Members, ~Content];
 
 myFn = ^Array<String> => Any :: {
-    ctr = DependencyContainer[];
+    ctr = DependencyContainer();
     app = ?noError(ctr->valueOf(type{App}));
     [
         ?noError(app.members->member[memberId: 'ABC'])->memberId,

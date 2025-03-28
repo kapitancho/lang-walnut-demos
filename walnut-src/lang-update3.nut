@@ -3,14 +3,14 @@ module lang-update3:
 CannotGetSeven = :[];
 
 getSeven = ^Array<Integer> => Result<Integer, CannotGetSeven> ::
-    ?whenIsError(#->item(7)) { Error(CannotGetSeven[]) };
+    ?whenIsError(#->item(7)) { Error(CannotGetSeven()) };
 
 rf1 = ^Integer => Integer :: #;
 rf2 = ^Integer => Result<Integer, String> :: #;
 rf3 = ^[num: Integer] => Integer :: #.num;
 
-Sub1 <: Integer;
-Sub2 <: Integer @ String :: null;
+Sub1 = #Integer;
+Sub2 = #Integer @ String :: null;
 
 Integer->mt1(^[input: Integer] => Integer) :: $ + #.input;
 Integer->mt2(^Integer => Result<Integer, String>) :: $ + #;
@@ -24,7 +24,7 @@ St3[input: Integer] @ String :: [num: #.input];
 St4 = $[num: Integer];
 Constructor->St4(^[input: Integer] => Result<[num: Integer], String>) :: [num: #.input];
 St5 = $[num: Integer];
-St5[input: Integer] %% [~Sub1] :: [num: #.input + %.sub1];
+St5[input: Integer] %% [~Sub1] :: [num: #.input + %.sub1->value];
 
 St1 ==> Integer :: $num;
 St2 ==> Integer @ String :: $num;
@@ -36,19 +36,19 @@ St7 = $[~St0];
 ==> St0 :: St0[3];
 ==> St2 :: St2[3];
 
-Sub2->dep8(^Null => Integer) %% [~St7] :: $;
+Sub2->dep8(^Null => Integer) %% [~St7] :: $->value;
 
 St3->dep7(^Null => Integer) %% [~St7] :: $num;
 St3->dep5(^Null => Integer) %% [~St0] :: $num;
 /*St3->dep1(^Null => Integer) %% [~St1] :: $num;*/
 St3->dep2(^Null => Integer) %% [~St2] :: $num;
-St3->dep3(^Null => Integer) %% [~Sub1] :: $num + %.sub1; /* TODO: 4/6 the error type of ==> Sub1 should not be ignored */
+St3->dep3(^Null => Integer) %% [~Sub1] :: $num + %.sub1->value; /* TODO: 4/6 the error type of ==> Sub1 should not be ignored */
 /*==> Sub1 @ String :: Error('oops');*/
 ==> Sub1 :: Sub1(3);
 St3->dep4(^Null => Result<Integer, String>) %% [~Sub1] :: $num + ?noError(%.sub1->asReal)->asInteger;
 Sub1 ==> Real /*@ String*/ :: 3.14;
 
-myFn = ^Null => Result<Array<Integer|St1|St2|St3>, String> :: {
+myFn = ^Null => Result<Array<Integer|Sub1|Sub2|St1|St2|St3>, String> :: {
     [
         rf1(3),
         ?noError(rf2(3)),

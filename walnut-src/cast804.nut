@@ -2,7 +2,7 @@ module cast804:
 
 DatabaseError = $[errorCode: Integer, message: String];
 
-ProductId <: String<36>;
+ProductId = #String<36>;
 ProductName = String<1..50>;
 ProductPrice = Real<0..>;
 ProductData = [name: ProductName, price: ProductPrice];
@@ -29,7 +29,7 @@ ProductRawData ==> Product @ HydrationError :: [
 };
 
 ==> ProductFetcher :: ^[~ProductId] => Result<ProductRawData|Null, DatabaseError> :: ?whenValueOf(#productId) is {
-    ProductId('00000000-0000-0000-0000-000000000001'): [id: #productId->baseValue, name: 'Product 1', price: 9.99],
+    ProductId('00000000-0000-0000-0000-000000000001'): [id: #productId->value, name: 'Product 1', price: 9.99],
     ProductId('00000000-0000-0000-0000-000000000002'): null,
     ~: @DatabaseError[errorCode: 1, message: 'Failed to get products from the database']
 };
@@ -40,7 +40,7 @@ productPriceByProductId = ^[~ProductId] => *Result<ProductPrice, UnknownProduct>
 
 productTitleByProductId = ^[~ProductId] => Any %% [~ProductById] :: {
     product = {%productById |> invoke[#productId]};
-    ?whenTypeOf(product) is { type{Product}: product->data.title, ~: 'Unknown Product' }
+    ?whenTypeOf(product) is { type{Product}: product->data.name, ~: 'Unknown Product' }
 };
 
 myFn = ^Any => Any :: {

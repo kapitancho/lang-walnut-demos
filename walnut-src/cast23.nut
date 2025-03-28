@@ -1,6 +1,6 @@
-module cast23 %% db:
+module cast23 %% $db/core:
 
-Point <: [x: Real, y: Real];
+Point = #[x: Real, y: Real];
 PositiveInteger = Integer<1..>;
 Suit = :[Spades, Hearts, Diamonds, Clubs];
 pi = 3.1415927;
@@ -12,34 +12,34 @@ suit = ^String => Result<Suit, UnknownEnumerationValue> :: {
 InvalidProductId = $[productId: Integer];
 ProductId = Integer<1..>;
 
-InvalidProductName = $[productName: String];
-ProductName = String<1..>;
-Product <: [~ProductId, ~ProductName];
+InvalidProductName = $[productName: JsonValue];
+ProductName = #String<1..>;
+Product = $[~ProductId, ~ProductName];
 Point ==> String :: ''->concatList['{', {$x}->asString, ',', {$y}->asString, '}'];
 
 Product ==> Map :: {
     [productId: $productId, productName: $productName]
 };
 
-getData = ^DatabaseConnector => Result<Array<Map<String|Integer|Null>>, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
+getData = ^DatabaseConnector => Result<Array<Product>, MapItemNotFound|HydrationError|DatabaseQueryFailure|InvalidProductName> :: {
     data = ?noError(#->query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []]);
     data->map(mapToProduct)
 };
 
-mapToProduct = ^Map => Result<Product, MapItemNotFound|CastNotAvailable> :: {
+mapToProduct = ^row: DatabaseQueryResultRow => Result<Product, MapItemNotFound|HydrationError|InvalidProductName> :: {
     Product[
-        #=>item('id')=>as(type{ProductId}),
-        #=>item('name')=>as(type{ProductName})
+        row=>item('id')->asJsonValue=>hydrateAs(`ProductId),
+        row=>item('name')=>as(`ProductName)
     ]
 };
 
-getDataX = ^DatabaseConnector => Result<Array<Product>, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
+getDataX = ^DatabaseConnector => Result<Array<Product>, HydrationError|MapItemNotFound|InvalidProductName|DatabaseQueryFailure> :: {
         data = #=>query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []];
         data->map(mapToProductX)
 };
 
-mapToProductX = ^Map => Result<Product, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
-    #->as(type{Product})
+mapToProductX = ^row: DatabaseQueryResultRow => Result<Product, HydrationError|MapItemNotFound|InvalidProductName> :: {
+    row->as(`Product)
 };
 
 getDataY = ^[~DatabaseConnector, targetType: Type] => Result<Array, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
@@ -59,17 +59,16 @@ mapToProductY = ^[targetType: Type] => MapX :: {
 ProductArray = Array<Product>;
 
 getDataZ = ^[~DatabaseConnector] => Result<Array, MapItemNotFound|CastNotAvailable|InvalidProductName|DatabaseQueryFailure> :: {
-    c = getDataY[#.databaseConnector, type{Product}];
-    c->as(type{ProductArray})
+    c = getDataY[#.databaseConnector, `Product]
 };
 
-getRow = ^DatabaseConnector => Result<Map<String|Integer|Null>, IndexOutOfRange|MapItemNotFound|CastNotAvailable|DatabaseQueryFailure> :: {
+getRow = ^DatabaseConnector => Result<Product, MapItemNotFound|HydrationError|InvalidProductName|DatabaseQueryFailure|IndexOutOfRange> :: {
     data = #=>query[query: 'SELECT id, name FROM cast4 limit 3', boundParameters: []];
     row = data=>item(0);
     mapToProduct(row)
 };
 
-getRowE = ^DatabaseConnector => Result<Map<String|Integer|Null>, IndexOutOfRange|MapItemNotFound|CastNotAvailable|DatabaseQueryFailure> :: {
+getRowE = ^DatabaseConnector => Result<Product, MapItemNotFound|HydrationError|InvalidProductName|DatabaseQueryFailure|IndexOutOfRange> :: {
     data = #=>query[query: 'SELECT id, name FOM cast4 limit 3', boundParameters: []];
     row = data=>item(0);
     mapToProduct(row)
@@ -92,14 +91,14 @@ myFn = ^Array<Any> => Any :: {
         getRowE(connector)
     ]
 };
-Any ==> ProductName @ InvalidProductName|CastNotAvailable :: {
-    x = $=>as(type{String});
-    ?whenTypeOf(x) is { type{ProductName}: x, ~: Error(InvalidProductName[x]) }
+DatabaseValue ==> ProductName @ InvalidProductName :: {
+    x = $->as(`String);
+    ?whenTypeOf(x) is { `ProductName: x, ~: @InvalidProductName[$] }
 };
-Map ==> Product @ MapItemNotFound|InvalidProductName|CastNotAvailable :: {
+DatabaseQueryResultRow ==> Product @ HydrationError|MapItemNotFound|InvalidProductName :: {
     Product[
-        $=>item('id')=>as(type{ProductId}),
-        $=>item('name')=>as(type{ProductName})
+        $=>item('id')=>hydrateAs(`ProductId),
+        $=>item('name')=>as(`ProductName)
     ]
 };
 main = ^Array<String> => String :: {

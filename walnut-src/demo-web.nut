@@ -28,7 +28,7 @@ WebHandler->doHandle(^HttpRequest => HttpResponse) %% [r: CreateHttpResponse, s:
 };
 
 handleRequest = ^HttpRequest => HttpResponse :: {
-    s = WebHandler[]->doHandle(#);
+    s = WebHandler()->doHandle(#);
     ?whenTypeOf(s) is {
         type{HttpResponse}: s,
         ~: [

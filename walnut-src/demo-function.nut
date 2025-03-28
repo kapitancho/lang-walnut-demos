@@ -1,11 +1,11 @@
 module demo-function:
 
 MyFunc = ^String => Integer;
-MyFuncSubtype <: ^String => Integer;
+MyFuncSubtype = # ^String => Integer;
 
 MyFuncRetFunc = ^Integer => MyFunc;
 
-ProductId <: Integer<1..>;
+ProductId = # Integer<1..>;
 ProductId->invoke(^Real => Boolean) :: # == 3.14;
 
 callMe = ^[str: String, myFunc: MyFunc] => Integer :: {
@@ -25,9 +25,9 @@ test = ^Any => Any :: {
     myFuncSubtype = MyFuncSubtype(myFunc);
     productId = ProductId(15);
     [
-        subtypeCall: myFuncSubtype('hi!'),
+        subtypeCall: myFuncSubtype->value->invoke('hi!'),
         passFnToFn: callMe['hello', myFunc],
-        passSubtypeFnToFn: callMe['welcome', myFuncSubtype],
+        passSubtypeFnToFn: callMe['welcome', myFuncSubtype->value],
         invokableType: productId(3.14),
         fnCallFn: myFuncRetFunc(8)('hello'),
         reflectFn: reflect(myFunc->type),

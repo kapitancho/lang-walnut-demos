@@ -34,9 +34,9 @@ ChessBoardRow ==> String :: [
 ]->combineAsString('');
 
 ChessBoard = $[squares: Array<ChessBoardRow, 8..8>];
-ChessBoard(Null) :: [
+ChessBoard() :: [
     squares: 1->upTo(8)->map(^Integer => Array<ChessSquare, 8..8> ::
-        1->upTo(8)->map(^Integer => ChessSquare :: ChessSquare(EmptySquare[]))
+        1->upTo(8)->map(^Integer => ChessSquare :: ChessSquare(EmptySquare()))
     )
 ];
 ChessBoard ==> String :: [
@@ -45,7 +45,7 @@ ChessBoard ==> String :: [
     '\\--------/'
 ]->combineAsString('\n');
 
-ChessBoard->setInitialPosition(^Null => ChessBoard) :: {
+ChessBoard->setInitialPosition(=> ChessBoard) :: {
     $squares.1->map(^ChessSquare => ChessSquare :: #->SET_PIECE(ChessPiece[Color.White, Piece.Pawn]));
     $squares.6->map(^ChessSquare => ChessSquare :: #->SET_PIECE(ChessPiece[Color.Black, Piece.Pawn]));
     whiteRow = $squares.0;
@@ -70,8 +70,8 @@ ChessBoard->setInitialPosition(^Null => ChessBoard) :: {
     $
 };
 
-myFn = ^Array<String> => Any :: {
-    chessBoard = ChessBoard(null);
+myFn = ^Array<String> :: {
+    chessBoard = ChessBoard();
     [
         chessBoard: chessBoard->asString,
         initialPosition: chessBoard->setInitialPosition->asString->OUT_HTML,

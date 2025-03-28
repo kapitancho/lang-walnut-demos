@@ -4,13 +4,13 @@ NotAnOddInteger = :[];
 oddInteger = ^Integer => Result<Integer, NotAnOddInteger> :: {
     ?whenValueOf(# % 2) is {
         1: #,
-        ~: Error(NotAnOddInteger[])
+        ~: Error(NotAnOddInteger())
     }
 };
-OddInteger <: Integer @ NotAnOddInteger :: {
+OddInteger = #Integer @ NotAnOddInteger :: {
     ?whenValueOf(# % 2) is {
         1: #,
-        ~: Error(NotAnOddInteger[])
+        ~: Error(NotAnOddInteger())
     }
 };
 
@@ -18,23 +18,23 @@ max = ^[a: Integer, b: Integer] => Integer :: #.a;
 max2 = ^[Integer, Integer] => Integer :: #.0;
 
 InvalidRange = :[];
-Range <: [from: Integer, to: Integer] @ InvalidRange :: {
+Range = #[from: Integer, to: Integer] @ InvalidRange :: {
     ?whenIsTrue {
         #.from < #.to: #,
-        ~: Error(InvalidRange[])
+        ~: Error(InvalidRange())
     }
 };
-Range2 <: [Integer, Integer] @ InvalidRange :: {
+Range2 = #[Integer, Integer] @ InvalidRange :: {
     ?whenIsTrue {
         #.0 < #.1: #,
-        ~: Error(InvalidRange[])
+        ~: Error(InvalidRange())
     }
 };
 FromTo = [from: Integer, to: Integer];
-Range3 <: FromTo @ InvalidRange :: {
+Range3 = #FromTo @ InvalidRange :: {
     ?whenIsTrue {
         #.from < #.to: #,
-        ~: Error(InvalidRange[])
+        ~: Error(InvalidRange())
     }
 };
 

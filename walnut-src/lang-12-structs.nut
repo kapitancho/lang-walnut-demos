@@ -5,7 +5,7 @@ NonEmptyString = String<1..>;
 Gender = :[Male, Female];
 Age = Integer<0..>;
 
-Person <: [
+Person = #[
     firstName: NonEmptyString,
     lastName: Mutable<NonEmptyString>,
     city: NonEmptyString,

@@ -1,4 +1,4 @@
-module demo-tpl %% tpl, demo-tpl-product-list, demo-tpl-product-page:
+module demo-tpl %% $tpl, demo-tpl-product-list, demo-tpl-product-page:
 
 getProductList = ^Null => ProductList :: [products: [
     [id: 1, name: 'Apple <Granny Smith>', price: 1.99],

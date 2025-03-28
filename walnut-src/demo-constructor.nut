@@ -1,47 +1,38 @@
 module demo-constructor:
 
-B = :[];
-A <: [x: Integer, y: Integer] @ B :: {
-    z = #.y - #.x;
-    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @B[] }
-};
-
 C = $[x: Integer, y: Integer];
 E = :[];
 D = $[x: Integer, y: Integer];
 D[t: Integer, u: Integer] @ E :: {
     z = #.u - #.t;
-    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @E[] };
+    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @E() };
     [x: #.t, y: #.u]
 };
 G = :[];
 H = $[x: Integer, y: Integer] @ G :: {
     z = #.y - #.x;
-    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @G[] }
+    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @G() }
 };
 J = :[];
 K = :[];
 L = $[x: Integer, y: Integer] @ K :: {
     z = #.y - #.x;
-    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @K[] }
+    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @K() }
 };
 L[t: Integer, u: Integer] @ J :: {
-    ?whenTypeOf(#.u) is { type{Integer<1..>}: null, ~: => @J[] };
+    ?whenTypeOf(#.u) is { type{Integer<1..>}: null, ~: => @J() };
     [x: #.t, y: #.u]
 };
 
-g = ^Result<A, B> => Result<A, B> :: ?noError(#)->with[x: 4];
-gs = ^A => Result<A, B> :: ?noError(#)->with[x: 4];
-
 Q = :[];
 R = :[];
-P <: [x: Integer, y: Integer] @ Q :: {
+P = #[x: Integer, y: Integer] @ Q :: {
     z = #.y - #.x;
-    ?whenTypeOf(z) is { type{Integer<10..>}: null, ~: => @Q[] }
+    ?whenTypeOf(z) is { type{Integer<10..>}: null, ~: => @Q() }
 };
 P[t: String, u: Integer] @ R :: {
     z = #.u - #.t->length;
-    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @R[] };
+    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @R() };
     [x: #.t->length, y: #.u]
 };
 
@@ -50,13 +41,6 @@ pq = ^Null => Result<P, Q|R> :: P[t: 'hello', u: 7];
 main = ^Array<String> => String :: [
     rec: [x: 1, y: 3],
     recWith: [x: 1, y: 3]->with[x: 4],
-    good: gVal = A[1, 3],
-    hydrateGood: [x: 1, y: 3]->hydrateAs(type{A}),
-    goodWith: g(A[1, 7]),
-    badWith: g(A[1, 3]),
-    withAnalyse: ?whenTypeOf(gVal) is { type{A} : gs(gVal), ~: null},
-    bad: A[5, 2],
-    hydrateBad: [x: 5, y: 2]->hydrateAs(type{A}),
     sealedWithoutConstructor: C[6, 1],
     hydrateSealedWithoutConstructor: [x: 6, y: 1]->hydrateAs(type{C}),
     sealedWithConstructorGood: D[3, 8],

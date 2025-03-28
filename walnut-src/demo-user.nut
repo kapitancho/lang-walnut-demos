@@ -1,29 +1,29 @@
-module demo-user %% datetime, event, db-orm:
+module demo-user %% $datetime, $event, $db/orm:
 
-UserId <: String<36>;
+UserId = #String<36>;
 
 InvalidEmailAddress = $[email: String];
-EmailAddress <: String @ InvalidEmailAddress :: ?whenIsTrue {
+EmailAddress = #String @ InvalidEmailAddress :: ?whenIsTrue {
     #->matchesRegexp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'): null,
     ~: => @InvalidEmailAddress[#]
 };
 
 InvalidUsername = $[username: String];
-Username <: String @ InvalidUsername :: ?whenIsTrue {
+Username = #String @ InvalidUsername :: ?whenIsTrue {
     #->matchesRegexp('^[a-zA-Z0-9._%+-]{3,}$'): null,
     ~: => @InvalidUsername[#]
 };
 
 InvalidPassword = $[password: String];
-Password <: String @ InvalidPassword :: ?whenIsTrue {
+Password = #String @ InvalidPassword :: ?whenIsTrue {
     #->matchesRegexp('^[a-zA-Z0-9._%+-]{6,}$'): null,
     ~: => @InvalidPassword[#]
 };
 
-PasswordHash <: String;
-Password ==> PasswordHash :: PasswordHash({PasswordString[$->baseValue]}->hash);
+PasswordHash = #String;
+Password ==> PasswordHash :: PasswordHash({PasswordString[$->value]}->hash);
 
-ProfileDetails <: [picture: String, description: String];
+ProfileDetails = #[picture: String, description: String];
 
 User = $[~UserId, ~EmailAddress, ~Username, ~PasswordHash, ~ProfileDetails];
 User[~UserId, ~EmailAddress, ~Username, ~Password, ~ProfileDetails] :: [

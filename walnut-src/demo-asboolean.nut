@@ -1,9 +1,10 @@
 module demo-asboolean:
 
-IsSuccessful <: Boolean;
+Message = #[text: String];
 Greeting = $[text: String];
 
-Greeting ==> Boolean :: {$text->length} == 'hello';
+Message ==> Boolean :: {$text->length} == 5;
+Greeting ==> Boolean :: {$text->length} == 5;
 
 fromBoolean         = ^Boolean                 => Boolean                        :: #->asBoolean;
 fromTrue            = ^True                    => True                           :: #->asBoolean;
@@ -20,8 +21,8 @@ fromStringRange     = ^String<2..5>            => True                          
 fromString          = ^String                  => Boolean                        :: #->asBoolean;
 fromMutableInteger  = ^Mutable<Integer<5..20>> => True                           :: #->asBoolean;
 fromMutableReal     = ^Mutable<Real<5..20>>    => True                           :: #->asBoolean;
-fromSubtype         = ^IsSuccessful            => Boolean                        :: #->asBoolean;
 
+fromOpen            = ^Message                => Boolean                           :: #->asBoolean;
 fromSealed          = ^Greeting                => Boolean                           :: #->asBoolean;
 
 test = ^Null => Map :: [
@@ -40,7 +41,7 @@ test = ^Null => Map :: [
     fromString: fromString('world'),
     fromMutableInteger: fromMutableInteger(mutable{Integer<5..20>, 7}),
     fromMutableReal: fromMutableReal(mutable{Real<5..20>, 7.29}),
-    fromSubtype: fromSubtype(IsSuccessful(false)),
+    fromOpen: fromOpen(Message[text: 'hello']),
     fromSealed: fromSealed(Greeting[text: 'hello']),
     end: 'end'
 ];

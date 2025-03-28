@@ -1,3 +1,3 @@
 module demo-ty-model:
 
-TypeTable <: [values: Map, types: Map<Type>];
+TypeTable = #[values: Map, types: Map<Type>];

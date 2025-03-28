@@ -49,8 +49,8 @@ SqlFieldExpression = $[
     value: String|TableField|QueryValue
 ];
 SqlRawExpression = $[expression: String];
-SqlAndExpression = $[expressions: Array<`SqlExpression>];
-SqlOrExpression = $[expressions: Array<`SqlExpression>];
+SqlAndExpression = $[expressions: Array<!SqlExpression>];
+SqlOrExpression = $[expressions: Array<!SqlExpression>];
 SqlNotExpression = $[expression: `SqlExpression];
 SqlExpression = SqlRawExpression|SqlAndExpression|SqlOrExpression|SqlNotExpression|SqlFieldExpression;
 

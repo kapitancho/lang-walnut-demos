@@ -9,12 +9,12 @@ T = :[];
 
 T->d(^String => Integer) :: b(#);
 
-K <: [x: Integer];
+K = #[x: Integer];
 
 myFn = ^Array<String> => Any :: {
     [
         c('hello'),
-        T[]->d('hello'),
+        T()->d('hello'),
         [x: 15]->hydrateAs(type{K})
     ]
 };

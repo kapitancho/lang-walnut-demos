@@ -1,28 +1,28 @@
-module demo-todoapp-http %% http-core, http-route, http-response-helper, demo-todoapp-controller:
+module demo-todoapp-http %% $http/core, $http/route, $http/response-helper, demo-todoapp-controller:
 
 TodoTaskHttpRouteChain = HttpRouteChain;
 
-==> TodoTaskHttpRouteChain ::
+==> TodoTaskHttpRouteChain %% [~HttpRouteBuilder] ::
     HttpRouteChain[routes: [
-        httpPostJsonLocation[RoutePattern('/tasks'), type{AddTodoTask}, 'todoTaskData'],
-        httpDelete          [RoutePattern('/tasks/{taskId}'), type{RemoveTask}],
-        httpPost            [RoutePattern('/tasks/{taskId}/done'), type{MarkTaskAsDone}],
-        httpDelete          [RoutePattern('/tasks/{taskId}/done'), type{UnmarkTaskAsDone}],
-        httpGetAsJson       [RoutePattern('/tasks/{taskId}'), type{TodoTaskById}],
-        httpGetAsJson       [RoutePattern('/tasks'), type{ListTodoTasks}]
+        %httpRouteBuilder->httpPostJsonLocation[RoutePattern('/tasks'), type{AddTodoTask}, 'todoTaskData'],
+        %httpRouteBuilder->httpDelete          [RoutePattern('/tasks/{taskId}'), type{RemoveTask}],
+        %httpRouteBuilder->httpPost            [RoutePattern('/tasks/{taskId}/done'), type{MarkTaskAsDone}],
+        %httpRouteBuilder->httpDelete          [RoutePattern('/tasks/{taskId}/done'), type{UnmarkTaskAsDone}],
+        %httpRouteBuilder->httpGetAsJson       [RoutePattern('/tasks/{taskId}'), type{TodoTaskById}],
+        %httpRouteBuilder->httpGetAsJson       [RoutePattern('/tasks'), type{ListTodoTasks}]
     ]];
 
 TodoTaskHttpHandler = :[];
 TodoTaskHttpHandler ==> HttpRequestHandler %% [~TodoTaskHttpRouteChain] :: {
     todoTaskHttpRouteChain = %.todoTaskHttpRouteChain;
-    ^[request: HttpRequest] => Result<HttpResponse, Any> :: {
+    ^[request: HttpRequest] => Result<HttpResponse, Any> %% [~HttpResponseHelper] :: {
         request = #.request;
         response = ?whenTypeOf(todoTaskHttpRouteChain) is {
             type{HttpRouteChain}: todoTaskHttpRouteChain->handleRequest(request),
             ~: null
         };
         ?whenTypeOf(response) is {
-            type{Result<Nothing, HttpRouteDoesNotMatch>}: notFound(request),
+            type{Result<Nothing, HttpRouteDoesNotMatch>}: %httpResponseHelper->notFound(request),
             type{HttpResponse}: response,
             ~: {
                 [
@@ -36,14 +36,14 @@ TodoTaskHttpHandler ==> HttpRequestHandler %% [~TodoTaskHttpRouteChain] :: {
     }
 };
 
-InvalidJsonString ==> HttpResponse :: badRequest({'Invalid JSON body: '}->concat($->value));
-HydrationError ==> HttpResponse :: badRequest({'Invalid request parameters: '}->concat($->errorMessage));
-DependencyContainerError ==> HttpResponse :: internalServerError({'Handler error: '}->concatList[
+InvalidJsonString ==> HttpResponse %% [~HttpResponseHelper] :: %httpResponseHelper->badRequest({'Invalid JSON body: '}->concat($->value));
+HydrationError ==> HttpResponse %% [~HttpResponseHelper] :: %httpResponseHelper->badRequest({'Invalid request parameters: '}->concat($->errorMessage));
+DependencyContainerError ==> HttpResponse %% [~HttpResponseHelper] :: %httpResponseHelper->internalServerError({'Handler error: '}->concatList[
     $->errorMessage, ': ', $->targetType->asString
 ]);
-InvalidJsonValue ==> HttpResponse :: internalServerError({'Invalid handler result: '}->concat($value->type->asString));
-CastNotAvailable ==> HttpResponse :: internalServerError(''->concatList[
+InvalidJsonValue ==> HttpResponse %% [~HttpResponseHelper] :: %httpResponseHelper->internalServerError({'Invalid handler result: '}->concat($value->type->asString));
+CastNotAvailable ==> HttpResponse %% [~HttpResponseHelper] :: %httpResponseHelper->internalServerError(''->concatList[
     'Type conversion failure: from type ', $from->asString, ' to type ', $to->asString
 ]);
 
-ExternalError ==> HttpResponse :: internalServerError({'External error: '}->concat($errorMessage));
+ExternalError ==> HttpResponse %% [~HttpResponseHelper] :: %httpResponseHelper->internalServerError({'External error: '}->concat($errorMessage));

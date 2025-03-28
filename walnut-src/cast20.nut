@@ -1,6 +1,6 @@
 module cast20:
 
-Point <: [x: Real, y: Real];
+Point = #[x: Real, y: Real];
 
 KeyNotFound = $[key: String];
 ValueAdded = :[];
@@ -14,14 +14,14 @@ KeyValueStorage = [
     removeByKey: ^[key: String] => Result<ValueRemoved, KeyNotFound>
 ];
 
-InMemoryKeyValueStorage <: [storage: Mutable<Map>];
+InMemoryKeyValueStorage = #[storage: Mutable<Map>];
 
 InvalidProductId = $[value: Any];
 ProductId = Integer<1..>;
 
 InvalidProductName = $[value: Any];
 ProductName = String<1..>;
-Product <: [~ProductId, ~ProductName];
+Product = #[~ProductId, ~ProductName];
 
 ProductNotFound = $[~ProductId];
 ProductAdded = :[];
@@ -35,7 +35,7 @@ ProductRepository = [
     all: ^Null => Array<Product>
 ];
 
-KeyValueStorageProductRepository <: [~KeyValueStorage];
+KeyValueStorageProductRepository = #[~KeyValueStorage];
 
 Product ==> Map :: {
     [productId: $productId, productName: $productName]
@@ -55,10 +55,10 @@ Any ==> ProductName @ InvalidProductName :: {
     }
 };
 
-Map ==> Product @ MapItemNotFound :: {
+Map ==> Product @ MapItemNotFound|InvalidProductId|InvalidProductName :: {
     Product[
-        ?noError($->item('productId'))->as(type{ProductId}),
-        ?noError($->item('productName'))->as(type{ProductName})
+        ?noError($->item('productId'))=>as(type{ProductId}),
+        ?noError($->item('productName'))=>as(type{ProductName})
     ]
 };
 
@@ -79,9 +79,9 @@ KeyValueStorageProductRepository ==> ProductRepository :: [
         key = #.product.productId->asString;
         exists = $keyValueStorage.hasWithKey[key];
         $keyValueStorage.storeByKey[key, #.product->as(type{Map})];
-        ?whenIsTrue { exists: ProductReplaced[], ~: ProductAdded[] }
+        ?whenIsTrue { exists: ProductReplaced(), ~: ProductAdded() }
     },
-    remove: ^[~ProductId] => Result<ProductRemoved, ProductNotFound> :: ProductRemoved[],
+    remove: ^[~ProductId] => Result<ProductRemoved, ProductNotFound> :: ProductRemoved(),
     all: ^Null => Array<Product> :: []
 ];
 
@@ -101,13 +101,13 @@ InMemoryKeyValueStorage ==> KeyValueStorage :: [
     storeByKey: ^[key: String, value: Map] => ValueAdded|ValueReplaced :: {
         keyExists = {$storage->value}->keyExists(#.key);
         $storage->SET({$storage->value}->withKeyValue[key: #.key, value: #.value]);
-        ?whenIsTrue { keyExists: ValueReplaced[], ~: ValueAdded[] }
+        ?whenIsTrue { keyExists: ValueReplaced(), ~: ValueAdded() }
     },
     removeByKey: ^[key: String] => Result<ValueRemoved, KeyNotFound> :: {
         m = $storage->value->valuesWithoutKey(#.key);
         ?whenTypeOf(m) is {
             type{Result<Nothing, MapItemNotFound>}: => Error(KeyNotFound[#.key]),
-            type{Map}: { $storage->SET(m); ValueRemoved[] }
+            type{Map}: { $storage->SET(m); ValueRemoved() }
         }
     }
 ]->as(type{KeyValueStorage});

@@ -7,7 +7,7 @@ EmployeePosition = :[Developer, QA, Manager];
 Apple = [
     color: ^Integer => String
 ];
-Pineapple <: [
+Pineapple = #[
     size: Integer
 ];
 Pineapple ==> Apple :: [

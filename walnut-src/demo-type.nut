@@ -3,7 +3,8 @@ module demo-type:
 negate = ^Integer => Real :: -#;
 LengthType = ^String => Integer;
 
-ProductId <: Integer<1..>;
+ProductId = #Integer<1..>;
+ProductEvent = #[title: String, price: Real];
 ProductState = $[title: String, price: Real, quantity: Integer];
 
 reflectType = ^Type<Type> => Type :: #->refType;
@@ -36,7 +37,7 @@ reflectMutableValue = ^Type<MutableValue> => Type :: #->valueType;
 reflectRealSubset = ^Type<RealSubset> => Array<Real> :: #->values;
 reflectStringSubset = ^Type<StringSubset> => Array<String> :: #->values;
 reflectAlias = ^Type<Alias> => [String, Type] :: [#->typeName, #->aliasedType];
-reflectSubtype = ^Type<Subtype> => [String, Type] :: [#->typeName, #->baseType];
+reflectOpen = ^Type<Open> => [String, Type] :: [#->typeName, #->valueType];
 reflectSealed = ^Type<Sealed> => [String, Type] :: [#->typeName, #->valueType];
 reflectNamed = ^Type<Named> => String :: #->typeName;
 
@@ -108,7 +109,7 @@ myFn = ^Array<String> => Any :: {
         reflectStringSubset(type{String['hello', 'world']}),
 
         reflectAlias(type{LengthType}),
-        reflectSubtype(type{ProductId}),
+        reflectOpen(type{ProductEvent}),
         reflectSealed(type{ProductState}),
         reflectMutableValue(type{Mutable<String>}),
 
@@ -124,7 +125,8 @@ myFn = ^Array<String> => Any :: {
         type[Integer, String, ... Boolean]->restType,
         type[a: Integer, b: String, ... Boolean]->itemTypes,
         type[a: Integer, b: String, ... Boolean]->restType,
-        type{ProductId}->baseType,
+        type{ProductId}->valueType,
+        type{ProductEvent}->valueType,
         type{ProductState}->valueType,
 
         qT[1, 2],

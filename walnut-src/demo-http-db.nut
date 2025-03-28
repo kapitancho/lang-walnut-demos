@@ -1,9 +1,15 @@
 module demo-http-db %% demo-http-domain, db:
 
 DatabaseQueryResultRow ==> SurveyTemplate @ MapItemNotFound|CastNotAvailable|HydrationError :: [
-    surveyTemplateId: ?noError($->item('id')->as(type{JsonValue})->hydrateAs(type{SurveyTemplateId})),
+    surveyTemplateId:
+        ?noError(
+            $=>item('id')->as(type{JsonValue})->hydrateAs(type{SurveyTemplateId})
+        ),
     surveyDetails: ?noError(
-        {$->withKeyValue[key: 'repeatableSurvey', value: ?noError($->item('repeatableSurvey')) == 1]}
+        {$->withKeyValue[
+            key: 'repeatableSurvey',
+            value: ?noError($->item('repeatableSurvey')) == 1
+        ]}
         ->as(type{JsonValue})->hydrateAs(type{SurveyDetails}))
 ];
 

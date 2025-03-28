@@ -1,4 +1,4 @@
-module lang-14-web %% http-core, http-middleware, generic-http:
+module lang-14-web %% $http/core, $http/middleware, $http/generic:
 /* A Walnut-Lang implementation of https://github.com/gabrieldim/Go-Crash-Course/blob/main/14_web/main.go */
 
 IndexHandler = :[];
@@ -31,7 +31,7 @@ AboutHandler ==> HttpRequestHandler %% [~CreateHttpResponse] :: ^[request: HttpR
 
 
 handleRequest = ^HttpRequest => HttpResponse :: {
-    response = HttpServer[]->handleRequest(#);
+    response = HttpServer()->handleRequest(#);
     ?whenTypeOf(response) is {
         type{HttpResponse}: response,
         ~: [

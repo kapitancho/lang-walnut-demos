@@ -11,12 +11,10 @@ use Walnut\Lang\Blueprint\Program\InvalidEntryPoint;
 use Walnut\Lang\Blueprint\Type\Type;
 use Walnut\Lang\Blueprint\Value\Value;
 use Walnut\Lang\Implementation\AST\Parser\WalexLexerAdapter;
-use Walnut\Lang\Implementation\Compilation\Compiler;
-use Walnut\Lang\Implementation\Compilation\Module\MultiFolderBasedModuleLookupContext;
+use Walnut\Lang\Implementation\Compilation\CompilerFactory;
 use Walnut\Lang\Implementation\Compilation\Module\TemplatePrecompiler;
-use Walnut\Lang\Implementation\Compilation\Module\TemplatePrecompilerModuleLookupDecorator;
-use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPoint;
-use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPointBuilder;
+use Walnut\Lang\Implementation\Program\EntryPoint\Cli\CliEntryPoint;
+use Walnut\Lang\Implementation\Program\EntryPoint\Cli\CliEntryPointBuilder;
 use Walnut\Lib\Walex\SourcePosition;
 use Walnut\Lib\Walex\SpecialRuleTag;
 
@@ -43,33 +41,26 @@ foreach(glob("$sourceRoot/*.nut.html") as $sourceFile) {
 	$htmlSources[] = $sp;
 }
 
-$tcx = new TemplatePrecompiler();
-$moduleLookupContext = new TemplatePrecompilerModuleLookupDecorator(
-	$tcx,
-	new MultiFolderBasedModuleLookupContext(
-		__DIR__ . '/../core-nut-lib',
-		__DIR__ . '/../walnut-src'
-	),
-	__DIR__ . '/../walnut-src'
+$compiler = new CompilerFactory()->compiler(
+	$sourceRoot,
+	[
+		'core' => __DIR__ . '/../vendor/walnut/lang/core-nut-lib'
+	]
 );
-
-//$db = new PDO('sqlite:' . __DIR__ . '/db.sqlite');
-//$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//$db->exec("CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY, name TEXT, price REAL, description TEXT)");
-
-$compiler = new Compiler($moduleLookupContext);
+$tcx = new TemplatePrecompiler();
 
 if ($_GET['check'] ?? null === 'all') {
 	echo '<pre>';
-	foreach($sources as $source) {
-		$compiler = new Compiler($moduleLookupContext);
+	$SKIP = 0;
+	$epb = new CliEntryPointBuilder($compiler);
+	$t = 0;
+	foreach($sources as $source) { if (++$t < $SKIP) continue;
 		try {
 			echo "Compiling source: $source ...\n";
-			$compilationResult = $compiler->compile($source);
+			$compiler->compile($source);
 
 			try {
-				$ep = new CliEntryPoint(new CliEntryPointBuilder($compiler));
-				$content = $ep->call($source, ... $_GET['parameters'] ?? []);
+				$content = $epb->build($source)->call(... $_GET['parameters'] ?? []);
 				echo "OK: $source\n";
 			} catch (InvalidEntryPoint $mex) {
 			} catch (ExecutionException $mex) {

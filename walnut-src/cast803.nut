@@ -1,16 +1,16 @@
 module cast803:
 
 MyError = :[];
-v = ^Integer => Result<Integer, MyError> :: ?whenTypeOf(#) is { type{Integer<1..>}: # - 1, ~: @MyError[] };
+v = ^Integer => Result<Integer, MyError> :: ?whenTypeOf(#) is { type{Integer<1..>}: # - 1, ~: @MyError() };
 
-impure0 = ^Integer => *Nothing :: @MyError[] *> ('External error '->concat(#->asString));
+impure0 = ^Integer => *Nothing :: @MyError() *> ('External error '->concat(#->asString));
 impure1 = ^Integer => Impure<Integer> :: impure0(#);
 impure2 = ^Integer => *Integer :: impure0(#);
 impure3 = ^Integer => Result<Integer, ExternalError> :: impure0(#);
 
 impure4 = ^[a: Integer, b: Integer] => *Integer :: {impure1 |> invoke (#a)} + {impure2 |> invoke (#b)};
 
-impure10 = ^Integer => *Result<Nothing, MyError> :: @MyError[] /* *> ('External error '->concat(#->asString)) */;
+impure10 = ^Integer => *Result<Nothing, MyError> :: @MyError() /* *> ('External error '->concat(#->asString)) */;
 impure11 = ^Integer => Impure<Result<Integer, MyError>> :: impure10(#);
 impure12 = ^Integer => *Result<Integer, MyError> :: impure10(#);
 impure13 = ^Integer => Result<Integer, MyError|ExternalError> :: impure10(#);

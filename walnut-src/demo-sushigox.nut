@@ -1,7 +1,7 @@
 module demo-sushigox %% sushi-go-http, sushi-go-config, generic-http:
 
 handleRequest = ^HttpRequest => HttpResponse :: {
-    response = HttpServer[]->handleRequest(#);
+    response = HttpServer()->handleRequest(#);
     ?whenTypeOf(response) is {
         type{HttpResponse}: response,
         ~: [

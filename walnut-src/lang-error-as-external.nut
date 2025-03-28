@@ -15,4 +15,4 @@ TodoTest->run(^Any => Any) :: [
     b(-4)
 ];
 
-main = ^Any => String :: TodoTest[]->run->printed;
+main = ^Any => String :: TodoTest()->run->printed;

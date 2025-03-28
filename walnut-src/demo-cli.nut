@@ -1,4 +1,4 @@
-module demo-cli %% demo-http-db, generic-http, demo-http-config:
+module demo-cli:
 
 calc = ^Array<String> => Result<Integer, Any> ::
     ?noError(?noError(#->item(0))->asInteger) +

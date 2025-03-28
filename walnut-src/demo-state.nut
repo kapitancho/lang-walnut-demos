@@ -20,4 +20,4 @@ StateTest->run(^Any => Any) :: [
     [a: 5]->hydrateAs(type{T})
 ];
 
-main = ^Any => String :: StateTest[]->run->printed;
+main = ^Any => String :: StateTest()->run->printed;

@@ -1,13 +1,13 @@
 module cast806:
 
-MyInteger <: Integer;
-MyReal <: Real;
-MyString <: String;
-MyNull <: Null;
-MyBoolean <: Boolean;
-MyArray <: Array;
-MyMap <: Map;
-MyMutable <: Mutable;
+MyInteger = #Integer;
+MyReal = #Real;
+MyString = #String;
+MyNull = #Null;
+MyBoolean = #Boolean;
+MyArray = #Array;
+MyMap = #Map;
+MyMutable = #Mutable;
 
 i1 = ^Integer => Any :: #->hydrateAs(type{MyInteger});
 i2 = ^Any => Any :: 5->hydrateAs(type{MyInteger});

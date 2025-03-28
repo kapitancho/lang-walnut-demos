@@ -1,6 +1,7 @@
 module demo-fan %% event:
 
 FanSpeed = :[Stopped, Slow, Medium, Fast];
+
 FanSpeed ==> String :: ?whenValueOf ($) is {
     FanSpeed.Stopped : 'Stopped',
     FanSpeed.Slow : 'Slow',
@@ -12,7 +13,7 @@ StartButtonPressed = :[];
 SpeedButtonPressed = :[];
 FanStarted = :[];
 FanStopped = :[];
-SpeedChanged <: [~FanSpeed];
+SpeedChanged = #[~FanSpeed];
 
 StartButtonEventListener = ^StartButtonPressed => *Null;
 SpeedButtonEventListener = ^SpeedButtonPressed => *Null;
@@ -25,25 +26,25 @@ FanIsAlreadyOff = :[];
 FanIsNotOn = :[];
 
 Fan = $[speed: Mutable<FanSpeed>];
-Fan(Null) :: [speed: mutable{FanSpeed, FanSpeed.Stopped}];
+Fan() :: [speed: mutable{FanSpeed, FanSpeed.Stopped}];
 Fan->isOn(=> Boolean) :: {$speed->value} != FanSpeed.Stopped;
 Fan->turnOn(=> *Result<FanStarted, FanIsAlreadyOn>) %% [~EventBus] :: ?whenIsTrue {
     {$speed->value} == FanSpeed.Stopped : {
         $speed->SET(FanSpeed.Slow);
-        %eventBus |> fire(FanStarted[])
+        %eventBus |> fire(FanStarted())
     },
-    ~: @FanIsAlreadyOn[]
+    ~: @FanIsAlreadyOn()
 };
 Fan->turnOff(=> *Result<FanStopped, FanIsAlreadyOff>) %% [~EventBus] :: ?whenIsTrue {
     {$speed->value} != FanSpeed.Stopped : {
         $speed->SET(FanSpeed.Stopped);
-        %eventBus |> fire(FanStopped[])
+        %eventBus |> fire(FanStopped())
     },
-    ~: @FanIsAlreadyOff[]
+    ~: @FanIsAlreadyOff()
 };
 Fan->changeSpeed(=> *Result<SpeedChanged, FanIsNotOn>) %% [~EventBus] :: {
     newSpeed = ?whenValueOf($speed->value) is {
-        FanSpeed.Stopped : => @FanIsNotOn[],
+        FanSpeed.Stopped : => @FanIsNotOn(),
         FanSpeed.Slow : FanSpeed.Medium,
         FanSpeed.Medium : FanSpeed.Fast,
         FanSpeed.Fast : FanSpeed.Slow
@@ -80,7 +81,7 @@ Fan->changeSpeed(=> *Result<SpeedChanged, FanIsNotOn>) %% [~EventBus] :: {
     null
 };
 
-==> Fan :: Fan(null);
+==> Fan :: Fan();
 
 ==> EventBus %% [
     ~StartButtonEventListener,
@@ -92,8 +93,8 @@ Fan->changeSpeed(=> *Result<SpeedChanged, FanIsNotOn>) %% [~EventBus] :: {
 
 TodoTest = :[];
 TodoTest->run(^Any => Any) %% [~EventBus] :: {
-    pressStart = ^Null => Any :: %eventBus->fire(StartButtonPressed[]);
-    pressSpeed = ^Null => Any :: %eventBus->fire(SpeedButtonPressed[]);
+    pressStart = ^Null => Any :: %eventBus->fire(StartButtonPressed());
+    pressSpeed = ^Null => Any :: %eventBus->fire(SpeedButtonPressed());
     pressStart();
     pressStart();
     pressSpeed();
@@ -108,4 +109,4 @@ TodoTest->run(^Any => Any) %% [~EventBus] :: {
     ['hello']
 };
 
-main = ^Any => String :: TodoTest[]->run->printed;
+main = ^Any => String :: TodoTest()->run->printed;

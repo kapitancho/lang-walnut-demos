@@ -11,7 +11,7 @@ composed = ^Integer => Integer :: [timesTwo, plusOne, squared]->chainInvoke(#);
 NotAnInteger = :[];
 dividedByThree = ^Integer => Result<Integer, NotAnInteger> :: ?whenIsTrue {
     {# % 3} == 0: {# / 3}->asInteger,
-    ~: Error(NotAnInteger[])
+    ~: Error(NotAnInteger())
 };
 
 PartialMonad = ^Integer => Result<Integer, NotAnInteger>;

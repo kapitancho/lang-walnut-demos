@@ -1,19 +1,20 @@
 module cast203:
+/* Example of self-referring types. */
 
 IntegerArray = Array<Integer>;
 Tree = [
-    push: ^Integer => `Tree,
+    push: ^Integer => !Tree,
     asArray: ^Null => IntegerArray,
     asReversedArray: ^Null => IntegerArray
 ];
 
-NodeElement = [left: `Node, value: Integer, right: `Node];
+NodeElement = [left: !Node, value: Integer, right: !Node];
 Node = NodeElement|Null;
 
-J = Integer|Array<String|`J>;
+J = Integer|Array<String|!J>;
 
-Y = String|Array<`Z>;
-Z = Boolean|Array<`Z>;
+Y = String|Array<!Z>;
+Z = Boolean|Array<!Z>;
 
 getJ1 = ^Null => J :: 5;
 getJ2 = ^Null => J :: ['hi', 5];

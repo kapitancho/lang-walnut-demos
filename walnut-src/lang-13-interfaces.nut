@@ -3,28 +3,28 @@ module lang-13-interfaces:
 
 PositiveReal = Real<0..>;
 
-Shape = [area: ^Null => PositiveReal];
+Figure = [area: ^Null => PositiveReal];
 
-Circle <: [x: Real, y: Real, radius: PositiveReal];
+Circle = #[x: Real, y: Real, radius: PositiveReal];
 
-Rectangle <: [width: PositiveReal, height: PositiveReal];
+Rectangle = #[width: PositiveReal, height: PositiveReal];
 
-Circle ==> Shape :: [
-    area: ^Null => PositiveReal :: 3.1416 * $radius * $radius
+Circle ==> Figure :: [
+    area: ^ => PositiveReal :: 3.1416 * $radius * $radius
 ];
 
-Rectangle ==> Shape :: [
-    area: ^Null => PositiveReal :: $width * $height
+Rectangle ==> Figure :: [
+    area: ^ => PositiveReal :: $width * $height
 ];
 
-getArea = ^Shape => PositiveReal :: #.area(null);
+getArea = ^Figure => PositiveReal :: #.area(null);
 
 main = ^Any => String :: {
     circle = Circle[x: 0, y: 0, radius: 7];
     rectangle = Rectangle[width: 10, height: 7];
 
     [
-        getArea(circle->asShape),
-        getArea(rectangle->asShape)
+        getArea(circle->asFigure),
+        getArea(rectangle->asFigure)
     ]->printed
 };

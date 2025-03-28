@@ -1,4 +1,4 @@
-module demo-clock %% datetime:
+module demo-clock %% $datetime:
 
 ClockTest = :[];
 ClockTest->test(^Any => Any) %% [~Clock] :: {
@@ -26,4 +26,4 @@ ClockTest->test(^Any => Any) %% [~Clock] :: {
     ]
 };
 
-main = ^Any => String :: ClockTest[]->test->printed;
+main = ^Any => String :: ClockTest()->test->printed;

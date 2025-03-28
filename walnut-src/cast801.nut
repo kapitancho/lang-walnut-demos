@@ -17,31 +17,31 @@ SealedWithError = $[g: Real, h: Boolean];
 SealedWithError[g: Real] @ String :: ?whenValueOf(#g) is { 0 : => @'Error: 0 is not allowed', ~: [g: #g, h: true]};
 
 /* Subtypes can be built on top of any type and their internal value is exposed */
-SubtypeWithoutConstructor <: [a: Integer, b: String];
+SubtypeWithoutConstructor = #[a: Integer, b: String];
 
-SubtypeWithValidator <: [a: Integer, b: String] @ Any :: ?whenValueOf(#a) is { 0 : => @'Error: 0 is not allowed', ~: null};
+SubtypeWithValidator = #[a: Integer, b: String] @ Any :: ?whenValueOf(#a) is { 0 : => @'Error: 0 is not allowed', ~: null};
 
-SubtypeWithConstructor <: [c: Real, d: Boolean];
+SubtypeWithConstructor = #[c: Real, d: Boolean];
 /* By adding a constructor, a data validation can happen */
 SubtypeWithConstructor[c: Real] :: [c: #c, d: ?whenTypeOf(#c) is { type{Real<0..>} : true, ~ : false}];
 
-SubtypeWithValidatorAndConstructor <: [c: Real, d: Boolean] @ Any :: ?whenValueOf(#c) is { 0 : => @'Error: 0 is not allowed', ~: null};
+SubtypeWithValidatorAndConstructor = #[c: Real, d: Boolean] @ Any :: ?whenValueOf(#c) is { 0 : => @'Error: 0 is not allowed', ~: null};
 SubtypeWithValidatorAndConstructor[c: Real] :: [c: #c, d: ?whenTypeOf(#c) is { type{Real<0..>} : true, ~ : false}];
 
-SubtypeWithDependency <: [e: Real, f: Boolean];
+SubtypeWithDependency = #[e: Real, f: Boolean];
 SubtypeWithDependency[e: Real] %% [~IsLocal] :: [e: #e, f: %isLocal];
 
-SubtypeWithError <: [g: Real, h: Boolean];
+SubtypeWithError = #[g: Real, h: Boolean];
 SubtypeWithError[g: Real] @ String :: ?whenValueOf(#g) is { 0 : => @'Error: 0 is not allowed', ~: [g: #g, h: true]};
 
-SubtypeScalarWithoutConstructor <: Integer<0..>;
-SubtypeScalarWithConstructor <: Integer<0..>;
+SubtypeScalarWithoutConstructor = #Integer<0..>;
+SubtypeScalarWithConstructor = #Integer<0..>;
 SubtypeScalarWithConstructor[v: Real] :: {#v->abs}->asInteger;
 
-SubtypeScalarWithDependency <: Integer;
+SubtypeScalarWithDependency = #Integer;
 SubtypeScalarWithDependency[v: Integer] %% [~IsLocal] :: ?whenIsTrue { %isLocal: #v, ~: 0 - #v };
 
-SubtypeScalarWithError <: Integer<1..>;
+SubtypeScalarWithError = #Integer<1..>;
 SubtypeScalarWithError[v: String] @ String :: ?whenTypeOf(#v) is { type{String<1..>}: #v->length, ~: @'Error: \`\` is not allowed'};
 
 myFn = ^Any => Any :: {

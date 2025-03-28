@@ -1,10 +1,11 @@
 module demo-asstring:
 
 Suit = :[Spades, Hearts, Diamonds, Clubs];
-Percentage <: Integer<0..100>;
 NoGreeting = :[];
+Message = $[text: String];
 Greeting = $[text: String];
 
+Message ==> String :: $text;
 Greeting ==> String :: $text;
 
 fromBoolean         = ^Boolean                 => String['true', 'false']          :: #->asString;
@@ -25,8 +26,8 @@ fromEnumSubset      = ^Suit[Spades, Hearts]    => String['Spades', 'Hearts']    
 fromEnum            = ^Suit                    => String['Spades', 'Hearts', 'Diamonds', 'Clubs'] :: #->asString;
 fromMutable         = ^Mutable<Integer<5..20>> => String<1..2>                     :: #->asString;
 fromType            = ^Type                    => String                           :: #->asString;
-fromSubtype         = ^Percentage              => String<1..3>                     :: #->asString;
 
+fromOpen            = ^Message                 => String                           :: #->asString;
 fromSealed          = ^Greeting                => String                           :: #->asString;
 fromAny             = ^Any                     => Result<String, CastNotAvailable> :: #->asString;
 
@@ -44,12 +45,12 @@ test = ^Null => Map :: [
     fromStringSubset: fromStringSubset('b'),
     fromStringRange: fromStringRange('hello'),
     fromString: fromString('world'),
-    fromAtom: fromAtom(NoGreeting[]),
+    fromAtom: fromAtom(NoGreeting()),
     fromEnumSubset: fromEnumSubset(Suit.Hearts),
     fromEnum: fromEnum(Suit.Clubs),
     fromMutable: fromMutable(mutable{Integer<5..20>, 7}),
     fromType: fromType(type{Integer}),
-    fromSubtype: fromSubtype(Percentage(35)),
+    fromOpen: fromOpen(Message[text: 'hello']),
     fromSealed: fromSealed(Greeting[text: 'hello']),
     fromAnyOk: fromAny(42),
     fromAnyError: fromAny([]),

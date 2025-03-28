@@ -138,6 +138,7 @@ header a {
 strong { background: #EEE; }
 strong[title="module_identifier"] { background: yellow; }
 strong[title="code_comment"] { color: #777; }
+strong[title="type_short"] { color: magenta; }
 strong[title="var_keyword"] { color: brown; }
 strong[title="type_keyword"] { color: blue; }
 strong[title="type_proxy_keyword"] { color: blue; background: #EAE; }
@@ -147,4 +148,5 @@ strong[title="integer_number"] { color: orangered; }
 strong[title="real_number"] { color: orange; }
 strong[title="special_var"] { color: brown; background: #e0e0e0; }
 strong[title="null"], strong[title="true"], strong[title="false"], strong[title="type"] { color: #b4a44f; }
+strong[title="when"], strong[title="when_is_error"],
 strong[title="when_type_of"], strong[title="when_value_of"], strong[title="when_is_true"] { color: green; }

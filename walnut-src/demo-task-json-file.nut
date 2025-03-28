@@ -19,20 +19,20 @@ JsonFileTaskList->persist(^Map<TaskStorageData> => *Map<TaskStorageData>) :: {
     result = %jsonFileTaskList=>retrieve->item(#);
     ?whenTypeOf(result) is {
         type{TaskStorageData}: result,
-        type{Error<MapItemNotFound>}: @UnknownTask[]
+        type{Error<MapItemNotFound>}: @UnknownTask()
     }
 };
 ==> TaskPersist      %% [~JsonFileTaskList] :: ^TaskStorageData => *TaskStorageSuccessful :: {
     %jsonFileTaskList=>persist(%jsonFileTaskList=>retrieve->withKeyValue[key: #id, value: #]);
-    TaskStorageSuccessful[]
+    TaskStorageSuccessful()
 };
 ==> TaskRemoveById   %% [~JsonFileTaskList] :: ^String<36> => *Result<TaskStorageSuccessful, UnknownTask> :: {
     result = %jsonFileTaskList=>retrieve->withoutByKey(#);
     ?whenTypeOf(result) is {
         type[element: TaskStorageData, map: Map<TaskStorageData>]: {
             %jsonFileTaskList=>persist(result.map);
-            TaskStorageSuccessful[]
+            TaskStorageSuccessful()
         },
-        ~: @UnknownTask[]
+        ~: @UnknownTask()
     }
 };

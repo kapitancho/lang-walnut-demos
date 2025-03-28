@@ -1,8 +1,9 @@
 module demo-asinteger:
 
-Percentage <: Integer<0..100>;
+Message = #[text: String];
 Greeting = $[text: String];
 
+Message ==> Integer :: $text->length;
 Greeting ==> Integer :: $text->length;
 
 fromBoolean         = ^Boolean                 => Integer[0, 1]                     :: #->asInteger;
@@ -20,8 +21,8 @@ fromStringRange     = ^String<2..5>            => Result<Integer, NotANumber>   
 fromString          = ^String                  => Result<Integer, NotANumber>       :: #->asInteger;
 fromMutableInteger  = ^Mutable<Integer<5..20>> => Integer<5..20>                    :: #->asInteger;
 fromMutableReal     = ^Mutable<Real<5..20>>    => Integer<5..20>                    :: #->asInteger;
-fromSubtype         = ^Percentage              => Integer<0..100>                   :: #->asInteger;
 
+fromOpen            = ^Message                 => Integer                           :: #->asInteger;
 fromSealed          = ^Greeting                => Integer                           :: #->asInteger;
 
 test = ^Null => Map :: [
@@ -40,7 +41,7 @@ test = ^Null => Map :: [
     fromString: fromString('world'),
     fromMutableInteger: fromMutableInteger(mutable{Integer<5..20>, 7}),
     fromMutableReal: fromMutableReal(mutable{Real<5..20>, 7.29}),
-    fromSubtype: fromSubtype(Percentage(35)),
+    fromOpen: fromOpen(Message[text: 'hello']),
     fromSealed: fromSealed(Greeting[text: 'hello']),
     end: 'end'
 ];

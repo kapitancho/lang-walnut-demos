@@ -3,12 +3,12 @@ module lang-13-interfaces-v2:
 
 PositiveReal = Real<0..>;
 
-Circle <: [x: Real, y: Real, radius: PositiveReal];
+Circle = #[x: Real, y: Real, radius: PositiveReal];
 
-Rectangle <: [width: PositiveReal, height: PositiveReal];
+Rectangle = #[width: PositiveReal, height: PositiveReal];
 
-Circle->area(^Null => PositiveReal) :: 3.1416 * $radius * $radius;
-Rectangle->area(^Null => PositiveReal) :: $width * $height;
+Circle->area(=> PositiveReal) :: 3.1416 * $radius * $radius;
+Rectangle->area(=> PositiveReal) :: $width * $height;
 
 getArea = ^Circle|Rectangle => PositiveReal :: #->area;
 

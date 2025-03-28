@@ -1,11 +1,10 @@
 <?php
 
-use Walnut\Lang\Implementation\Compilation\Compiler;
 use Walnut\Lang\Blueprint\AST\Parser\ParserException;
 use Walnut\Lang\Implementation\AST\Parser\WalexLexerAdapter;
-use Walnut\Lang\Implementation\Compilation\Module\MultiFolderBasedModuleLookupContext;
-use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPoint;
-use Walnut\Lang\Implementation\Program\EntryPoint\CliEntryPointBuilder;
+use Walnut\Lang\Implementation\Compilation\CompilerFactory;
+use Walnut\Lang\Implementation\Program\EntryPoint\Cli\CliEntryPoint;
+use Walnut\Lang\Implementation\Program\EntryPoint\Cli\CliEntryPointBuilder;
 use Walnut\Lib\Walex\SpecialRuleTag;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -19,11 +18,11 @@ $code = $sourceCode = file_get_contents('php://input');
 $lexer = new WalexLexerAdapter();
 $tokens = $lexer->tokensFromSource($sourceCode);
 
-$compiler = new Compiler(
-	new MultiFolderBasedModuleLookupContext(
-		__DIR__,
-		__DIR__ . '/../vendor/walnut/lang/core-nut-lib'
-	)
+$compiler = new CompilerFactory()->compiler(
+	__DIR__,
+	[
+		'core' => __DIR__ . '/../core-nut-lib'
+	]
 );
 
 file_put_contents(__DIR__ . '/live.nut', $code);
@@ -53,6 +52,7 @@ try {
 	}
 
 	$msg = $e->getMessage() ?: $e::class;
+	//$msg = $e;
 	$content =  nl2br(htmlspecialchars("Error: {$msg}\n"));
 }
 unlink(__DIR__ . '/live.nut');

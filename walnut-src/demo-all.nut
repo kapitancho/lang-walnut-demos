@@ -12,25 +12,26 @@ MyAtom = :[];
 MyEnum = :[Value1, Value2, Value3];
 
 /* Sealed types */
+MyOpen = #[a: Integer, b: Integer] @ MyAtom :: null;
+MyOpen0 = #[a: Integer, b: Integer];
+MyOpen1 = #[a: Integer, b: Integer];
+MyOpen1[a: Real, b: Real] :: [a: #a->asInteger, b: #b->asInteger];
+
+/* Sealed types */
 MySealed = $[a: Integer, b: Integer] @ MyAtom :: null;
 MySealed0 = $[a: Integer, b: Integer];
 MySealed1 = $[a: Integer, b: Integer];
 MySealed1[a: Real, b: Real] :: [a: #a->asInteger, b: #b->asInteger];
 
-/* Subtypes */
-MySubtype <: String @ MyAtom :: null;
-MySubtype0 <: String;
-MySubtype1 <: String;
-MySubtype1(String) :: #->reverse;
-
 /* Methods */
 MyAtom->myMethod(^String => Integer) %% MyAtom :: #->length;
 
 /* Constructors */
+MyOpen[a: Real, b: Real] %% MyAtom :: [a: #a->asInteger, b: #b->asInteger];
 MySealed[a: Real, b: Real] %% MyAtom :: [a: #a->asInteger, b: #b->asInteger];
 
 functionName = ^Any => String :: 'function call result';
-TypeName <: String;
+TypeName = #String;
 
 getAllExpressions = ^Any => Any :: [
     constant: 'constant',
@@ -49,10 +50,12 @@ getAllExpressions = ^Any => Any :: [
     functionBody: ^Any => Any :: 'function body',
     mutable: mutable{String, 'mutable'},
     matchTrue: ?whenIsTrue { 'then 1': 'then 1', 'then 2': 'then 2', ~: 'default' },
-    matchType: ?whenTypeOf ('type') is { type{String['type']}: 'then 1', type{String['other type']}: 'then 2', ~: 'default' },
+    matchType: ?whenTypeOf ('type') is { `String['type']: 'then 1', `String['other type']: 'then 2', ~: 'default' },
     matchValue: ?whenValueOf ('value') is { 'value': 'then 1', 'other value': 'then 2', ~: 'default' },
     matchIfThenElse: ?when('condition') { 'then' } ~ { 'else' },
     matchIfThen: ?when('condition') { 'then' },
+    matchIsErrorElse: ?whenIsError('condition') { 'then' } ~ { 'else' },
+    matchIsError: ?whenIsError('condition') { 'then' },
     functionCall: functionName('parameter'),
     constructorCall: TypeName('parameter'),
     propertyAccess: [property: 'value'].property
@@ -66,8 +69,8 @@ AllTypes = [
     atom: MyAtom,
     enumeration: MyEnum,
     enumerationSubset: MyEnum[Value1, Value2],
+    open: MyOpen0,
     sealed: MySealed0,
-    subtype: MySubtype0,
     integer: Integer,
     integerRange: Integer<1..10>,
     integerSubset: Integer[2, 15],
@@ -101,6 +104,10 @@ AllTypes = [
     impure: Impure,
     impureWithType: Impure<Integer>,
 
+    shape: Shape<Integer>,
+    shapeAny: Shape,
+    proxy: Array<!MyOpen0>,
+
     any: Any,
     /* nothing: Nothing */
     optionalKeyType: ?Any,
@@ -115,8 +122,8 @@ AllTypes = [
     anyAtom: Type<Atom>,
     anyEnumeration: Type<Enumeration>,
     anyEnumerationSubset: Type<EnumerationSubset>,
+    anyOpen: Type<Open>,
     anySealed: Type<Sealed>,
-    anySubtype: Type<Subtype>,
     anyNamed: Type<Named>,
     anyAlias: Type<Alias>,
     anyTuple: Type<Tuple>,
@@ -133,11 +140,11 @@ getMatchingValuesForAllTypes = ^Null => AllTypes :: [
     true: true,
     false: false,
     null: null,
-    atom: MyAtom[],
+    atom: MyAtom(),
     enumeration: MyEnum.Value1,
     enumerationSubset: MyEnum.Value1,
+    open: MyOpen0[a: 3, b: -2],
     sealed: MySealed0[a: 3, b: -2],
-    subtype: MySubtype0('value'),
     integer: 5,
     integerRange: 5,
     integerSubset: 2,
@@ -171,38 +178,42 @@ getMatchingValuesForAllTypes = ^Null => AllTypes :: [
     impure: 'impure',
     impureWithType: @ExternalError[errorType: 'Error', originalError: 'Error', errorMessage: 'Error'],
 
+    shape: 42,
+    shapeAny: null,
+    proxy: [MyOpen0[a: 3, b: -2]],
+
     any: -12,
     /* nothing: Nothing */
     /* optionalKeyType: ?Any,*/
 
-    anyType: type{String},
-    anyReal: type{Integer},
+    anyType: `String,
+    anyReal: `Integer,
 
-    anyIntegerSubset: type{Integer[42, -2]},
-    anyRealSubset: type{Real[1, 3.14]},
-    anyStringSubset: type{String['a', '']},
-    anyFunction: type{^String => Integer},
-    anyAtom: type{MyAtom},
-    anyEnumeration: type{MyEnum},
-    anyEnumerationSubset: type{MyEnum[Value1, Value2]},
-    anySealed: type{MySealed},
-    anySubtype: type{MySubtype},
-    anyNamed: type{MyAtom},
-    anyAlias: type{Alias},
-    anyTuple: type{[Integer, String]},
-    anyRecord: type{[a: Integer, b: String]},
-    anyMutable: type{Mutable<Real>},
-    anyIntersection: type{[a: String, ...] & [b: Integer, ... String]},
-    anyUnion: type{Integer|MyAtom}
+    anyIntegerSubset: `Integer[42, -2],
+    anyRealSubset: `Real[1, 3.14],
+    anyStringSubset: `String['a', ''],
+    anyFunction: `^String => Integer,
+    anyAtom: `MyAtom,
+    anyEnumeration: `MyEnum,
+    anyEnumerationSubset: `MyEnum[Value1, Value2],
+    anyOpen: `MyOpen,
+    anySealed: `MySealed,
+    anyNamed: `MyAtom,
+    anyAlias: `Alias,
+    anyTuple: `[Integer, String],
+    anyRecord: `[a: Integer, b: String],
+    anyMutable: `Mutable<Real>,
+    anyIntersection: `[a: String, ...] & [b: Integer, ... String],
+    anyUnion: `Integer|MyAtom
 ];
 
 getAllValues = ^Any => Any :: [
-    atom: MyAtom[],
+    atom: MyAtom(),
     booleanTrue: true,
     booleanFalse: false,
     enumeration: MyEnum.Value1,
+    open: MyOpen[a: 3, b: -2],
     sealed: MySealed[a: 3, b: -2],
-    subtype: MySubtype('value'),
     integer: 42,
     real: 3.14,
     string: 'hi!',
@@ -213,7 +224,28 @@ getAllValues = ^Any => Any :: [
     record: [a: 1, b: 'hi!'],
     emptySet: [;],
     set: [1; 'hi!'],
-    type: type{String},
+    type: `String,
+    mutable: mutable{String, 'mutable'},
+    error: @'error',
+    function: ^Any => Any :: 'function body'
+];
+
+allConstants = [
+    atom: MyAtom(),
+    booleanTrue: true,
+    booleanFalse: false,
+    enumeration: MyEnum.Value1,
+    integer: 42,
+    real: 3.14,
+    string: 'hi!',
+    null: null,
+    emptyTuple: [],
+    tuple: [1, 'hi!'],
+    emptyRecord: [:],
+    record: [a: 1, b: 'hi!'],
+    emptySet: [;],
+    set: [1; 'hi!'],
+    type: `String,
     mutable: mutable{String, 'mutable'},
     error: @'error',
     function: ^Any => Any :: 'function body'
@@ -222,10 +254,11 @@ getAllValues = ^Any => Any :: [
 /* Variables */
 a = 1;
 b = ^MyAlias => Integer :: # + a;
-c = type{String};
+c = `String;
 
 main = ^Array<String> => String :: [
     allExpressions: getAllExpressions(),
     allTypesAndSampleValues: getAllTypes(getMatchingValuesForAllTypes()),
-    allValues: getAllValues()
+    allValues: getAllValues(),
+    allConstants: allConstants
 ]->printed;

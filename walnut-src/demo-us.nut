@@ -22,4 +22,4 @@ UrlShortener->run(^Any => Any) :: [
     'Hello!'
 ];
 
-main = ^Any => String :: UrlShortener[]->run->printed;
+main = ^Any => String :: UrlShortener()->run->printed;

@@ -1,4 +1,4 @@
-module demo-task-model %% datetime, event:
+module demo-task-model %% $datetime, $event:
 
 TaskId = String<36>;
 Task = $[id: TaskId, title: String<1..>, isDone: Mutable<Boolean>, dueDate: Date, createdAt: DateAndTime, description: String];

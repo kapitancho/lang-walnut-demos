@@ -3,9 +3,9 @@ module lang-type-system:
 /* there are three main ways to define a type - as an alias, as a subtype, and as a state type */
 /* 1. alias */
 PointA = [x: Real, y: Real];
-/* 2. subtype */
-PointB <: [x: Real, y: Real];
-/* 3. state */
+/* 2. open */
+PointB = #[x: Real, y: Real];
+/* 3. sealed */
 PointC = $[x: Real, y: Real];
 
 /* instantiating data */
@@ -33,9 +33,9 @@ PointA ==> String :: ['(', $x->asString, ', ', $y->asString, ')']->combineAsStri
 PointC ==> String :: ['(', $x->asString, ', ', $y->asString, ')']->combineAsString('');
 
 /* subtype specialty 1 - subtyping basic types like Integer, Real, Boolean, String, etc. */
-UuidString <: String<36..36>;
+UuidString = #String<36>;
 /* subtype specialty 2 - "Value Object"-like behavior */
-MyRange <: [min: Integer, max: Integer] @ String :: ?whenIsTrue { #.min > #.max : Error('Invalid Range'), ~: null };
+MyRange = #[min: Integer, max: Integer] @ String :: ?whenIsTrue { #min > #max : => @'Invalid Range', ~: null };
 
 /* state type constructor */
 MyStateType = $[x: Integer, y: Integer];
@@ -43,9 +43,9 @@ MyStateType([x: Real, y: Real]) :: [x: #.x->asInteger, y: #.y->asInteger];
 
 /* all examples in one place */
 main = ^Array<String> => String :: [
-    pointAx: accessPointA(newPointA(null)->moveHorizontally(1)),
-    pointB: accessPointB(newPointB(null)->moveHorizontally(1.5)),
-    pointC: newPointC(null)->moveHorizontally(2)->asString,
+    pointAx: accessPointA(newPointA()->moveHorizontally(1)),
+    pointB: accessPointB(newPointB()->moveHorizontally(1.5)),
+    pointC: newPointC()->moveHorizontally(2)->asString,
     validRange: MyRange[min: 1, max: 10],
     invalidRange: MyRange[min: 10, max: 1],
     uuid: UuidString('123e4567-e89b-12d3-a456-426614174000'),

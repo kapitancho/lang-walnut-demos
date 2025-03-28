@@ -3,7 +3,7 @@ module cast207:
 ProductId = Integer<1..>;
 Title = String<1..>;
 Price = Real<0..>;
-Product <: [~ProductId, ~Title, ~Price];
+Product = #[~ProductId, ~Title, ~Price];
 Product->asString(^Null => String) ::
     ''->concatList[$productId->asString, ' ', $title, ' ', $price->asString];
 InvalidProduct = $[~ProductId];

@@ -4,7 +4,7 @@ TodoTaskData = [id: String<36>, title: String<1..>, createdAt: DateAndTime, dueD
 NewTodoTaskData = [title: String<1..>, dueDate: Date, description: String];
 
 TodoTask ==> TodoTaskData :: [
-    id: $id, title: $title, createdAt: $createdAt, dueDate: $dueDate, isDone: $isDone->value, description: $description
+    id: $id->value->value, title: $title, createdAt: $createdAt, dueDate: $dueDate, isDone: $isDone->value, description: $description
 ];
 
 TaskNotAdded = :[];

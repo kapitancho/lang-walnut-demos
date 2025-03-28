@@ -1,6 +1,6 @@
 module cast22:
 
-Point <: [x: Real, y: Real];
+Point = #[x: Real, y: Real];
 PositiveInteger = Integer<1..>;
 Point ==> String :: {
     ''->concatList['{', {$x}->asString, ',', {$y}->asString, '}']

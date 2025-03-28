@@ -1,7 +1,7 @@
-module demo-todoapp-json-file %% demo-todoapp-model, fs:
+module demo-todoapp-json-file %% demo-todoapp-model, $fs:
 
 TodoTaskJsonStorage = $[jsonStorage: File];
-TodoTaskJsonStorage->retrieve(^Null => Result<Array<TodoTask>, HydrationError|InvalidJsonString|CannotReadFile>) ::
+TodoTaskJsonStorage->retrieve(=> Result<Array<TodoTask>, HydrationError|InvalidJsonString|CannotReadFile>) ::
     $jsonStorage=>content => jsonDecode => hydrateAs(type{Array<TodoTask>});
 TodoTaskJsonStorage->persist(^Array<TodoTask> => Result<Array<TodoTask>, CannotWriteFile|InvalidJsonValue>) :: {
     $jsonStorage=>replaceContent(#=>jsonStringify);
@@ -43,7 +43,7 @@ JsonFileTodoBoard->taskWithId(^[~TodoTaskId] => *Result<TodoTask, HydrationError
         ~: @UnknownTask[#.todoTaskId]
     }
 };
-JsonFileTodoBoard->allTasks(^Null => *Array<TodoTask>) :: $todoTaskJsonStorage->retrieve *> ('Invalid JSON file');
+JsonFileTodoBoard->allTasks(=> *Array<TodoTask>) :: $todoTaskJsonStorage->retrieve *> ('Invalid JSON file');
 
 JsonFileTodoBoard ==> TodoBoard :: [
     addTask: ^TodoTask => *Result<TaskAdded, TaskAlreadyExists> :: $->addTask(#),
@@ -61,7 +61,7 @@ JsonFileTodoBoard ==> TodoBoard :: [
 ==> TaskUpdatedEventListener %% [~TodoTaskJsonStorage] :: ^TaskMarkedAsDone|TaskUnmarkedAsDone => *Null :: {
     task = #->todoTask;
     todoTaskId = task->id;
-    tasks = {%.todoTaskJsonStorage->retrieve} *> ('Invalid JSON file');
+    tasks = {%todoTaskJsonStorage->retrieve} *> ('Invalid JSON file');
     item = {tasks->findFirst(^TodoTask => Boolean :: {#->id} == todoTaskId)} *> ('Task not found');
     %.todoTaskJsonStorage->persist(tasks->map(^TodoTask => TodoTask :: ?whenValueOf(#->id) is { todoTaskId: task, ~ : #}));
     null

@@ -1,4 +1,4 @@
-module demo-todoapp-db %% demo-todoapp-model, db:
+module demo-todoapp-db %% demo-todoapp-model, $db/core:
 
 DatabaseQueryResultRow ==> TodoTask @ HydrationError|MapItemNotFound :: [
     id: $ => item('id'),
@@ -10,7 +10,7 @@ DatabaseQueryResultRow ==> TodoTask @ HydrationError|MapItemNotFound :: [
 ] => asJsonValue => hydrateAs(type{TodoTask});
 
 TodoTask ==> DatabaseQueryBoundParameters :: [
-    id: $id,
+    id: $id->value->value,
     title: $title,
     description: $description,
     isDone: ?whenIsTrue { $isDone: 1, ~: 0 },
@@ -41,7 +41,7 @@ DbTodoBoard->removeTask(^[~TodoTaskId] => *Result<TaskRemoved, UnknownTask>) %% 
         type{TodoTask}: {
             result = %->execute[
                 query: 'DELETE FROM tasks WHERE id = ?',
-                boundParameters: [#.todoTaskId]
+                boundParameters: [#.todoTaskId->value->value]
             ];
             ?whenTypeOf(result) is {
                 type{Integer<0..>}: TaskRemoved[task: existing],
@@ -52,7 +52,7 @@ DbTodoBoard->removeTask(^[~TodoTaskId] => *Result<TaskRemoved, UnknownTask>) %% 
     }
 };
 DbTodoBoard->taskWithId(^[~TodoTaskId] => *Result<TodoTask, HydrationError|MapItemNotFound|UnknownTask>) %% DatabaseConnector :: {
-    data = %->query[query: 'SELECT * FROM tasks WHERE id = :todoTaskId', boundParameters: #];
+    data = %->query[query: 'SELECT * FROM tasks WHERE id = :todoTaskId', boundParameters: [todoTaskId: #todoTaskId->value->value]];
     ?whenTypeOf(data) is {
         type{DatabaseQueryResult}: ?whenTypeOf(data) is {
             type[DatabaseQueryResultRow]: data.0 => asTodoTask,
@@ -91,7 +91,7 @@ DbTodoBoard ==> TodoBoard :: [
         type{TodoTask}: {
             result = %.databaseConnector->execute[
                 query: 'UPDATE tasks SET is_done = :isDone WHERE id = :id',
-                boundParameters: [isDone: ?whenIsTrue { task->isDone: 1, ~: 0 }, id: task->id]
+                boundParameters: [isDone: ?whenIsTrue { task->isDone: 1, ~: 0 }, id: task->id->value->value]
             ];
             ?whenTypeOf(result) is {
                 type{Integer<0..>}: null,

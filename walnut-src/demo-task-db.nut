@@ -31,7 +31,7 @@ TaskStorageData ==> DatabaseQueryBoundParameters :: [
             =>item(0)=>asTaskStorageData;
     result = retriever();
     ?whenTypeOf(result) is {
-        type{Error<IndexOutOfRange>}: @UnknownTask[],
+        type{Error<IndexOutOfRange>}: @UnknownTask(),
         ~: result *> ('Unable to retrieve task')
     }
 };
@@ -44,14 +44,14 @@ TaskStorageData ==> DatabaseQueryBoundParameters :: [
                 query: 'UPDATE tasks SET title = :title, description = :description, is_done = :isDone, due_date = :dueDate WHERE id = :id',
                 boundParameters: #->asDatabaseQueryBoundParameters
             ]} *> ('Unable to update task');
-            TaskStorageSuccessful[]
+            TaskStorageSuccessful()
         },
         type{Error<UnknownTask>}: {
             result = {%databaseConnector->execute[
                 query: 'INSERT INTO tasks (id, title, description, is_done, due_date, created_at) VALUES (:id, :title, :description, :isDone, :dueDate, :createdAt)',
                 boundParameters: #->asDatabaseQueryBoundParameters
             ]} *> ('Unable to create task');
-            TaskStorageSuccessful[]
+            TaskStorageSuccessful()
         }
     }
 };
@@ -62,7 +62,7 @@ TaskStorageData ==> DatabaseQueryBoundParameters :: [
         %databaseConnector=>execute[query: 'DELETE FROM tasks WHERE id = :id', boundParameters: [id: taskId]];
     result = persister() *> ('Unable to remove task');
     ?whenTypeOf(result) is {
-        type{Integer<1..>}: TaskStorageSuccessful[],
-        ~: @UnknownTask[]
+        type{Integer<1..>}: TaskStorageSuccessful(),
+        ~: @UnknownTask()
     }
 };

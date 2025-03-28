@@ -1,14 +1,14 @@
-module demo-ty %% tpl, demo-ty-tpl:
+module demo-ty %% $tpl, demo-ty-tpl:
 
 A = :[];
 E = :[A, B, C];
-V <: Integer[0, 2];
-Z <: Integer<1..2>;
-U <: Z;
+V = #Integer[0, 2];
+Z = #Integer<1..2>;
+U = #Z;
 S = $[v: Boolean];
 
 getValues = ^Null => Map :: [
-    a: A[], n: null,
+    a: A(), n: null,
     ea: E.A, eb: E.B, ec: E.C, t: true, f: false,
     i0: 0, i1: 1, i2: 2,
     v0: V(0), v2: V(2), z1: Z(1), z2: Z(2), u1: U(Z(1)), u2: U(Z(2)),
@@ -43,7 +43,7 @@ getTypes = ^Null => Map<Type> :: type[
     sseab: String['', 'a', 'b'], sseac: String['', 'a', 'ab'],
     ssebc: String['', 'b', 'ab'], ssabc: String['a', 'b', 'ab'],
     sseabc: String['', 'a', 'b', 'ab'],
-    t0: Subtype, v: V, z: Z, u: U,
+    t0: Open, v: V, z: Z, u: U,
     sl0: Sealed, s: S,
     mb: Mutable<Boolean>, mt: Mutable<True>, mf: Mutable<False>,
     rb: Error<Boolean>, rt: Error<True>, rf: Error<False>, rs: Result<Integer, Boolean>,

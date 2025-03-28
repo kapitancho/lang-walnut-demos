@@ -1,13 +1,13 @@
 module cast12:
 
-Point <: [x: Real, y: Real];
-ProductId <: Integer<1..>;
+Point = #[x: Real, y: Real];
+ProductId = #Integer<1..>;
 
 fn1 = ^JsonValue => String :: {
     #->jsonStringify
 };
 
-fn2 = ^String => Result<JsonValue, InvalidJsonString    > :: {
+fn2 = ^String => Result<JsonValue, InvalidJsonString> :: {
     #->jsonDecode
 };
 
@@ -23,7 +23,7 @@ myFn = ^Array<String> => Any :: [
     fn1([42]),
     fn2('[1, false, null]'),
     fn2('Invalid json here'),
-    fn2({[a: 42, b: 3.14, productId: ProductId(35)]}->jsonStringify)
+    fn2({[a: 42, b: 3.14/*, productId: ProductId(35)*/]}->jsonStringify)
 ];
 
 main = ^Array<String> => String :: {
