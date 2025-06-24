@@ -26,7 +26,7 @@ Sub <: Integer<1..10>;
 OneDigitPrime = Integer[2, 3, 5, 7];
 FamousRealNumber = Real[3.14159, 2.71828];
 HelloWorld = String['Hello', 'World'];
-Suit = :[Hearts, Diamonds, Clubs, Spades];
+Suit := (Hearts, Diamonds, Clubs, Spades);
 BlackSuit = Suit[Clubs, Spades];
 
 callMe = ^Null => Any :: 1;

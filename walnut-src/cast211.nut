@@ -2,12 +2,12 @@ module cast211:
 
 PositiveInteger = Integer<1..>;
 
-fizzBuzzV1 = ^PositiveInteger => String :: {
+fizzBuzzV1 = ^i: PositiveInteger => String :: {
     ?whenIsTrue {
-        {# % 15} == 0 : 'fizzbuzz',
-        {# % 3} == 0 : 'fizz',
-        {# % 5} == 0 : 'buzz',
-        ~ : #->asString
+        {i % 15} == 0 : 'fizzbuzz',
+        {i % 3} == 0 : 'fizz',
+        {i % 5} == 0 : 'buzz',
+        ~ : i->asString
     }
 };
 
@@ -20,8 +20,8 @@ getBuzzer = ^[number: PositiveInteger, word: String] => BuzzerConverter :: {
         output = #.output;
         ?whenIsTrue {
             {#.input % number} == 0 : ?whenTypeOf(output) is {
-                type{PositiveInteger} : [input: #.input, output: word],
-                type{String} : [input: #.input, output: output->concat(word)]
+                `PositiveInteger : [input: #.input, output: word],
+                `String : [input: #.input, output: output->concat(word)]
             },
             ~ : #
         }
@@ -50,10 +50,10 @@ fizzBuzzRange = ^PositiveInteger => Array<String> :: {
 
 myFn = ^Array<String> => Any :: {
     ?whenTypeOf(#) is {
-        type{[String]} : {
+        `[String] : {
             v = #.0->asInteger;
             ?whenTypeOf(v) is {
-                type{PositiveInteger}: fizzBuzzRange(v),
+                `PositiveInteger: fizzBuzzRange(v),
                 ~: 'Invalid input'
             }
         },

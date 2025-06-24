@@ -1,16 +1,16 @@
 module demo-integershapes:
 
-Speed = #Integer;
+Speed := Integer;
 s = ^i: Shape<Integer> => Integer :: {i->shape(`Integer)} * 2;
 
-Range = #[from: Integer, to: Integer];
+Range := #[from: Integer, to: Integer];
 Range ==> Integer :: $to - $from;
 
-MySecret = $Integer;
+MySecret := $Integer;
 MySecret ==> Integer :: $$;
 
 v = ^ => [Integer, Mutable<Integer>, Real, Speed, Range, MySecret, String] :: [
-    42, mutable{Integer, -9}, 3.14, Speed(80), Range[3, 9], MySecret(0), '7'];
+    42, mutable{Integer, -9}, 3.14, Speed!80, Range[3, 9], MySecret(0), '7'];
 
 int = type{Integer};
 

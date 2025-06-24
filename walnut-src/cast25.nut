@@ -1,12 +1,12 @@
 module cast25:
 
-Point = #[x: Real, y: Real];
+Point := #[x: Real, y: Real];
 
 Point ==> Boolean :: {
     {$x != 0} || {$y != 0}
 };
 
-FileExists = #Boolean;
+FileExists := #Boolean;
 
 gugu = ^Integer|String => Boolean :: {
     #->asBoolean

@@ -1,6 +1,6 @@
 module demo-integer:
 
-MyInteger = #Integer<4..12>;
+MyInteger := #Integer<4..12>;
 
 /* string specific Integer->... */
 binaryPlus          = ^[Integer<4..12>, Integer<-5..7>]     => Integer<-1..19>              :: #0 + #1;
@@ -31,7 +31,7 @@ asString            = ^Integer<1..15>                       => String           
 asReal              = ^Integer<1..15>                       => Real<1..15>                  :: #->asReal;
 asBoolean           = ^Integer<-2..15>                      => Boolean                      :: #->asBoolean;
 valueType           = ^Integer<1..15>                       => Type<Integer<1..15>>         :: #->type;
-isOfType            = ^[Integer<1..15>, Type]               => Boolean                      :: #0->isOfType(#1);
+checkIsOfType            = ^[Integer<1..15>, Type]               => Boolean                      :: #0->isOfType(#1);
 jsonStringify       = ^Integer<1..15>                       => String                       :: #->jsonStringify;
 
 test = ^[a: Integer<7..10>, b: Integer<..5>, c: Integer[3, 8], d: Integer<4..5>, e: MyInteger, f: Integer<-20..20>] => Map :: [
@@ -72,9 +72,9 @@ test = ^[a: Integer<7..10>, b: Integer<..5>, c: Integer[3, 8], d: Integer<4..5>,
     asBooleanTrue: asBoolean(#a),
     asBooleanFalse: asBoolean(0),
     type: valueType(#a),
-    isOfTypeTrue: isOfType[#a, type{Integer}],
-    isOfTypeTrueInteger: isOfType[#a, type{Integer}],
-    isOfTypeFalse: isOfType[#a, type{String}],
+    isOfTypeTrue: checkIsOfType[#a, type{Integer}],
+    isOfTypeTrueInteger: checkIsOfType[#a, type{Integer}],
+    isOfTypeFalse: checkIsOfType[#a, type{String}],
     binaryEqualTrue: binaryEqual[#d, 5],
     binaryEqualFalse: binaryEqual[#a, #b],
     binaryNotEqualTrue: binaryNotEqual[#a, #b],

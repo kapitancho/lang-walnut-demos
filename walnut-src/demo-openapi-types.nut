@@ -196,7 +196,7 @@ Response = [
 
 Responses = Map<Response|Reference>;
 
-Callback = Map<!PathItem|Reference>;
+Callback = Map<\PathItem|Reference>;
 
 Operation = [
     tags: ?Array<String>,

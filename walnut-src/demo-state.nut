@@ -1,11 +1,11 @@
 module demo-state:
 
 /* This is our sample type with an internal value 'a' */
-T = $[a: Integer];
+T := $[a: Integer];
 /* A value of that type is created by passing 'b' and 'c' */
 T[b: Integer, c: Integer] :: [a: #.b + #.c];
 
-StateTest = :[];
+StateTest := ();
 StateTest->run(^Any => Any) :: [
     /* This is how a value of that type is normally created */
     T[b: 1, c: 2],
@@ -20,4 +20,4 @@ StateTest->run(^Any => Any) :: [
     [a: 5]->hydrateAs(type{T})
 ];
 
-main = ^Any => String :: StateTest()->run->printed;
+main = ^Any => String :: StateTest->run->printed;

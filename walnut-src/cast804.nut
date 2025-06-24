@@ -1,15 +1,15 @@
 module cast804:
 
-DatabaseError = $[errorCode: Integer, message: String];
+DatabaseError := $[errorCode: Integer, message: String];
 
-ProductId = #String<36>;
+ProductId := #String<36>;
 ProductName = String<1..50>;
 ProductPrice = Real<0..>;
 ProductData = [name: ProductName, price: ProductPrice];
-Product = $[id: ProductId, data: Mutable<ProductData>];
+Product := $[id: ProductId, data: Mutable<ProductData>];
 Product->data(^Null => ProductData) :: $data->value;
 
-UnknownProduct = $[~ProductId];
+UnknownProduct := $[~ProductId];
 ProductById = ^[~ProductId] => *Result<Product, UnknownProduct>;
 
 ProductRawData = [id: String, name: String, price: Real];

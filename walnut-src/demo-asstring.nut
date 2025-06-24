@@ -1,9 +1,9 @@
 module demo-asstring:
 
-Suit = :[Spades, Hearts, Diamonds, Clubs];
-NoGreeting = :[];
-Message = $[text: String];
-Greeting = $[text: String];
+Suit := (Spades, Hearts, Diamonds, Clubs);
+NoGreeting := ();
+Message := $[text: String];
+Greeting := $[text: String];
 
 Message ==> String :: $text;
 Greeting ==> String :: $text;
@@ -45,7 +45,7 @@ test = ^Null => Map :: [
     fromStringSubset: fromStringSubset('b'),
     fromStringRange: fromStringRange('hello'),
     fromString: fromString('world'),
-    fromAtom: fromAtom(NoGreeting()),
+    fromAtom: fromAtom(NoGreeting),
     fromEnumSubset: fromEnumSubset(Suit.Hearts),
     fromEnum: fromEnum(Suit.Clubs),
     fromMutable: fromMutable(mutable{Integer<5..20>, 7}),

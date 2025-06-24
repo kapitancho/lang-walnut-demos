@@ -5,18 +5,18 @@ Figure = [
     area: ^Null => Real
 ];
 
-Square = #[sideLength: Real];
+Square := #[sideLength: Real];
 Square ==> Figure :: [
     area: ^Null => Real :: $sideLength * $sideLength
 ];
 
-Rectangle = #[width: Real, height: Real];
+Rectangle := #[width: Real, height: Real];
 Rectangle ==> Figure :: [
     area: ^Null => Real :: $width * $height
 ];
 Square ==> Rectangle :: Rectangle([$sideLength, $sideLength]);
 
-Circle = #[radius: Real];
+Circle := #[radius: Real];
 Circle ==> Figure :: [
     area: ^Null => Real :: $radius * $radius * 3.1415927
 ];

@@ -5,17 +5,17 @@ b = ^String => Integer :: #->length;
 
 c = ^String => Integer :: b(#);
 
-T = :[];
+T := ();
 
 T->d(^String => Integer) :: b(#);
 
-K = #[x: Integer];
+K := #[x: Integer];
 
 myFn = ^Array<String> => Any :: {
     [
         c('hello'),
-        T()->d('hello'),
-        [x: 15]->hydrateAs(type{K})
+        T->d('hello'),
+        [x: 15]->hydrateAs(`K)
     ]
 };
 

@@ -3,14 +3,14 @@ module demo-shapes:
 HasName = Shape<[name: String, ...]>;
 namePrinter = ^ ~HasName => String :: hasName->shape(`[name: String, ...]).name;
 
-ProjectId = #Integer;
+ProjectId := Integer;
 ProjectId ==> String :: $->value->asString;
-UnknownProject = :[];
-Project = #[id: ProjectId, name: String];
+UnknownProject := ();
+Project := [id: ProjectId, name: String];
 ProjectById = ^ProjectId => *Result<Project, UnknownProject>;
 
-ArticleId = #Integer;
-Article = #[id: ArticleId, title: String];
+ArticleId := Integer;
+Article := [id: ArticleId, title: String];
 
 ProjectUpdater = [
     store: ^Project => *Null,
@@ -30,14 +30,14 @@ Article ==> NameProviderRecord :: [
 MyShape1 = Shape<[a: Integer, b: Integer]>;
 MyShape2 = Shape<ProjectById>;
 
-InMemoryProjectRepository = $[projects: Mutable<Map<Project>>];
+InMemoryProjectRepository := $[projects: Mutable<Map<Project>>];
 InMemoryProjectRepository(projects: Map<Project>) :: [projects: mutable{Map<Project>, projects}];
 
 InMemoryProjectRepository ==> ProjectById ::
     ^ ~ProjectId => *Result<Project, UnknownProject> ::
         ?whenIsError(
             project = $projects->value->item(projectId->value->asString)
-        ) { @UnknownProject() };
+        ) { @UnknownProject };
 
 InMemoryProjectRepository ==> ProjectUpdater :: [
     store: ^ ~Project => *Null :: {
@@ -78,24 +78,24 @@ deleteProject = ^ [u: Shape<ProjectUpdater>, ~Project] => *Null :: #u->shape(`Pr
 Project ==> Integer :: $id->value;
 
 fn = ^ :: {
-    pId = ProjectId(2);
+    pId = ProjectId!2;
     myRepo = InMemoryProjectRepository[
-        '1': pr1 = Project[ProjectId(1), 'Project 1'],
-        '2': pr2 = Project[ProjectId(2), 'Project 2']
+        '1': pr1 = Project![id: ProjectId!1, name: 'Project 1'],
+        '2': pr2 = Project![id: ProjectId!2, name: 'Project 2']
     ];
-    article = Article[id: ArticleId(3), title: 'My Article'];
+    article = Article![id: ArticleId!3, title: 'My Article'];
     fnx = [t: 1, name: ^ => String :: 'fn'];
     [
-        getPr: getPr[myRepo, ProjectId(1)],
+        getPr: getPr[myRepo, ProjectId!1],
         namePrinter1a: namePrinter(pr1->value),
         namePrinter1b: namePrinter(pr1->value),
         namePrinter2a: namePrinter(pr2),
         namePrinter2b: namePrinter(pr2),
-        pr3Before: getPr[myRepo, ProjectId(3)],
-        upd3: updateProject[myRepo, Project[ProjectId(3), 'Project 3']],
-        pr3After: getPr[myRepo, ProjectId(3)],
-        del3: deleteProject[myRepo, Project[ProjectId(3), 'Project 3']],
-        pr3Deleted: getPr[myRepo, ProjectId(3)],
+        pr3Before: getPr[myRepo, ProjectId!3],
+        upd3: updateProject[myRepo, Project![id: ProjectId!3, name: 'Project 3']],
+        pr3After: getPr[myRepo, ProjectId!3],
+        del3: deleteProject[myRepo, Project![id: ProjectId!3, name: 'Project 3']],
+        pr3Deleted: getPr[myRepo, ProjectId!3],
         i2a: integerDoubler(1),
         i2b: integerDoubler(pId),
         i2c: integerDoubler(3.14),

@@ -1,6 +1,6 @@
 module demo-book2:
 
-InvalidIsbn = #[isbn: String];
+InvalidIsbn := #[isbn: String];
 
 calculateIsbnChecksum = ^isbn: String<10..10> => Result<Integer, NotANumber> :: {
     ?noError({{isbn->reverse}->chunk(1)}->mapIndexValue(
@@ -10,30 +10,30 @@ calculateIsbnChecksum = ^isbn: String<10..10> => Result<Integer, NotANumber> :: 
     ))->sum
 };
 
-Isbn = #String @ InvalidIsbn|NotANumber :: {
+Isbn := #String @ InvalidIsbn|NotANumber :: {
     checksum = ?whenTypeOf(#) is {
         type{String<10..10>}: calculateIsbnChecksum => invoke(#),
         ~: => @InvalidIsbn[#]
     };
     ?whenIsTrue { checksum % 11: => @InvalidIsbn[#], ~: null }
 };
-UnknownBook = #[~Isbn];
-BookTitle = #String<1..200>;
-Book = #[~Isbn, ~BookTitle];
+UnknownBook := #[~Isbn];
+BookTitle := #String<1..200>;
+Book := #[~Isbn, ~BookTitle];
 
 BookByIsbn = ^Isbn => Result<Book, UnknownBook>;
 
-BookAdded = #[~Book];
-BookReplaced = #[~Book];
+BookAdded := #[~Book];
+BookReplaced := #[~Book];
 
 BringBookToLibrary = ^Book => BookAdded|BookReplaced;
 
-BookRemoved = #[~Book];
+BookRemoved := #[~Book];
 RemoveBookFromLibrary = ^Book => Result<BookRemoved, UnknownBook>;
 
 AllLibraryBooks = ^Null => Array<Book>;
 
-Library = $[books: Mutable<Map<Book>>];
+Library := $[books: Mutable<Map<Book>>];
 Library->books(=> Mutable<Map<Book>>) :: $books;
 
 ==> BookByIsbn %% [~Library] :: ^Isbn => Result<Book, UnknownBook> :: {
@@ -70,7 +70,7 @@ Library->books(=> Mutable<Map<Book>>) :: $books;
 
 RenameBook = ^BookTitle => Book;
 
-BookManager = :[];
+BookManager := ();
 BookManager->bookByIsbn(^ ~Isbn => Result<Book, UnknownBook>) %% [~BookByIsbn] :: %bookByIsbn(isbn);
 BookManager->bringBookToLibrary(^ ~Book => BookAdded|BookReplaced) %% [~BringBookToLibrary] :: %bringBookToLibrary(book);
 BookManager->allLibraryBooks(=> Array<Book>) %% [~AllLibraryBooks] :: %allLibraryBooks();

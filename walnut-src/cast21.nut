@@ -1,9 +1,9 @@
 module cast21:
 
-Point = #[x: Real, y: Real];
+Point := #[x: Real, y: Real];
 
-InvalidIntegerRange = $[from: Integer, to: Integer];
-MyIntegerRange = #[from: Integer, to: Integer] @ InvalidIntegerRange :: {
+InvalidIntegerRange := $[from: Integer, to: Integer];
+MyIntegerRange := #[from: Integer, to: Integer] @ InvalidIntegerRange :: {
     ?whenIsTrue { #.from > #.to : Error(InvalidIntegerRange(#)), ~: # }
 };
 

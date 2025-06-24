@@ -18,7 +18,7 @@ matchTest3 = ^Integer|String => Integer|Null :: ?whenTypeOf(#) is {
     type{Boolean}: 0
 };
 
-Enum4 = :[Clubs, Spades, Hearts, Diamonds];
+Enum4 := (Clubs, Spades, Hearts, Diamonds);
 
 /* Case 4 - enum type fully covered */
 matchTest4 = ^Enum4 => Integer :: ?whenTypeOf(#) is {

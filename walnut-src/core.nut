@@ -1,64 +1,110 @@
-module core:
+module $core:
+
+/* global support */
+Global := ();
 
 /* constructor support */
-Global = :[];
-
-/* constructor support */
-Constructor = :[];
+Constructor := ();
 
 /* number and range related atoms */
-NotANumber = :[];
-MinusInfinity = :[];
-PlusInfinity = :[];
-InvalidRange = :[];
-IntegerRange = #[minValue: Integer|MinusInfinity, maxValue: Integer|PlusInfinity] @ InvalidRange ::
-    ?whenTypeOf(#) is { type[minValue: Integer, maxValue: Integer]:
-        ?when (#.minValue > #.maxValue) { => @InvalidRange[] }};
-RealRange = #[minValue: Real|MinusInfinity, maxValue: Real|PlusInfinity] @ InvalidRange ::
-    ?whenTypeOf(#) is { type[minValue: Real, maxValue: Real]:
-        ?when (#.minValue > #.maxValue) { => @InvalidRange[] }};
-LengthRange = #[minLength: Integer<0..>, maxLength: Integer<0..>|PlusInfinity] @ InvalidRange ::
-    ?whenTypeOf(#) is { type[minLength: Integer<0..>, maxLength: Integer<0..>]:
-        ?when (#.minLength > #.maxLength) { => @InvalidRange[] }};
+NotANumber := ();
+MinusInfinity := ();
+PlusInfinity := ();
+InvalidRange := ();
+IntegerRange := #[minValue: Integer|MinusInfinity, maxValue: Integer|PlusInfinity] @ InvalidRange ::
+    ?whenTypeOf(#) is { `[minValue: Integer, maxValue: Integer]:
+        ?when (#.minValue > #.maxValue) { => @InvalidRange }};
+RealRange := #[minValue: Real|MinusInfinity, maxValue: Real|PlusInfinity] @ InvalidRange ::
+    ?whenTypeOf(#) is { `[minValue: Real, maxValue: Real]:
+        ?when (#.minValue > #.maxValue) { => @InvalidRange }};
+LengthRange := #[minLength: Integer<0..>, maxLength: Integer<0..>|PlusInfinity] @ InvalidRange ::
+    ?whenTypeOf(#) is { `[minLength: Integer<0..>, maxLength: Integer<0..>]:
+        ?when (#.minLength > #.maxLength) { => @InvalidRange }};
+
+PositiveInteger := Integer<(0..)>;
+NonNegativeInteger := Integer<[0..)>;
+NegativeInteger := Integer<(..0)>;
+NonPositiveInteger := Integer<(..0]>;
+NonZeroInteger := Integer<(..0), (0..)>;
+
+IntegerNumberIntervalEndpoint := [value: Integer, inclusive: Boolean];
+IntegerNumberInterval := #[
+    start: MinusInfinity|IntegerNumberIntervalEndpoint,
+    end: PlusInfinity|IntegerNumberIntervalEndpoint
+] @ InvalidRange :: ?whenTypeOf(#) is {
+    `[start: IntegerNumberIntervalEndpoint, end: IntegerNumberIntervalEndpoint]:
+        ?when (
+            {#.start.value > #.end.value} ||
+            {#.start.value == #.end.value && {!{#.start.inclusive} || !{#.end.inclusive}}}
+        ) { => @InvalidRange }
+};
+IntegerNumberRange := [intervals: Array<IntegerNumberInterval>];
+
+PositiveReal := Real<(0..)>;
+NonNegativeReal := Real<[0..)>;
+NegativeReal := Real<(..0)>;
+NonPositiveReal := Real<(..0]>;
+NonZeroReal := Real<(..0), (0..)>;
+
+RealNumberIntervalEndpoint = [value: Real, inclusive: Boolean];
+RealNumberInterval := #[
+    start: MinusInfinity|RealNumberIntervalEndpoint,
+    end: PlusInfinity|RealNumberIntervalEndpoint
+] @ InvalidRange :: ?whenTypeOf(#) is {
+    `[start: RealNumberIntervalEndpoint, end: RealNumberIntervalEndpoint]:
+        ?when (
+            {#.start.value > #.end.value} ||
+            {#.start.value == #.end.value && {!{#.start.inclusive} || !{#.end.inclusive}}}
+        ) { => @InvalidRange }
+};
+RealNumberRange := [intervals: Array<RealNumberInterval>];
 
 /* dependency container */
-DependencyContainer = :[];
-DependencyContainerErrorType = :[CircularDependency, Ambiguous, NotFound, UnsupportedType, ErrorWhileCreatingValue];
-DependencyContainerError = $[targetType: Type, errorOnType: Type, errorMessage: String, errorType: DependencyContainerErrorType];
-DependencyContainerError->errorMessage(=> String) :: $errorMessage;
-DependencyContainerError->targetType(=> Type) :: $targetType;
-DependencyContainerError->errorType(=> DependencyContainerErrorType) :: $errorType;
+DependencyContainer := ();
+DependencyContainerErrorType := (CircularDependency, Ambiguous, NotFound, UnsupportedType, ErrorWhileCreatingValue);
+DependencyContainerError := [targetType: Type, errorOnType: Type, errorMessage: String, errorType: DependencyContainerErrorType];
 
 /* json value */
-JsonValue = Null|Boolean|Integer|Real|String|Array<$JsonValue>|Map<$JsonValue>|Set<$JsonValue>|Mutable<$JsonValue>|Shape<$JsonValue>;
-InvalidJsonString = #[value: String];
-InvalidJsonString->value(=> String) :: $value;
-InvalidJsonValue = #[value: Any];
+InvalidJsonString := [value: String];
+InvalidJsonValue := [value: Any];
 
 /* arrays and maps */
-IndexOutOfRange = #[index: Integer];
-MapItemNotFound = #[key: String];
-ItemNotFound = :[];
-SubstringNotInString = :[];
+IndexOutOfRange := [index: Integer];
+MapItemNotFound := [key: String];
+ItemNotFound := ();
+SubstringNotInString := ();
 
 /* casts */
-CastNotAvailable = #[from: Type, to: Type];
+CastNotAvailable := [from: Type, to: Type];
 
 /* enumerations */
-UnknownEnumerationValue = #[enumeration: Type, value: String];
+UnknownEnumerationValue := [enumeration: Type, value: String];
 
 /* hydration */
-HydrationError = #[value: Any, hydrationPath: String, errorMessage: String];
+HydrationError := [value: Any, hydrationPath: String, errorMessage: String];
 HydrationError->errorMessage(=> String) :: ''->concatList[
     'Error in ', $hydrationPath, ': ', $errorMessage
 ];
 
 /* IO etc. */
-ExternalError = $[errorType: String, originalError: Any, errorMessage: String];
+ExternalError := $[errorType: String, originalError: Any, errorMessage: String];
+
+/* RegExp */
+InvalidRegExp := #[expression: String];
+RegExp := $String;
+RegExpMatch := #[match: String, groups: Array<String>];
+NoRegExpMatch := ();
 
 /* Random generator */
-Random = :[];
+Random := ();
+
+/* UUID */
+InvalidUuid := #[value: String];
+Uuid := #String<36> @ InvalidUuid :: ?whenIsError(
+    {RegExp('/[a-f0-9]{8}\-[a-f0-9]{4}\-4[a-f0-9]{3}\-(8|9|a|b)[a-f0-9]{3}\-[a-f0-9]{12}/')}
+        ->matchString(#)
+) { => @InvalidUuid[#] };
 
 /* Password handling */
-PasswordString = #[value: String];
+PasswordString := #[value: String];
 

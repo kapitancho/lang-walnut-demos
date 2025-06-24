@@ -1,7 +1,7 @@
 module cast12:
 
-Point = #[x: Real, y: Real];
-ProductId = #Integer<1..>;
+Point := #[x: Real, y: Real];
+ProductId := #Integer<1..>;
 
 fn1 = ^JsonValue => String :: {
     #->jsonStringify

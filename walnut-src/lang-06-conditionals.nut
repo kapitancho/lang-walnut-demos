@@ -14,12 +14,12 @@ main = ^Any => String :: {
         },
         ?whenValueOf(color) is {
             'red': 'color is red',
-            ~: 'It``s a different color than red'
+            ~: 'It\`s a different color than red'
         },
         ?whenValueOf(color) is {
             'red': 'The color is red',
             'blue': 'The color is blue',
-            ~: 'It``s a different color than red or blue'
+            ~: 'It\`s a different color than red or blue'
         }
     ]->printed
 };

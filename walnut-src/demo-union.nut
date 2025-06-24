@@ -1,6 +1,6 @@
 module demo-union:
 
-Suit = :[Hearts, Diamonds, Clubs, Spades];
+Suit := (Hearts, Diamonds, Clubs, Spades);
 mySuitFn = ^Suit[Hearts, Diamonds]|Suit[Clubs, Diamonds] => Suit[Hearts, Clubs, Diamonds] :: #;
 
 User = [name: String<1..>, age: Integer<1..>, ...];

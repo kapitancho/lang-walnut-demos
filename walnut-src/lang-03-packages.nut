@@ -5,5 +5,5 @@ main = ^Any => String :: [
     3.4->floor,
     5.7->ceil,
     64->sqrt,
-    'Hello backwards.'->reverse
+    reverse('Hello backwards.')
 ]->printed;

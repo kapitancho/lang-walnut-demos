@@ -1,7 +1,7 @@
 module demo-asreal:
 
-Message = #[text: String];
-Greeting = $[text: String];
+Message := #[text: String];
+Greeting := $[text: String];
 
 Message ==> Real :: $text->length;
 Greeting ==> Real :: $text->length;

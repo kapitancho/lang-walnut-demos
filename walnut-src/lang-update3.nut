@@ -1,29 +1,29 @@
 module lang-update3:
 
-CannotGetSeven = :[];
+CannotGetSeven := ();
 
 getSeven = ^Array<Integer> => Result<Integer, CannotGetSeven> ::
-    ?whenIsError(#->item(7)) { Error(CannotGetSeven()) };
+    ?whenIsError(#->item(7)) { Error(CannotGetSeven) };
 
 rf1 = ^Integer => Integer :: #;
 rf2 = ^Integer => Result<Integer, String> :: #;
 rf3 = ^[num: Integer] => Integer :: #.num;
 
-Sub1 = #Integer;
-Sub2 = #Integer @ String :: null;
+Sub1 := #Integer;
+Sub2 := #Integer @ String :: null;
 
 Integer->mt1(^[input: Integer] => Integer) :: $ + #.input;
 Integer->mt2(^Integer => Result<Integer, String>) :: $ + #;
 
-St0 = $[num: Integer];
-St1 = $[num: Integer];
-St2 = $[num: Integer];
+St0 := $[num: Integer];
+St1 := $[num: Integer];
+St2 := $[num: Integer];
 St2[input: Integer] :: [num: #.input];
-St3 = $[num: Integer];
+St3 := $[num: Integer];
 St3[input: Integer] @ String :: [num: #.input];
-St4 = $[num: Integer];
+St4 := $[num: Integer];
 Constructor->St4(^[input: Integer] => Result<[num: Integer], String>) :: [num: #.input];
-St5 = $[num: Integer];
+St5 := $[num: Integer];
 St5[input: Integer] %% [~Sub1] :: [num: #.input + %.sub1->value];
 
 St1 ==> Integer :: $num;
@@ -31,7 +31,7 @@ St2 ==> Integer @ String :: $num;
 St4 ==> Integer :: $num;
 St5 ==> Integer :: $num;
 
-St7 = $[~St0];
+St7 := $[~St0];
 
 ==> St0 :: St0[3];
 ==> St2 :: St2[3];

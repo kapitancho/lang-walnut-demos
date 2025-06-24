@@ -6,13 +6,13 @@ ContentTitle = String;
 ContentText = String;
 ContentId = Uuid;
 ContentKey = String;
-UnknownContentEntry = :[];
+UnknownContentEntry := ();
 MemberContentEntry = [
-    updateTitle: ^[~ContentTitle] => `MemberContentEntry,
-    startEdit: ^Null => `MemberContentEntry,
-    updateContent: ^[~ContentText] => `MemberContentEntry,
+    updateTitle: ^[~ContentTitle] => \MemberContentEntry,
+    startEdit: ^Null => \MemberContentEntry,
+    updateContent: ^[~ContentText] => \MemberContentEntry,
     discardChanges: ^Null => Null,
-    publish: ^Null => `MemberContentEntry,
+    publish: ^Null => \MemberContentEntry,
     contentId: ^Null => ContentId,
     contentKey: ^Null => ContentKey,
     remove: ^Null => Null
@@ -39,12 +39,12 @@ ContactMessageData = [subject: String, body: String];
 ContentData = [~ContentTitle, ~ContentText];
 Content = [search: ^String => Array<ContentData>];
 MemberProfile = [
-    withNewUsername: ^[~Username] => `MemberProfile,
-    withNewEmailAddress: ^[~EmailAddress] => `MemberProfile,
-    withNewPassword: ^[~Password, tokenProtection: String|Null] => `MemberProfile,
-    confirmRegistration: ^Null => `MemberProfile,
-    passwordRecoveryRequest: ^Null => `MemberProfile,
-    withNewProfileDetails: ^[~ProfileDetails] => `MemberProfile,
+    withNewUsername: ^[~Username] => \MemberProfile,
+    withNewEmailAddress: ^[~EmailAddress] => \MemberProfile,
+    withNewPassword: ^[~Password, tokenProtection: String|Null] => \MemberProfile,
+    confirmRegistration: ^Null => \MemberProfile,
+    passwordRecoveryRequest: ^Null => \MemberProfile,
+    withNewProfileDetails: ^[~ProfileDetails] => \MemberProfile,
     accountSettings: ^Null => AccountSettingsData,
     isAuthorizedWithPassword: ^[~Password] => Boolean
 ];
@@ -59,7 +59,7 @@ Member = [
     sendContactMessage: ^[~ContactMessageData] => Null,
     memberId: ^Null => MemberId
 ];
-UnknownMember = :[];
+UnknownMember := ();
 MemberByUsername = ^[~Username] => Result<Member, UnknownMember|ExternalError>;
 Members = [
     member: ^[~MemberId] => Result<Member, UnknownMember|ExternalError>,
@@ -75,27 +75,27 @@ App = [~Members, ~Content];
     []
 };*/
 
-MyApp <: [~Members, ~Content];
+MyApp := [~Members, ~Content];
 MemberForData = ^[~MemberData] => Member;
 MemberDataById = ^[~MemberId] => Result<MemberData, UnknownMember|ExternalError>;
 MemberDataByUsername = ^[~Username] => Result<MemberData, UnknownMember|ExternalError>;
-MyMembers <: [~MemberForData, ~MemberDataById, ~MemberByUsername];
-MyContent = :[];
+MyMembers := [~MemberForData, ~MemberDataById, ~MemberByUsername];
+MyContent := ();
 
 
-MemberByUsernameQuery <: [~MemberForData, ~MemberDataByUsername];
+MemberByUsernameQuery := [~MemberForData, ~MemberDataByUsername];
 MemberByUsernameQuery ==> MemberByUsername :: ^[~Username] => Result<Member, UnknownMember|ExternalError> :: {
     $memberForData[?noError($memberDataByUsername[#.username])]
 };
 
 MemberProfileForData = ^[~MemberData] => MemberProfile;
-MyMember <: [~MemberData, ~MemberProfileForData];
+MyMember := [~MemberData, ~MemberProfileForData];
 
 MyMember ==> Member :: [
     content: ^Null => MemberContent :: [
         createDraft: ^[~ContentTitle, ~ContentText] => Null :: null,
         entry: ^[~ContentId] => Result<MemberContentEntry, UnknownContentEntry|ExternalError> :: {
-            Error(UnknownContentEntry[])
+            @UnknownContentEntry
         }
     ],
     profile: ^Null => MemberProfile :: {
@@ -110,16 +110,16 @@ MyMember ==> Member :: [
     memberId: ^Null => MemberId :: $memberData.memberId
 ];
 
-MemberForDataFactory <: [~MemberProfileForData];
+MemberForDataFactory := [~MemberProfileForData];
 MemberForDataFactory ==> MemberForData :: {
     ^[~MemberData] => Member :: {
-        {MyMember[#.memberData, $memberProfileForData]}->as(type{Member})
+        {MyMember![memberData: #memberData, memberProfileForData: $memberProfileForData]}->as(type{Member})
     }
 };
 
 ChangeUsername = ^[~MemberData, ~Username] => MemberData;
 
-MyMemberProfile <: [~MemberData, ~MemberProfileForData, ~ChangeUsername];
+MyMemberProfile := [~MemberData, ~MemberProfileForData, ~ChangeUsername];
 MyMemberProfile ==> MemberProfile :: {
     p = ^Null => MemberProfile :: $->as(type{MemberProfile});
     [
@@ -137,14 +137,18 @@ MyMemberProfile ==> MemberProfile :: {
     ]
 };
 
-MemberProfileForDataFactory = $[~ChangeUsername];
+MemberProfileForDataFactory := $[~ChangeUsername];
 MemberProfileForDataFactory ==> MemberProfileForData :: {
     ^[~MemberData] => MemberProfile :: {
-        {MyMemberProfile[#.memberData, $->as(type{MemberProfileForData}), $changeUsername]}->as(type{MemberProfile})
+        {MyMemberProfile![
+            memberData: #.memberData,
+            memberProfileForData: $->as(type{MemberProfileForData}),
+            changeUsername: $changeUsername
+        ]}->as(type{MemberProfile})
     }
 };
 
-MemberRepository = :[];
+MemberRepository := ();
 MemberRepository ==> MemberDataById :: ^[~MemberId] => Result<MemberData, UnknownMember|ExternalError> :: [
     memberId: #.memberId,
     emailAddress: 'mail@mail.com',
@@ -161,15 +165,15 @@ MemberRepository ==> MemberDataByUsername :: ^[~Username] => Result<MemberData, 
 ];
 
 EventListener = ^Any => Any;
-AppEventListener = :[];
+AppEventListener := ();
 AppEventListener ==> EventListener :: ^Any => Any :: null;
 
-UsernameChanged <: [~MemberData, previousState: MemberData];
-ChangeUsernameCommand <: [~EventListener];
+UsernameChanged := [~MemberData, previousState: MemberData];
+ChangeUsernameCommand := [~EventListener];
 ChangeUsernameCommand ==> ChangeUsername :: {
     ^[~MemberData, ~Username] => MemberData :: {
-        m = #.memberData->with[username: #.username];
-        $eventListener(UsernameChanged[m, #.memberData]);
+        m = #memberData->with[username: #.username];
+        $eventListener(UsernameChanged![memberData: m, previousState: #memberData]);
         m
     }
 };
@@ -181,16 +185,16 @@ Members = [
     memberByEmail: ^[~EmailAddress] => Result<Member, UnknownMember|ExternalError>,
     register: ^[~EmailAddress, ~Username, ~Password, ~ProfileDetails, activateUser: Boolean] => Result<Member, ExternalError>
 ];
-MyMembers <: [~MemberForData, ~MemberDataById, ~MemberByUsername];
+MyMembers := [~MemberForData, ~MemberDataById, ~MemberByUsername];
 */
 
-MyApp ==> App :: $;
+MyApp ==> App :: $->shape(`App);
 MyMembers ==> Members :: [
     member: ^[~MemberId] => Result<Member, UnknownMember|ExternalError> :: {
         $memberForData[$memberDataById => invoke[#.memberId]]
     },
     memberByUsername: $memberByUsername,
-    memberByEmail: ^[~EmailAddress] => Result<Member, UnknownMember|ExternalError> :: { @UnknownMember[] },
+    memberByEmail: ^[~EmailAddress] => Result<Member, UnknownMember|ExternalError> :: @UnknownMember,
     register: ^[~EmailAddress, ~Username, ~Password, ~ProfileDetails, activateUser: Boolean] => Result<Member, ExternalError> :: {
         @ExternalError[errorType: 'Error', originalError: 'Error', errorMessage: 'Error']
     }

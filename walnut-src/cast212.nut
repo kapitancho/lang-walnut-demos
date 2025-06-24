@@ -8,18 +8,18 @@ squared = ^Integer => Integer :: # * #;
 
 composed = ^Integer => Integer :: [timesTwo, plusOne, squared]->chainInvoke(#);
 
-NotAnInteger = :[];
+NotAnInteger := ();
 dividedByThree = ^Integer => Result<Integer, NotAnInteger> :: ?whenIsTrue {
     {# % 3} == 0: {# / 3}->asInteger,
-    ~: Error(NotAnInteger())
+    ~: @NotAnInteger
 };
 
 PartialMonad = ^Integer => Result<Integer, NotAnInteger>;
 BrokenMonad = ^Result<Integer, NotAnInteger> => Result<Integer, NotAnInteger>;
 monadFixer = ^monad: PartialMonad => BrokenMonad :: {
     ^r: Result<Integer, NotAnInteger> => Result<Integer, NotAnInteger> :: ?whenTypeOf(r) is {
-        type{Integer}: ?noError(monad(r)),
-        type{Result<Nothing, NotAnInteger>}: r
+        `Integer: ?noError(monad(r)),
+        `Result<Nothing, NotAnInteger>: r
     }
 };
 

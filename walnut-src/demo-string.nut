@@ -1,6 +1,6 @@
 module demo-string:
 
-MyString = #String<4..12>;
+MyString := #String<4..12>;
 
 /* string specific String->... */
 length         = ^String<1..15>                                 => Integer<1..15>                               :: #->length;
@@ -35,7 +35,7 @@ asInteger      = ^String<1..15>                                 => Result<Intege
 asReal         = ^String<1..15>                                 => Result<Real, NotANumber>                     :: #->asReal;
 asBoolean      = ^String<..15>                                  => Boolean                                      :: #->asBoolean;
 valueType      = ^String<1..15>                                 => Type<String<1..15>>                          :: #->type;
-isOfType       = ^[String<1..15>, Type]                         => Boolean                                      :: #0->isOfType(#1);
+checkIsOfType       = ^[String<1..15>, Type]                         => Boolean                                      :: #0->isOfType(#1);
 jsonDecode     = ^String<1..15>                                 => Result<JsonValue, InvalidJsonString>         :: #->jsonDecode;
 jsonStringify  = ^String<1..15>                                 => String                                       :: #->jsonStringify;
 
@@ -78,8 +78,8 @@ test = ^[a: String<3..10>, b: String<..5>, c: String['a', 'hello'], d: String<1.
     asBooleanTrue: asBoolean(#a),
     asBooleanFalse: asBoolean(''),
     type: valueType(#a),
-    isOfTypeTrue: isOfType[#a, type{String}],
-    isOfTypeFalse: isOfType[#a, type{Integer}],
+    isOfTypeTrue: checkIsOfType[#a, type{String}],
+    isOfTypeFalse: checkIsOfType[#a, type{Integer}],
     binaryEqualTrue: binaryEqual[#e, '42'],
     binaryEqualFalse: binaryEqual[#a, #b],
     binaryNotEqualTrue: binaryNotEqual[#a, #b],

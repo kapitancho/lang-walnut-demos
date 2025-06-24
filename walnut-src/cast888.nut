@@ -1,7 +1,7 @@
 module cast888:
 
-MyAtom = :[];
-Suit = :[Hearts, Diamonds, Clubs, Spades];
+MyAtom := ();
+Suit := (Hearts, Diamonds, Clubs, Spades);
 
 onlyFirstValueOfEnumType = ^Type<Enumeration> => Result<Type<EnumerationSubset>, UnknownEnumerationValue> ::
     #->withValues[{#->values}.0];
@@ -68,8 +68,8 @@ q = ^[i: IntegerRange, r: RealRange, l: LengthRange, t: Type<Boolean>,
 myFn = ^Any :: {
     q[
         ?noError(IntegerRange[1, 10]),
-        ?noError(RealRange[MinusInfinity(), 3.14]),
-        ?noError(LengthRange[7, PlusInfinity()]),
+        ?noError(RealRange[MinusInfinity, 3.14]),
+        ?noError(LengthRange[7, PlusInfinity]),
         type{True},
         [0, 2, -5],
         [-3.14],

@@ -11,7 +11,7 @@ myFn = ^Array<String> :: {
 MyType = ^String;
 MyNestedType = Array<^String>;
 
-T = $[a: Integer] @ String :: ?whenValueOf(#a) is { 7 : => @'seven is not allowed' };
+T := $[a: Integer] @ String :: ?whenValueOf(#a) is { 7 : => @'seven is not allowed' };
 
 T[x: Integer, y: Integer] :: [a: #x + #y];
 

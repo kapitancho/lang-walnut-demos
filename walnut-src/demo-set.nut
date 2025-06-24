@@ -7,7 +7,7 @@ a = type{Set<Integer>};
 
 getUnique = ^Array<Integer> => Set<Integer> :: #->uniqueSet;
 
-demoSetType = ^ => Set<Real, 6..6> :: [1; -1.11; 3.14; 4; -42; 4];
+demoSetType = ^ => Set<Real, 5..6> :: [1; -1.11; 3.14; 4; -42; 4];
 
 main = ^Array<String> => String :: [
     /*a, getUnique[1, 5, 5, 7], [], [;], [:], [7; 3; 3], [7, 3, 3, 8, 10], [5], [9;],*/

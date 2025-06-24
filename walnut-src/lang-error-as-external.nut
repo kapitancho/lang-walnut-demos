@@ -7,7 +7,7 @@ a = ^Integer => Result<Integer, String> :: ?whenTypeOf(#) is {
 
 b = ^Integer => *Integer :: a(#) *> ('Negative numbers not allowed');
 
-TodoTest = :[];
+TodoTest := ();
 TodoTest->run(^Any => Any) :: [
     a(3),
     a(-5),
@@ -15,4 +15,4 @@ TodoTest->run(^Any => Any) :: [
     b(-4)
 ];
 
-main = ^Any => String :: TodoTest()->run->printed;
+main = ^Any => String :: TodoTest->run->printed;

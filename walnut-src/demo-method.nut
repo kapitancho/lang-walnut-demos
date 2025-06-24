@@ -1,7 +1,7 @@
 module demo-method:
 
 /* Let's define a type which will be injected as a dependency */
-CommunicationProtocol = $[prefix: String];
+CommunicationProtocol := $[prefix: String];
 /* Provide a getter for the dependency */
 CommunicationProtocol->prefix(=> String) :: $prefix;
 /* Provide a DI instance for that type */
@@ -9,7 +9,7 @@ CommunicationProtocol->prefix(=> String) :: $prefix;
 
 
 /* This is out main type */
-Person = $[name: String<1..>, age: Integer<0..>];
+Person := $[name: String<1..>, age: Integer<0..>];
 
 /* An example where no parameter is passed (implying null) */
 Person->greet(=> String) %% [~CommunicationProtocol] :: ['Hello, ', %communicationProtocol->prefix, $name]->combineAsString('');

@@ -1,10 +1,10 @@
 module demo-global:
 
-NotFound = :[];
-Suit = :[Hearts, Diamonds, Clubs, Spades];
-P = :[Q];
+NotFound := ();
+Suit := (Hearts, Diamonds, Clubs, Spades);
+P := (Q);
 
-Dup = :[A, B, C, D];
+Dup := (A, B, C, D);
 DupSub = Dup[A, C];
 /*MyStrList = String['hi', 'ho', 'hi'];
 MyRealList = Real[1, 3.14, -28, 0, 1];

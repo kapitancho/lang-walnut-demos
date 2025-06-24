@@ -5,8 +5,8 @@ NonNegativeInteger = Integer<0..>;
 fibonacciHelper = ^NonNegativeInteger => [NonNegativeInteger, NonNegativeInteger] ::
     ?whenTypeOf(#) is {
         type{Integer<1..>} : {
-            r = fibonacciHelper(# - 1);
-            [r.1, r.0 + r.1]
+            var{i, j} = fibonacciHelper(# - 1);
+            [j, i + j]
         },
         ~ : [1, 1]
     };

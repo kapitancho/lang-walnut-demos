@@ -1,6 +1,6 @@
 module cast16:
 
-Suit = :[Spade, Heart, Diamond, Club];
+Suit := (Spade, Heart, Diamond, Club);
 Apple = [asText: ^Null => String];
 Suit ==> Apple :: [
     asText: ^Null => String :: {

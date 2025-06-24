@@ -11,7 +11,7 @@ ProfileDetails = [
     profileDescription: String
 ];
 MemberData = [~MemberId, ~EmailAddress, ~Username, ~PasswordHash, ~ProfileDetails];
-UnknownMember = :[];
+UnknownMember := ();
 
 /*Members = [
     member: ^[~MemberId] => Result<Member, UnknownMember|ExternalError>,
@@ -21,7 +21,7 @@ UnknownMember = :[];
 ];
 Content = [search: ^String => Array<ContentData>];*/
 
-Member = $[memberData: Mutable<MemberData>];
+Member := $[memberData: Mutable<MemberData>];
 Member->memberId(^Null => MemberId) :: $memberData->value.memberId;
 
 MemberForData = ^[~MemberData] => Member;
@@ -45,18 +45,18 @@ MemberDataByUsername = ^[~Username] => Result<MemberData, UnknownMember|External
     profileDetails: [profilePicture : 'pic', profileDescription: 'desc']
 ];
 
-Members = :[];
+Members := ();
 Members->member(^[~MemberId] => Result<Member, UnknownMember|ExternalError>)
     %% [~MemberDataById, ~MemberForData] :: %.memberForData[?noError(%.memberDataById(#))];
 Members->memberByUsername(^[~Username] => Result<Member, UnknownMember|ExternalError>)
     %% [~MemberDataByUsername, ~MemberForData] :: %.memberForData[?noError(%.memberDataByUsername(#))];
 
-Content = :[];
+Content := ();
 
 App = [~Members, ~Content];
 
 myFn = ^Array<String> => Any :: {
-    ctr = DependencyContainer();
+    ctr = DependencyContainer;
     app = ?noError(ctr->valueOf(type{App}));
     [
         ?noError(app.members->member[memberId: 'ABC'])->memberId,

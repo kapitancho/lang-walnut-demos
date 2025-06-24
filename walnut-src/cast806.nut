@@ -1,13 +1,13 @@
 module cast806:
 
-MyInteger = #Integer;
-MyReal = #Real;
-MyString = #String;
-MyNull = #Null;
-MyBoolean = #Boolean;
-MyArray = #Array;
-MyMap = #Map;
-MyMutable = #Mutable;
+MyInteger := #Integer;
+MyReal := #Real;
+MyString := #String;
+MyNull := #Null;
+MyBoolean := #Boolean;
+MyArray := #Array;
+MyMap := #Map;
+MyMutable := #Mutable;
 
 i1 = ^Integer => Any :: #->hydrateAs(type{MyInteger});
 i2 = ^Any => Any :: 5->hydrateAs(type{MyInteger});
@@ -27,7 +27,7 @@ m2 = ^Any => Any :: [a: 1, b: 2]->hydrateAs(type{MyMap});
 v1 = ^Mutable<Real> => Any :: #->hydrateAs(type{MyMutable});
 v2 = ^Any => Any :: mutable{Integer, 42}->hydrateAs(type{MyMutable});
 
-Q = :[];
+Q := ();
 
 myFn = ^Any => Any :: [
     i1(42), i2(), r1(-2.71), r2(), s1('hello'),

@@ -1,7 +1,7 @@
 module demo-asinteger:
 
-Message = #[text: String];
-Greeting = $[text: String];
+Message := #[text: String];
+Greeting := $[text: String];
 
 Message ==> Integer :: $text->length;
 Greeting ==> Integer :: $text->length;

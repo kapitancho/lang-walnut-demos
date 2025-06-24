@@ -5,7 +5,7 @@ module demo-properties:
 */
 
 /* This is a type where a property accessor will be defined */
-Person = $[name: String<1..>, age: Integer<0..>];
+Person := $[name: String<1..>, age: Integer<0..>];
 Person->item(^String => Result<String|Integer, String>) :: ?whenValueOf(#) is {
     'name': $name,
     'age': $age,

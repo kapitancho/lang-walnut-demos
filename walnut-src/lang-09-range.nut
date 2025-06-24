@@ -6,10 +6,10 @@ main = ^Any => String :: {
     emails = [Bob: 'bob@gmail.com', Mark: 'mark@gmail.com'];
     [
         ids->mapIndexValue(^[index: Integer, value: Integer] => String ::
-            [#.index->asString, ' - ID: ', #.value->asString]->combineAsString('')),
+            #index->asString + ' - ID: ' + #value->asString),
         ids->sum,
         emails->mapKeyValue(^[key: String, value: String] => String ::
-            [#.key, ': ', #.value]->combineAsString(''))->values,
-        emails->keys->map(^String => String :: 'Name: '->concat(#))
+            #key + ': ' + #value)->values,
+        emails->keys->map(^name: String => String :: 'Name: ' + name)
     ]->printed
 };

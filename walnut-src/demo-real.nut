@@ -1,11 +1,11 @@
 module demo-real:
 
-MyReal = #Real<4..12>;
-MyReal->flip(=> MyReal) :: MyReal(16 - $$);
+MyReal := Real<4..12>;
+MyReal->flip(=> MyReal) :: MyReal!{16 - $$};
 
-MyOwnReal = #Real<0..100>;
-MyUnrelated = #[x: Real]; MyUnrelated ==> Real :: $x;
-MyError = :[];
+MyOwnReal := Real<0..100>;
+MyUnrelated := #[x: Real]; MyUnrelated ==> Real :: $x;
+MyError := ();
 
 /* string specific Real->... */
 binaryPlus             = ^[Real<4..12>, Real<-5..7>]       => Real<-1..19>             :: #0 + #1;
@@ -33,7 +33,7 @@ asString               = ^Real<1..15>                      => String            
 asInteger              = ^Real<1.6..15.4>                  => Integer<1..15>           :: #->asInteger;
 asBoolean              = ^Real<-2..15>                     => Boolean                  :: #->asBoolean;
 valueType              = ^Real<1..15>                      => Type<Real<1..15>>        :: #->type;
-isOfType               = ^[Real<1..15>, Type]              => Boolean                  :: #0->isOfType(#1);
+checkIsOfType               = ^[Real<1..15>, Type]              => Boolean                  :: #0->isOfType(#1);
 jsonStringify          = ^Real<1..15>                      => String                   :: #->jsonStringify;
 
 shapeFn                = ^[Shape<Real>, Shape<Real>]        => Real                     :: {#0->shape(`Real)} + {#1->shape(`Real)};
@@ -72,9 +72,9 @@ test = ^[a: Real<5..10.7>, b: Real<..5>, c: Real[3.14, 8], d: Real<5..6>, e: MyR
     asBooleanTrue: asBoolean(#a),
     asBooleanFalse: asBoolean(0.0),
     type: valueType(#a),
-    isOfTypeTrue: isOfType[#a, type{Real}],
-    isOfTypeTrueInteger: isOfType[#a, type{Integer}],
-    isOfTypeFalse: isOfType[#a, type{String}],
+    isOfTypeTrue: checkIsOfType[#a, type{Real}],
+    isOfTypeTrueInteger: checkIsOfType[#a, type{Integer}],
+    isOfTypeFalse: checkIsOfType[#a, type{String}],
     binaryEqualTrue: binaryEqual[#d, 5.5],
     binaryEqualFalse: binaryEqual[#a, #b],
     binaryNotEqualTrue: binaryNotEqual[#a, #b],
@@ -82,12 +82,12 @@ test = ^[a: Real<5..10.7>, b: Real<..5>, c: Real[3.14, 8], d: Real<5..6>, e: MyR
     jsonStringify: jsonStringify(#c),
     myReal: #e,
     myRealFlip: #e->flip,
-    shapeFn1: shapeFn[MyReal(4.1), MyOwnReal(9.2)],
+    shapeFn1: shapeFn[MyReal!4.1, MyOwnReal!9.2],
     shapeFn2: shapeFn[42, MyUnrelated[x: 9.2]],
     end: 'end'
 ];
 
 main = ^Array<String> => String :: {
-    x = test[7.1, -100, 3.14, 5.5, MyReal(8.939), -17.6];
+    x = test[7.1, -100, 3.14, 5.5, MyReal!8.939, -17.6];
     x->printed
 };

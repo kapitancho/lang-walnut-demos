@@ -4,8 +4,8 @@ Reverser = ^String => String;
 
 ==> Reverser :: ^String => String :: #->reverse;
 
-Suit = :[Spade, Heart, Diamond, Club];
-SuitColor = :[Red, Black];
+Suit := (Spade, Heart, Diamond, Club);
+SuitColor := (Red, Black);
 
 Suit->color(^Null => SuitColor) :: ?whenValueOf($) is {
     Suit.Heart: SuitColor.Red,
@@ -16,10 +16,10 @@ Suit->color(^Null => SuitColor) :: ?whenValueOf($) is {
 Suit->name(^Null => String) :: $->textValue;
 Suit->secretName(^Null => String) %% Reverser :: %($->textValue);
 
-Encoder = $[value: String];
+Encoder := $[value: String];
 Encoder(String) :: [value: #->reverse];
 
-Decoder = $[value: String];
+Decoder := $[value: String];
 Decoder(String) %% Reverser :: [value: %(#)];
 
 recGlobal = ^Integer => String :: ?whenIsTrue { # > 0 : '*'->concat(recGlobal(# - 1)), ~ : '' };

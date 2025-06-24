@@ -4,9 +4,9 @@ module lang-type-system:
 /* 1. alias */
 PointA = [x: Real, y: Real];
 /* 2. open */
-PointB = #[x: Real, y: Real];
+PointB := #[x: Real, y: Real];
 /* 3. sealed */
-PointC = $[x: Real, y: Real];
+PointC := $[x: Real, y: Real];
 
 /* instantiating data */
 newPointA = ^Null => PointA :: [x: 3.14, y: -2]; /* it is enough to hava e matching structure (type) */
@@ -33,12 +33,12 @@ PointA ==> String :: ['(', $x->asString, ', ', $y->asString, ')']->combineAsStri
 PointC ==> String :: ['(', $x->asString, ', ', $y->asString, ')']->combineAsString('');
 
 /* subtype specialty 1 - subtyping basic types like Integer, Real, Boolean, String, etc. */
-UuidString = #String<36>;
+UuidString := #String<36>;
 /* subtype specialty 2 - "Value Object"-like behavior */
-MyRange = #[min: Integer, max: Integer] @ String :: ?whenIsTrue { #min > #max : => @'Invalid Range', ~: null };
+MyRange := #[min: Integer, max: Integer] @ String :: ?whenIsTrue { #min > #max : => @'Invalid Range', ~: null };
 
 /* state type constructor */
-MyStateType = $[x: Integer, y: Integer];
+MyStateType := $[x: Integer, y: Integer];
 MyStateType([x: Real, y: Real]) :: [x: #.x->asInteger, y: #.y->asInteger];
 
 /* all examples in one place */

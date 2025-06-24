@@ -1,6 +1,6 @@
 module demo-clock %% $datetime:
 
-ClockTest = :[];
+ClockTest := ();
 ClockTest->test(^Any => Any) %% [~Clock] :: {
     now = %.clock->now;
     myDate = Date[year: 2025, month: 4, day: 25];
@@ -20,10 +20,10 @@ ClockTest->test(^Any => Any) %% [~Clock] :: {
         hydrateTimeFromString: '12:34:56'->hydrateAs(type{Time}),
         hydrateTimeFromArray: [12, 34, 56]->hydrateAs(type{Time}),
         timeFromString: '12:34:56'->asTime,
-        hydrateDateAndTimeFromString: '2024-02-29 12:34:56'->hydrateAs(type{DateAndTime}),
-        hydrateDateAndTimeFromArray: [2024, 2, 29, 12, 34, 56]->hydrateAs(type{DateAndTime}),
+        hydrateDateAndTimeFromString: '2024-02-29 12:34:56'->hydrateAs(`DateAndTime),
+        hydrateDateAndTimeFromArray: [2024, 2, 29, 12, 34, 56]->hydrateAs(`DateAndTime),
         dateAndTimeFromString: '2024-02-29 12:34:56'->asDateAndTime
     ]
 };
 
-main = ^Any => String :: ClockTest()->test->printed;
+main = ^Any => String :: ClockTest->test->printed;

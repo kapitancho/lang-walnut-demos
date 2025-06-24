@@ -2,10 +2,10 @@ module cast9999:
 
 M1 = Shape<Integer>;
 M2 = {Integer};
-M3 = #Shape<Integer>;
-M4 = #{Integer};
-M5 = $Shape<Integer>;
-M6 = ${Integer};
+M3 := #Shape<Integer>;
+M4 := #{Integer};
+M5 := $Shape<Integer>;
+M6 := ${Integer};
 M7 = Shape<[a: Integer]>;
 M8 = {[a: Integer]};
 M9 = Shape<[]>;
@@ -24,8 +24,8 @@ M21 = [{Integer}, {Integer}];
 M22 = [a: *Integer, b: *Integer];
 M23 = [a: "Integer", b: "Integer"];
 M24 = {[{Integer}]};
-M25 = #*Integer;
-M26 = $*Integer;
+M25 := #*Integer;
+M26 := $*Integer;
 
 s1 = ^Shape<Integer> => Integer :: #;
 s2 = ^{Integer} => Integer :: #;
@@ -35,7 +35,7 @@ s5 = ^ *Integer => Integer :: $;
 s6 = ^ :: `Shape<Integer>;
 s7 = ^ :: `{Integer};
 
-T1 = #Null @ {Integer} :: null;
+T1 := #Null @ {Integer} :: null;
 T1({Integer}) :: null;
 T1->x(^ {Integer}) :: null;
 T1->y(=> {Integer}) :: 1;

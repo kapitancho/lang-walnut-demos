@@ -1,17 +1,17 @@
 module lang-cast-hydrate-json:
 
-TaskEffort = $[hours: Integer<0..>, minutes: Integer[0, 15, 30, 45]];
-UnknownEffort = :[];
-Task = #[
+TaskEffort := $[hours: Integer<0..>, minutes: Integer[0, 15, 30, 45]];
+UnknownEffort := ();
+Task := #[
     title: String<1..100>,
     effort: TaskEffort|UnknownEffort,
     done: Boolean
 ];
 
-ProjectStatus = :[Draft, Active, Completed, OnHold, Canceled];
+ProjectStatus := (Draft, Active, Completed, OnHold, Canceled);
 ProjectTitle = String<1..100>;
 ProjectTag = String<1..>;
-Project = #[
+Project := #[
     ~ProjectTitle, /* shorthand for projectTitle: ProjectTitle */
     ~ProjectStatus,
     tags: Array<ProjectTag, ..10>,
@@ -40,7 +40,7 @@ test = ^Null => Any :: {
         tasks: [
             Task[title: 'Task 1', effort: TaskEffort[hours: 5, minutes: 15], done: true],
             Task[title: 'Task 2', effort: TaskEffort[hours: 2, minutes: 0], done: false],
-            Task[title: 'Task 3', effort: UnknownEffort(), done: false]
+            Task[title: 'Task 3', effort: UnknownEffort, done: false]
         ]
     ];
     [
@@ -89,7 +89,7 @@ Result: [
         tasks: [
             Task[title: 'Task 1', effort: TaskEffort[hours: 5, minutes: 15], done: true],
             Task[title: 'Task 2', effort: TaskEffort[hours: 2, minutes: 0], done: false],
-            Task[title: 'Task 3', effort: UnknownEffort(), done: false]
+            Task[title: 'Task 3', effort: UnknownEffort, done: false]
         ]
     ]
 ]

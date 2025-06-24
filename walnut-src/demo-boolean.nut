@@ -1,6 +1,6 @@
 module demo-boolean:
 
-MyBoolean = #Boolean;
+MyBoolean := #Boolean;
 
 /* specific Boolean->... */
 unaryNot            = ^Boolean            => Boolean                 :: !#;
@@ -15,7 +15,7 @@ asString            = ^Boolean            => String['true', 'false'] :: #->asStr
 asInteger           = ^Boolean            => Integer<0..1>  :: #->asInteger;
 asReal              = ^Boolean            => Real[0.0, 1.0] :: #->asReal;
 valueType           = ^Boolean            => Type<Boolean>  :: #->type;
-isOfType            = ^[Boolean, Type]    => Boolean        :: #0->isOfType(#1);
+checkIsOfType            = ^[Boolean, Type]    => Boolean        :: #0->isOfType(#1);
 jsonStringify       = ^Boolean            => String         :: #->jsonStringify;
 
 test = ^[a: Boolean, b: Boolean, c: True, d: False, e: MyBoolean] => Map :: [
@@ -27,8 +27,8 @@ test = ^[a: Boolean, b: Boolean, c: True, d: False, e: MyBoolean] => Map :: [
     asReal: asReal(#a),
     asInteger: asInteger(#b),
     type: valueType(#a),
-    isOfTypeTrue: isOfType[#a, type{Boolean}],
-    isOfTypeFalse: isOfType[#a, type{String}],
+    isOfTypeTrue: checkIsOfType[#a, type{Boolean}],
+    isOfTypeFalse: checkIsOfType[#a, type{String}],
     binaryEqualTrue: binaryEqual[#a, #c],
     binaryEqualFalse: binaryEqual[#a, #b],
     binaryNotEqualTrue: binaryNotEqual[#a, #b],

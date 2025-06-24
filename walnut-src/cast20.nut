@@ -1,11 +1,11 @@
 module cast20:
 
-Point = #[x: Real, y: Real];
+Point := #[x: Real, y: Real];
 
-KeyNotFound = $[key: String];
-ValueAdded = :[];
-ValueReplaced = :[];
-ValueRemoved = :[];
+KeyNotFound := $[key: String];
+ValueAdded := ();
+ValueReplaced := ();
+ValueRemoved := ();
 
 KeyValueStorage = [
     hasWithKey: ^[key: String] => Boolean,
@@ -14,19 +14,19 @@ KeyValueStorage = [
     removeByKey: ^[key: String] => Result<ValueRemoved, KeyNotFound>
 ];
 
-InMemoryKeyValueStorage = #[storage: Mutable<Map>];
+InMemoryKeyValueStorage := #[storage: Mutable<Map>];
 
-InvalidProductId = $[value: Any];
+InvalidProductId := $[value: Any];
 ProductId = Integer<1..>;
 
-InvalidProductName = $[value: Any];
+InvalidProductName := $[value: Any];
 ProductName = String<1..>;
-Product = #[~ProductId, ~ProductName];
+Product := #[~ProductId, ~ProductName];
 
-ProductNotFound = $[~ProductId];
-ProductAdded = :[];
-ProductReplaced = :[];
-ProductRemoved = :[];
+ProductNotFound := $[~ProductId];
+ProductAdded := ();
+ProductReplaced := ();
+ProductRemoved := ();
 
 ProductRepository = [
     byId: ^[~ProductId] => Result<Product, ProductNotFound>,
@@ -35,7 +35,7 @@ ProductRepository = [
     all: ^Null => Array<Product>
 ];
 
-KeyValueStorageProductRepository = #[~KeyValueStorage];
+KeyValueStorageProductRepository := #[~KeyValueStorage];
 
 Product ==> Map :: {
     [productId: $productId, productName: $productName]
@@ -79,9 +79,9 @@ KeyValueStorageProductRepository ==> ProductRepository :: [
         key = #.product.productId->asString;
         exists = $keyValueStorage.hasWithKey[key];
         $keyValueStorage.storeByKey[key, #.product->as(type{Map})];
-        ?whenIsTrue { exists: ProductReplaced(), ~: ProductAdded() }
+        ?whenIsTrue { exists: ProductReplaced, ~: ProductAdded }
     },
-    remove: ^[~ProductId] => Result<ProductRemoved, ProductNotFound> :: ProductRemoved(),
+    remove: ^[~ProductId] => Result<ProductRemoved, ProductNotFound> :: ProductRemoved,
     all: ^Null => Array<Product> :: []
 ];
 
@@ -95,26 +95,26 @@ InMemoryKeyValueStorage ==> KeyValueStorage :: [
         ?whenTypeOf(item) is {
             type{Map}: item,
             type{Result<Nothing, MapItemNotFound>}: => Error(KeyNotFound[#.key]),
-            ~: Error(KeyNotFound['unknown-key'])
+            ~: @KeyNotFound['unknown-key']
         }
     },
     storeByKey: ^[key: String, value: Map] => ValueAdded|ValueReplaced :: {
         keyExists = {$storage->value}->keyExists(#.key);
         $storage->SET({$storage->value}->withKeyValue[key: #.key, value: #.value]);
-        ?whenIsTrue { keyExists: ValueReplaced(), ~: ValueAdded() }
+        ?whenIsTrue { keyExists: ValueReplaced, ~: ValueAdded }
     },
     removeByKey: ^[key: String] => Result<ValueRemoved, KeyNotFound> :: {
         m = $storage->value->valuesWithoutKey(#.key);
         ?whenTypeOf(m) is {
-            type{Result<Nothing, MapItemNotFound>}: => Error(KeyNotFound[#.key]),
-            type{Map}: { $storage->SET(m); ValueRemoved() }
+            `Result<Nothing, MapItemNotFound>: => Error(KeyNotFound[#.key]),
+            `Map: { $storage->SET(m); ValueRemoved }
         }
     }
 ]->as(type{KeyValueStorage});
 
 myFn = ^Array<String> => Any :: {
     p = Point[4, 7];
-    storage = {InMemoryKeyValueStorage[mutable{Map, [:]}]}->as(type{KeyValueStorage});
+    storage = {InMemoryKeyValueStorage[mutable{Map, [:]}]}->as(`KeyValueStorage);
     step1 = storage.getByKey[key: 'x'];
     step2 = storage.storeByKey[key: 'x', value: [k: 1]];
     step3 = storage.getByKey[key: 'x'];
@@ -124,7 +124,7 @@ myFn = ^Array<String> => Any :: {
     step7 = storage.getByKey[key: 'x'];
     step8 = storage.removeByKey[key: 'x'];
     storage.storeByKey[key: '5', value: [productId: 5, productName: 'Product Test']];
-    repo = {KeyValueStorageProductRepository([storage])}->as(type{ProductRepository});
+    repo = {KeyValueStorageProductRepository([storage])}->as(`ProductRepository);
     product5 = repo.byId[productId: 5];
     product6a = repo.byId[productId: 6];
     step11 = repo.store[product: Product[6, 'Cool Product']];

@@ -1,38 +1,38 @@
 module demo-constructor:
 
-C = $[x: Integer, y: Integer];
-E = :[];
-D = $[x: Integer, y: Integer];
+C := $[x: Integer, y: Integer];
+E := ();
+D := $[x: Integer, y: Integer];
 D[t: Integer, u: Integer] @ E :: {
     z = #.u - #.t;
-    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @E() };
+    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @E };
     [x: #.t, y: #.u]
 };
-G = :[];
-H = $[x: Integer, y: Integer] @ G :: {
+G := ();
+H := $[x: Integer, y: Integer] @ G :: {
     z = #.y - #.x;
-    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @G() }
+    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @G }
 };
-J = :[];
-K = :[];
-L = $[x: Integer, y: Integer] @ K :: {
+J := ();
+K := ();
+L := $[x: Integer, y: Integer] @ K :: {
     z = #.y - #.x;
-    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @K() }
+    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @K }
 };
 L[t: Integer, u: Integer] @ J :: {
-    ?whenTypeOf(#.u) is { type{Integer<1..>}: null, ~: => @J() };
+    ?whenTypeOf(#.u) is { type{Integer<1..>}: null, ~: => @J };
     [x: #.t, y: #.u]
 };
 
-Q = :[];
-R = :[];
-P = #[x: Integer, y: Integer] @ Q :: {
+Q := ();
+R := ();
+P := #[x: Integer, y: Integer] @ Q :: {
     z = #.y - #.x;
-    ?whenTypeOf(z) is { type{Integer<10..>}: null, ~: => @Q() }
+    ?whenTypeOf(z) is { type{Integer<10..>}: null, ~: => @Q }
 };
 P[t: String, u: Integer] @ R :: {
     z = #.u - #.t->length;
-    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @R() };
+    ?whenTypeOf(z) is { type{Integer<1..>}: null, ~: => @R };
     [x: #.t->length, y: #.u]
 };
 

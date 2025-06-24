@@ -2,30 +2,39 @@ module lang-12-structs:
 /* A Walnut-Lang implementation of https://github.com/gabrieldim/Go-Crash-Course/blob/main/12_structs/main.go */
 
 NonEmptyString = String<1..>;
-Gender = :[Male, Female];
+Gender := (Male, Female);
 Age = Integer<0..>;
 
-Person = #[
+Person := #[
     firstName: NonEmptyString,
     lastName: Mutable<NonEmptyString>,
     city: NonEmptyString,
     ~Gender,
     age: Mutable<Age>
 ];
+Person[
+    firstName: NonEmptyString,
+    lastName: NonEmptyString,
+    city: NonEmptyString,
+    ~Gender,
+    ~Age
+] :: [
+    firstName: #firstName,
+    lastName: mutable{NonEmptyString, #lastName},
+    city: #city,
+    gender: #gender,
+    age: mutable{Age, #age}
+];
 
-Person->greet(^Null => String) :: [
-    'Hello, my name is ', $firstName, ' ', $lastName->value, ' and i\`m ', $age->value->asString
-]->combineAsString('');
+Person->greet(=> String) :: 'Hello, my name is ' + $firstName + ' ' + $lastName->value +
+    ' and i\`m ' + $age->value->asString;
 
-Person->hasBirthday(^Null => Null) :: {
-    $age->SET({$age->value} + 1);
-    null
-};
+Person->hasBirthday() :: $age->SET({$age->value} + 1);
 
-Person->getMarried(^NonEmptyString => Null) :: ?whenValueOf($gender) is {
+Person->getMarried(^toPersonLastName: NonEmptyString => Null) :: ?whenValueOf($gender) is {
     Gender.Male: null,
     Gender.Female: {
-        $lastName->SET(#);
+        $lastName->SET(toPersonLastName);
         null
     }
 };
@@ -33,17 +42,17 @@ Person->getMarried(^NonEmptyString => Null) :: ?whenValueOf($gender) is {
 main = ^Any => String :: {
     person1 = Person[
         firstName: 'Samantha',
-        lastName: mutable{NonEmptyString, 'Rico'},
+        lastName: 'Rico',
         city: 'NYC',
         gender: Gender.Female,
-        age: mutable{Age, 23}
+        age: 23
     ];
     person2 = Person[
         firstName: 'Bob',
-        lastName: mutable{NonEmptyString, 'Johnson'},
+        lastName: 'Johnson',
         city: 'LA',
         gender: Gender.Male,
-        age: mutable{Age, 42}
+        age: 42
     ];
 
     person1->DUMPNL;

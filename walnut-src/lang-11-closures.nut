@@ -1,7 +1,7 @@
 module lang-11-closures:
 /* A Walnut-Lang implementation of https://github.com/gabrieldim/Go-Crash-Course/blob/main/11_closures/main.go */
 
-adder = ^Null => ^Integer => Integer :: {
+adder = ^ => ^Integer => Integer :: {
     sum = mutable{Integer, 0};
     ^Integer => Integer :: {
         sum->SET({sum->value} + #);

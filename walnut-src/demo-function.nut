@@ -1,11 +1,11 @@
 module demo-function:
 
 MyFunc = ^String => Integer;
-MyFuncSubtype = # ^String => Integer;
+MyFuncSubtype := # ^String => Integer;
 
 MyFuncRetFunc = ^Integer => MyFunc;
 
-ProductId = # Integer<1..>;
+ProductId := # Integer<1..>;
 ProductId->invoke(^Real => Boolean) :: # == 3.14;
 
 callMe = ^[str: String, myFunc: MyFunc] => Integer :: {

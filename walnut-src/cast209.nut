@@ -1,12 +1,12 @@
 module cast209:
 
-MyState = $[a: Integer];
+MyState := $[a: Integer];
 MyState->value(^Null => Integer) :: $a + 4;
 
-MyIntState = $[a: Integer];
+MyIntState := $[a: Integer];
 MyIntState->value(^Null => Integer) :: $a + 13;
 
-MySubtype = #Integer;
+MySubtype := #Integer;
 MySubtype->val(^Null => Integer) :: {$->value} + 5;
 
 myFn = ^Array<String> => Any :: {

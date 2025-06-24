@@ -1,6 +1,6 @@
 module demo-array:
 
-MyMap = #Map<2..10>;
+MyMap := #Map<2..10>;
 
 /* map specific Map->... */
 
@@ -29,7 +29,7 @@ binaryEqual    = ^[Map<..15>, Map<..10>]                                        
 binaryNotEqual = ^[Map<..15>, Map<..10>]                                         => Boolean                                        :: #0 != #1;
 asBoolean      = ^Map<..15>                                                      => Boolean                                        :: #->asBoolean;
 valueType      = ^Map<1..15>                                                     => Type<Map<1..15>>                               :: #->type;
-isOfType       = ^[Map<1..15>, Type]                                             => Boolean                                        :: #0->isOfType(#1);
+checkIsOfType       = ^[Map<1..15>, Type]                                             => Boolean                                        :: #0->isOfType(#1);
 jsonStringify  = ^Map<JsonValue, 1..15>                                          => String                                         :: #->jsonStringify;
 
 test = ^[a: Map<3..10>, b: Map<String, ..5>, c: Map<String['aa', 'hello'], 3..4>, d: Map<Real<0.3..10>, ..6>, e: Map<Integer<5..30>, 4..8>, f: MyMap] => Map :: [
@@ -70,8 +70,8 @@ test = ^[a: Map<3..10>, b: Map<String, ..5>, c: Map<String['aa', 'hello'], 3..4>
     asBooleanTrue: asBoolean(#a),
     asBooleanFalse: asBoolean([:]),
     type: valueType(#a),
-    isOfTypeTrue: isOfType[#a, type{Map}],
-    isOfTypeFalse: isOfType[#a, type{Integer}],
+    isOfTypeTrue: checkIsOfType[#a, type{Map}],
+    isOfTypeFalse: checkIsOfType[#a, type{Integer}],
     binaryEqualTrue: binaryEqual[#e, [a: 9, b: 12, c: 18, d: 15, e: 12]],
     binaryEqualFalse: binaryEqual[#a, #b],
     binaryNotEqualTrue: binaryNotEqual[#a, #b],

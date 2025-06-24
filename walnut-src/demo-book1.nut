@@ -1,6 +1,6 @@
 module demo-book1:
 
-InvalidIsbn = #[isbn: String];
+InvalidIsbn := #[isbn: String];
 calculateIsbnChecksum = ^[isbn: String<10..10>] => Result<Integer, NotANumber> :: {
     ?noError({{#.isbn->reverse}->chunk(1)}->mapIndexValue(
         ^[index: Integer<0..>, value: String<1..1>] => Result<Integer, NotANumber> :: {
@@ -9,30 +9,30 @@ calculateIsbnChecksum = ^[isbn: String<10..10>] => Result<Integer, NotANumber> :
     ))->sum
 };
 
-Isbn = #String @ InvalidIsbn|NotANumber :: {
+Isbn := #String @ InvalidIsbn|NotANumber :: {
     checksum = ?noError(?whenTypeOf(#) is {
         type{String<10..10>}: calculateIsbnChecksum[#],
         ~: => @InvalidIsbn[#]
     });
     ?whenIsTrue { checksum % 11: => @InvalidIsbn[#], ~: null }
 };
-UnknownBook = $[~Isbn];
-BookTitle = #String<1..200>;
-Book = #[~Isbn, ~BookTitle];
+UnknownBook := $[~Isbn];
+BookTitle := #String<1..200>;
+Book := #[~Isbn, ~BookTitle];
 
 BookByIsbn = ^Isbn => Result<Book, UnknownBook>;
 
-BookAdded = #[~Book];
-BookReplaced = #[~Book];
+BookAdded := #[~Book];
+BookReplaced := #[~Book];
 
 BringBookToLibrary = ^Book => BookAdded|BookReplaced;
 
-BookRemoved = #[~Book];
+BookRemoved := #[~Book];
 RemoveBookFromLibrary = ^Book => Result<BookRemoved, UnknownBook>;
 
 AllLibraryBooks = ^Null => Array<Book>;
 
-Library = $[books: Mutable<Map<Book>>];
+Library := $[books: Mutable<Map<Book>>];
 Library->books(=> Mutable<Map<Book>>) :: $books;
 
 DependencyContainer ==> BookByIsbn %% Library :: ^Isbn => Result<Book, UnknownBook> :: {
@@ -81,14 +81,14 @@ DependencyContainer ==> Library :: Library[books: mutable{Map<Book>, [:]}];
 
 RenameBook = ^BookTitle => Book;
 
-BookManager = :[];/* = #[~BookByIsbn, ~BringBookToLibrary, ~AllLibraryBooks, ~RemoveBookFromLibrary];*/
+BookManager := ();/* := #[~BookByIsbn, ~BringBookToLibrary, ~AllLibraryBooks, ~RemoveBookFromLibrary];*/
 BookManager->bookByIsbn(^Isbn => Result<Book, UnknownBook>) %% BookByIsbn :: %(#);
 BookManager->bringBookToLibrary(^Book => BookAdded|BookReplaced) %% BringBookToLibrary :: %(#);
 BookManager->allLibraryBooks(^Null => Array<Book>) %% AllLibraryBooks :: %();
 BookManager->removeBookFromLibrary(^Book => Result<BookRemoved, UnknownBook>) %% RemoveBookFromLibrary :: %(#);
 
 myFn = ^Array<String> => Any :: {
-    ctr = DependencyContainer();/*Container[getContainerConfig()];*/
+    ctr = DependencyContainer;/*Container[getContainerConfig()];*/
     bookManager = ?noError(ctr->valueOf(type{BookManager}));
     isbn = ?noError(Isbn('1259060977'));
     book1 = bookManager->bookByIsbn(isbn);

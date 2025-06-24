@@ -41,7 +41,7 @@ monadFixer = ^monad: U => R :: {
 ha3 = ^V => Y :: {
     r = [ka1, ka2]->map(monadFixer)->chainInvoke(#);
     ?whenTypeOf(r) is {
-        type{V}: [d: #.b, e: #.c->length],
+        `V: [d: #.b, e: #.c->length],
         ~: Error([f: #.c])
     }
 };
@@ -51,7 +51,7 @@ ha3 = ^V => Y :: {
     default: ^ ~V => W :: [d: v.b, e: v.a]
 ];
 
-P = :[];
+P := ();
 P->m(^ ~V => W) %% Mz :: {
     h = %.handlers;
     d = %.default;
@@ -74,7 +74,7 @@ P->m(^ ~V => W) %% Mz :: {
 };
 
 myFn = ^Array<String> => Any :: {
-    p = P();
+    p = P;
     v1 = [a: 1, b: true, c: 'hello'];
     v2 = [a: -42, b: false, c: 'world'];
     v3 = [a: 15, b: false, c: 'world'];

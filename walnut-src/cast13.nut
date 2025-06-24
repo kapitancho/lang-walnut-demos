@@ -2,12 +2,12 @@ module cast13:
 
 Age = Integer<1..>;
 PersonName = String<2..>;
-EmployeePosition = :[Developer, QA, Manager];
+EmployeePosition := (Developer, QA, Manager);
 
 Apple = [
     color: ^Integer => String
 ];
-Pineapple = #[
+Pineapple := #[
     size: Integer
 ];
 Pineapple ==> Apple :: [

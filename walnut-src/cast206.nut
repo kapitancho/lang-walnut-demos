@@ -6,8 +6,8 @@ Title = String;
 Price = Real<0..>;
 Product = [~ProductId, ~Title, ~Price];
 
-UnknownProductId = $[~ProductId];
-ProductUpdated = $[~Product];
+UnknownProductId := $[~ProductId];
+ProductUpdated := $[~Product];
 ProductUpdated->product(^Null => Product) :: $product;
 
 IdGenerator = ^Null => String;
@@ -17,13 +17,13 @@ DependencyContainer ==> IdGenerator :: ^Null => String :: 'rand';/* php{'md5(ran
 ProductIdGenerator = ^Null => ProductId;
 ProductById = ^ProductId => Result<Product, UnknownProductId>;
 
-==> DatabaseConnection :: DatabaseConnection['sqlite:db.sqlite'];
+==> DatabaseConnection :: DatabaseConnection![dsn: 'sqlite:db.sqlite'];
 
 DependencyContainer ==> ProductIdGenerator %% IdGenerator :: ^Null => ProductId :: {
     %()
 };
 
-ProductStorage = $[products: Mutable<Map<Product>>];
+ProductStorage := $[products: Mutable<Map<Product>>];
 ProductStorage(Map<Product>) :: [products: mutable{Map<Product>, #}];
 ProductStorage->products(^Null => Map<Product>) :: $products->value;
 ProductStorage->store(^Product => Product) :: {
@@ -72,19 +72,19 @@ DependencyContainer ==> UpdateProductTitleCommandHandler %% [~ProductById, ~Even
     }
 };
 
-ProductController = :[];
+ProductController := ();
 ProductController->updateTitle(^UpdateProductTitleCommand => Any) %% UpdateProductTitleCommandHandler :: %(#);
 
 myFn = ^Array<String> => Any :: {
-    s = DependencyContainer()=>valueOf(type{ProductStorage});
+    s = DependencyContainer=>valueOf(type{ProductStorage});
     before = s->products->item('productId');
-    x = ProductController()->updateTitle([productId: 'productId', title: 'myNewTitle']);
+    x = ProductController->updateTitle([productId: 'productId', title: 'myNewTitle']);
     after = s->products->item('productId');
     [
         before,
         x,
         after,
-        ?noError(DependencyContainer()->valueOf(type{ProductIdGenerator}))()
+        ?noError(DependencyContainer->valueOf(type{ProductIdGenerator}))()
     ]
 };
 

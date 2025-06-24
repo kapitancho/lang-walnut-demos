@@ -1,14 +1,14 @@
 module demo-rsa:
 
-PublicKey = $[n: Integer<1..>, c: Integer];
-PrivateKey = $[n: Integer<1..>, d: Integer];
+PublicKey := $[n: Integer<1..>, c: Integer];
+PrivateKey := $[n: Integer<1..>, d: Integer];
 
-PrimesTuple = $[p: Integer<2..>, q: Integer<2..>];
+PrimesTuple := $[p: Integer<2..>, q: Integer<2..>];
 ==> PrimesTuple :: PrimesTuple[1031, 1061];
-PrimesTuple->getN(^Null => Integer<1..>) :: $p * $q;
-PrimesTuple->n(^Null => Integer<1..>) :: {$p - 1} * {$q - 1};
+PrimesTuple->getN(=> Integer<1..>) :: $p * $q;
+PrimesTuple->n(=> Integer<1..>) :: {$p - 1} * {$q - 1};
 
-CoPrime = #Integer;
+CoPrime := #Integer;
 ==> CoPrime :: CoPrime(65537);
 
 ==> PublicKey %% [~PrimesTuple, ~CoPrime] :: PublicKey[%primesTuple->getN, %coPrime->value];
@@ -17,8 +17,8 @@ CoPrime = #Integer;
 
 gcdExtended = ^[a: Integer, b: Integer<1..>] => [x: Integer, y: Integer, gcd: Integer] :: {
     ?whenTypeOf(#a) is {
-        type{Integer[0]}: [x: 0, y: 1, gcd: #b],
-        type{Integer<1..>}: {
+        `Integer[0]: [x: 0, y: 1, gcd: #b],
+        `Integer<1..>: {
             result = gcdExtended[#b % #a, #a];
             [x: result.y - {{{#b / #a}->asInteger} * result.x}, y: result.x, gcd: result.gcd]
         },
@@ -46,12 +46,10 @@ modularPow = ^[base: Integer, exponent: Integer, modulo: Integer<1..>] => Intege
 };
 
 multiplicativeInverse = ^[value: Integer, modulo: Integer<1..>] => Result<Integer, NotANumber> :: {
-    result = gcdExtended[#value, #modulo];
-    gcd = result.gcd;
-    x = result.x;
+    var{~x, ~gcd} = gcdExtended[#value, #modulo];
     ?whenTypeOf(gcd) is {
-        type{Integer[1]}: {x + #modulo} % #modulo,
-        type{Integer<1..>}: Error(NotANumber()),
+        `Integer[1]: {x + #modulo} % #modulo,
+        `Integer<1..>: @NotANumber,
         ~: 0 /* should not be reachable */
     }
 };
@@ -63,7 +61,7 @@ PublicKey->encrypt(^Integer => Integer) :: modularPow[#, $c, $n];
     ?noError(multiplicativeInverse[value: %.coPrime->value, modulo: %.primesTuple->n])
 ];
 
-Test = :[];
+Test := ();
 Test->run(^Integer => Any) %% [~PublicKey, ~PrivateKey] :: {
     pub = %.publicKey;
     prv = %.privateKey;
@@ -79,4 +77,4 @@ Test->run(^Integer => Any) %% [~PublicKey, ~PrivateKey] :: {
 };
 
 
-main = ^Array<String> => String %% [~Test] :: %test->run(Random()->integer[min: 0, max: 65535])->printed;
+main = ^Array<String> => String %% [~Test] :: %test->run(Random->integer[min: 0, max: 65535])->printed;

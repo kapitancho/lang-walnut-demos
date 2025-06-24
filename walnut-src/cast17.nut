@@ -1,8 +1,8 @@
 module cast17:
 
-Point = #[x: Real, y: Real];
-Point3d = #[Real, Real, Real];
-ProductId = #Integer<1..>;
+Point := #[x: Real, y: Real];
+Point3d := #[Real, Real, Real];
+ProductId := #Integer<1..>;
 
 fn = ^[a: String, b: Integer<0..>] => String :: {
     #.a->substringRange([start: #.b, end: #.a->length])

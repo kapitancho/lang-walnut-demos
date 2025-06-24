@@ -1,7 +1,7 @@
 module cast19:
 
-Point = #[x: Real, y: Real];
-Point2 = #[x: Integer<0..200>, y: Integer<-3000..10>];
+Point := #[x: Real, y: Real];
+Point2 := #[x: Integer<0..200>, y: Integer<-3000..10>];
 
 Point ==> String :: {
     ''->concatList['{', $x->asString, ',', $y->asString, '}']

@@ -1,6 +1,6 @@
 module demo-intersection:
 
-Suit = :[Hearts, Diamonds, Clubs, Spades];
+Suit := (Hearts, Diamonds, Clubs, Spades);
 mySuitFn = ^Suit[Hearts, Diamonds]&Suit[Clubs, Diamonds] => Suit[Diamonds] :: #;
 
 User = [name: String<1..>, age: Integer<1..>, ...];

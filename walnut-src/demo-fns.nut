@@ -16,11 +16,11 @@ A->newStyleAny(^a: A) :: {$->length} + {a->length};
 A->newStyleSym(^~A => B) :: {$->length} + {a->length};
 A->newStyleSymAny(^~A) :: {$->length} + {a->length};
 
-TOld = $[a: B];
+TOld := $[a: B];
 TOld(A) :: [a: #->length];
-TNew = $[a: Integer];
+TNew := $[a: Integer];
 TNew(a: A) :: [a: a->length];
-TNewSym = $[a: Integer];
+TNewSym := $[a: Integer];
 TNewSym(~A) :: [a: a->length];
 
 fn = ^Any => Any :: {

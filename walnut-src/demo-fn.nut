@@ -3,19 +3,19 @@ module demo-fn:
 Param = String;
 Ret = Integer;
 
-Method = :[];
+Method := ();
 
-ConsBase = $[prop: Any];
-ConsNameParam = $[prop: Any];
-ConsTypeParam = $[prop: Any];
-ConsNameAnyParam = $[prop: Any];
-ConsNullParam = $[prop: Any];
-ConsTuple = $[prop: Any];
-ConsTupleNameParam = $[prop: Any];
-ConsEmptyTuple = $[prop: Any];
-ConsRecord = $[prop: Any];
-ConsRecordNameParam = $[prop: Any];
-ConsEmptyRecord = $[prop: Any];
+ConsBase := $[prop: Any];
+ConsNameParam := $[prop: Any];
+ConsTypeParam := $[prop: Any];
+ConsNameAnyParam := $[prop: Any];
+ConsNullParam := $[prop: Any];
+ConsTuple := $[prop: Any];
+ConsTupleNameParam := $[prop: Any];
+ConsEmptyTuple := $[prop: Any];
+ConsRecord := $[prop: Any];
+ConsRecordNameParam := $[prop: Any];
+ConsEmptyRecord := $[prop: Any];
 
 Dep = Boolean;
 ==> Dep :: true;
@@ -110,7 +110,7 @@ Method->emptyRecordAny(^[:]) :: #->length;
 
 
 main = ^Array<String> => String :: {
-    method = Method();
+    method = Method;
     [
         base: [
             fn: funcBase('hello'),

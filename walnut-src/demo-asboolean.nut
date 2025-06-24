@@ -1,7 +1,7 @@
 module demo-asboolean:
 
-Message = #[text: String];
-Greeting = $[text: String];
+Message := #[text: String];
+Greeting := $[text: String];
 
 Message ==> Boolean :: {$text->length} == 5;
 Greeting ==> Boolean :: {$text->length} == 5;

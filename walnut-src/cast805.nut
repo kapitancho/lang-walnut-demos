@@ -1,14 +1,14 @@
 module cast805:
 
 
-MyType = $[a: String, b: ?Integer, c: Real];
+MyType := $[a: String, b: ?Integer, c: Real];
 
 MyType->a(=> String) :: $a;
 MyType->b(=> Result<Integer, MapItemNotFound>) :: ?noError($b) + 1;
 
 MyType->s(=> Result<String, InvalidJsonValue>) :: $ => asJsonValue -> stringify;
 
-XType = #[a: String, b: ?Integer, c: Real];
+XType := #[a: String, b: ?Integer, c: Real];
 n = ^XType => String :: #a;
 r = ^XType => Result<Integer, MapItemNotFound> :: ?noError(#b) + 1;
 

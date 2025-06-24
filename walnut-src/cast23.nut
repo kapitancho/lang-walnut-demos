@@ -1,20 +1,20 @@
 module cast23 %% $db/core:
 
-Point = #[x: Real, y: Real];
+Point := #[x: Real, y: Real];
 PositiveInteger = Integer<1..>;
-Suit = :[Spades, Hearts, Diamonds, Clubs];
+Suit := (Spades, Hearts, Diamonds, Clubs);
 pi = 3.1415927;
 
 suit = ^String => Result<Suit, UnknownEnumerationValue> :: {
     type{Suit}->valueWithName(#)
 };
 
-InvalidProductId = $[productId: Integer];
+InvalidProductId := $[productId: Integer];
 ProductId = Integer<1..>;
 
-InvalidProductName = $[productName: JsonValue];
-ProductName = #String<1..>;
-Product = $[~ProductId, ~ProductName];
+InvalidProductName := $[productName: JsonValue];
+ProductName := #String<1..>;
+Product := $[~ProductId, ~ProductName];
 Point ==> String :: ''->concatList['{', {$x}->asString, ',', {$y}->asString, '}'];
 
 Product ==> Map :: {
@@ -74,11 +74,11 @@ getRowE = ^DatabaseConnector => Result<Product, MapItemNotFound|HydrationError|I
     mapToProduct(row)
 };
 
-==> DatabaseConnection :: DatabaseConnection['sqlite:db.sqlite'];
+==> DatabaseConnection :: DatabaseConnection![dsn: 'sqlite:db.sqlite'];
 
 myFn = ^Array<Any> => Any :: {
     /*Point[pi, 42]->as(type{String});*/
-    connection = DatabaseConnection['sqlite:db.sqlite'];
+    connection = DatabaseConnection![dsn: 'sqlite:db.sqlite'];
     connector = DatabaseConnector[connection];
     [
         suit('Spades'),

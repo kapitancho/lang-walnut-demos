@@ -14,7 +14,7 @@ nodeValue = ^Integer => NodeElement :: {
     [left: null, value: #, right: null]
 };
 
-XTree = $[root: Node];
+XTree := $[root: Node];
 
 XTree ==> Tree :: {
     push = ^[node: Node, value: Integer] => Node :: {
@@ -50,7 +50,7 @@ XTree ==> Tree :: {
     ]
 };
 */
-T = #[x: Real, y: Real];
+T := #[x: Real, y: Real];
 
 T->d(=> Real) :: $x * $x + $y * $y;
 

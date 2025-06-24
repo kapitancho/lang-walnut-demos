@@ -1,7 +1,7 @@
 module demo-money:
 
 Amount = Real;
-Currency = :[Euro, Dollar, Yen];
+Currency := (Euro, Dollar, Yen);
 Currency->code(^Null => String<3>) :: ?whenValueOf($) is {
     Currency.Euro: 'EUR',
     Currency.Dollar: 'USD',
@@ -16,16 +16,16 @@ Currency ==> String :: ?whenValueOf($) is {
 };
 Currency ==> JsonValue :: $->code;
 /* Support for JSON to Currency conversion */
-InvalidCurrency = :[]; /* An Atom that represents an invalid currency */
+InvalidCurrency := (); /* An Atom that represents an invalid currency */
 JsonValue ==> Currency @ InvalidCurrency :: ?whenValueOf($) is {
     'EUR': Currency.Euro,
     'USD': Currency.Dollar,
     'JPY': Currency.Yen,
-    ~: @InvalidCurrency()
+    ~: @InvalidCurrency
 };
 
 /* Money is a record with two fields: currency and amount */
-Money = #[~Currency, ~Amount];
+Money := #[~Currency, ~Amount];
 Money ==> String :: {$currency->asString} + $amount->asString;
 
 /*

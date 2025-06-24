@@ -2,8 +2,8 @@ module demo-ut %% $datetime:
 
 ProductId = Integer<1..>;
 ProductTitle = String<1..>;
-UnknownProduct = $[~ProductId];
-Product = #[id: ProductId, title: ProductTitle];
+UnknownProduct := $[~ProductId];
+Product := #[id: ProductId, title: ProductTitle];
 ProductById = ^ProductId => Result<Product, UnknownProduct|ExternalError>;
 MyClock = ^Null => Result<DateAndTime, ExternalError>;
 

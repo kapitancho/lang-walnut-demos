@@ -13,6 +13,6 @@
     ],
     "require": {
         "php": ">=8.4",
-        "walnut/lang": ">=0.0.8"
+        "walnut/lang": ">=0.0.9"
     }
 }

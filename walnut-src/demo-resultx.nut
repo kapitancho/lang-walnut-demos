@@ -2,7 +2,7 @@ module demo-resultx:
 
 Product = String;
 ProductId = Integer;
-UnknownProductId = $[~ProductId];
+UnknownProductId := $[~ProductId];
 
 Square = ^Real => Real<0..>;
 ArrayItem = ^[a: Array, idx: Integer<0..>] => Result<Any, IndexOutOfRange>;

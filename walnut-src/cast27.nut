@@ -1,15 +1,15 @@
 module cast26:
 
-Suit = :[Spades, Hearts, Clubs, Diamonds];
+Suit := (Spades, Hearts, Clubs, Diamonds);
 
-Point = #[x: Real, y: Real];
+Point := #[x: Real, y: Real];
 
-InvalidProductId = #Any;
+InvalidProductId := #Any;
 ProductId = Integer<1..>;
 
-InvalidProductName = #Any;
+InvalidProductName := #Any;
 ProductName = String<1..>;
-Product = #[~ProductId, ~ProductName, tags: Array<String>];
+Product := #[~ProductId, ~ProductName, tags: Array<String>];
 
 R1 = [a: Integer, b: Real];
 R2 = [a: Real, c: String, d: Boolean];
@@ -44,8 +44,8 @@ hydrateAs3 = ^[value: JsonValue, type: Type] => Result<Any, HydrationError> :: {
     hydrateAs[[3.14, 2, -100], type{RealRealIntegerTuple}]
 };
 
-A = #Integer;
-B = #A;
+A := #Integer;
+B := #A;
 
 t = ^[x: Integer] => ^[y: Integer] => Integer :: {
     x = #.x;

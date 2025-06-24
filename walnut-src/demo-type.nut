@@ -3,9 +3,9 @@ module demo-type:
 negate = ^Integer => Real :: -#;
 LengthType = ^String => Integer;
 
-ProductId = #Integer<1..>;
-ProductEvent = #[title: String, price: Real];
-ProductState = $[title: String, price: Real, quantity: Integer];
+ProductId := #Integer<1..>;
+ProductEvent := #[title: String, price: Real];
+ProductState := $[title: String, price: Real, quantity: Integer];
 
 reflectType = ^Type<Type> => Type :: #->refType;
 reflectArray = ^Type<Array> => [Type, Integer<0..>, (Integer<0..>|PlusInfinity)] :: [#->itemType, #->minLength, #->maxLength];

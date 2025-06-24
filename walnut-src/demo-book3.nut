@@ -1,6 +1,6 @@
 module demo-book3:
 
-InvalidIsbn = #[isbn: String];
+InvalidIsbn := #[isbn: String];
 
 calculateIsbnChecksum = ^isbn: String<10..10> => Result<Integer, NotANumber> :: {
     ?noError({{isbn->reverse}->chunk(1)}->mapIndexValue(
@@ -10,22 +10,22 @@ calculateIsbnChecksum = ^isbn: String<10..10> => Result<Integer, NotANumber> :: 
     ))->sum
 };
 
-Isbn = #String @ InvalidIsbn|NotANumber :: {
+Isbn := #String @ InvalidIsbn|NotANumber :: {
     checksum = ?whenTypeOf(#) is {
         type{String<10..10>}: calculateIsbnChecksum => invoke(#),
         ~: => @InvalidIsbn[#]
     };
     ?whenIsTrue { checksum % 11: => @InvalidIsbn[#], ~: null }
 };
-UnknownBook = #[~Isbn];
-BookTitle = #String<1..200>;
-Book = #[~Isbn, ~BookTitle];
+UnknownBook := #[~Isbn];
+BookTitle := #String<1..200>;
+Book := #[~Isbn, ~BookTitle];
 
-BookAdded = #[~Book];
-BookReplaced = #[~Book];
-BookRemoved = #[~Book];
+BookAdded := #[~Book];
+BookReplaced := #[~Book];
+BookRemoved := #[~Book];
 
-Library = $[books: Mutable<Map<Book>>];
+Library := $[books: Mutable<Map<Book>>];
 Library(books: Map<Book>) :: [books: mutable{Map<Book>, books}];
 
 Library->books(=> Map<Book>) :: $books->value;

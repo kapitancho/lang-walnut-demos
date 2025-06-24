@@ -1,10 +1,10 @@
 module demo-2d:
 
-EmptySquare = :[];
+EmptySquare := ();
 EmptySquare ==> String :: '.';
 
-Color = :[White, Black];
-Piece = :[Pawn, Knight, Bishop, Rook, Queen, King];
+Color := (White, Black);
+Piece := (Pawn, Knight, Bishop, Rook, Queen, King);
 Piece ==> String :: ?whenValueOf($) is {
     Piece.Pawn: 'p',
     Piece.Knight: 'n',
@@ -13,12 +13,12 @@ Piece ==> String :: ?whenValueOf($) is {
     Piece.Queen: 'q',
     Piece.King: 'k'
 };
-ChessPiece = $[~Color, ~Piece];
+ChessPiece := $[~Color, ~Piece];
 ChessPiece ==> String :: ?whenValueOf($color) is {
     Color.White: $piece->asString->toUpperCase,
     Color.Black: $piece->asString
 };
-ChessSquare = $[piece: Mutable<ChessPiece|EmptySquare>];
+ChessSquare := $[piece: Mutable<ChessPiece|EmptySquare>];
 ChessSquare(ChessPiece|EmptySquare) :: [piece: mutable{ChessPiece|EmptySquare, #}];
 ChessSquare ==> String :: $piece->value->asString;
 ChessSquare->SET_PIECE(^ChessPiece|EmptySquare => ChessSquare) :: {
@@ -33,10 +33,10 @@ ChessBoardRow ==> String :: [
     '|'
 ]->combineAsString('');
 
-ChessBoard = $[squares: Array<ChessBoardRow, 8..8>];
+ChessBoard := $[squares: Array<ChessBoardRow, 8..8>];
 ChessBoard() :: [
     squares: 1->upTo(8)->map(^Integer => Array<ChessSquare, 8..8> ::
-        1->upTo(8)->map(^Integer => ChessSquare :: ChessSquare(EmptySquare()))
+        1->upTo(8)->map(^Integer => ChessSquare :: ChessSquare(EmptySquare))
     )
 ];
 ChessBoard ==> String :: [

@@ -5,8 +5,8 @@ a = ['$ref\`\\': ''];
 B1 = [a: String, b: ?String];
 B2 = [a: String, b: OptionalKey<String>];
 
-NotAnOddInteger = :[];
-OddInteger = #Integer @ NotAnOddInteger :: ?whenValueOf(# % 2) is { 0: Error(NotAnOddInteger()) };
+NotAnOddInteger := ();
+OddInteger := #Integer @ NotAnOddInteger :: ?whenValueOf(# % 2) is { 0: Error(NotAnOddInteger) };
 
 T = [a: Integer, b: ?Boolean, ... String];
 S = [Integer, Boolean, ... String];
